@@ -1,0 +1,57 @@
+name: Attach release assets
+# Attaches the prebuilt APK (fetched from a temporary URL and checked against its SHA-256)
+# and the official MicroG RE APKs (from MorpheApp/MicroG-RE releases) to a release.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        required: true
+      apk_url:
+        description: Temporary URL of the YouTube Ultra APK
+        required: true
+      apk_name:
+        description: Asset file name
+        required: true
+      apk_sha256:
+        description: SHA-256 of the APK
+        required: true
+      microg_version:
+        description: MicroG RE version (official release tag)
+        required: true
+        default: "7.2.2"
+permissions:
+  contents: write
+jobs:
+  attach:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and verify YouTube Ultra APK
+        env:
+          APK_URL: ${{ inputs.apk_url }}
+          APK_NAME: ${{ inputs.apk_name }}
+          APK_SHA: ${{ inputs.apk_sha256 }}
+        run: |
+          # APK_URL: one or more URLs (space-separated parts, joined in order)
+          : > "$APK_NAME"
+          for u in $APK_URL; do
+            d="$u"
+            case "$u" in https://tmpfiles.org/dl/*) ;; https://tmpfiles.org/*) d=$(curl -fsSL "$u" | grep -oE 'https://tmpfiles.org/dl/[^"]+' | head -1) ;; esac
+            curl -fL --retry 5 --retry-delay 5 -o part.bin "$d"
+            cat part.bin >> "$APK_NAME"; rm part.bin
+          done
+          echo "$APK_SHA  $APK_NAME" | sha256sum -c -
+      - name: Fetch official MicroG RE
+        env:
+          V: ${{ inputs.microg_version }}
+        run: |
+          curl -fL --retry 5 -o "MicroG-RE_${V}.apk" "https://github.com/MorpheApp/MicroG-RE/releases/download/${V}/microg-${V}.apk"
+          curl -fL --retry 5 -o "MicroG-RE_${V}_arm64-v8a.apk" "https://github.com/MorpheApp/MicroG-RE/releases/download/${V}/microg-${V}-icon-arm64-v8a.apk"
+          sha256sum *.apk | tee SHA256SUMS.txt
+          ls -la
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          gh release upload "$TAG" *.apk SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
