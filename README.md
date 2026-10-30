@@ -19,7 +19,7 @@
 ## Features
 
 - **No ads**: no video ads and no feed ads.
-- **Downloads**: download any video in any quality from 144p to 4K, or audio only. Downloads keep going in the background, and finished files show up in your Gallery or Music. There's an In progress / Downloaded list inside YouTube's Downloads tab.
+- **Downloads**: download any video in any quality from 144p to 4K, or audio only. Fast multi-connection downloads that keep full speed in the background or with the screen off, and paused downloads resume where they stopped. Finished files show up in your Gallery or Music. There's an In progress / Downloaded list inside YouTube's Downloads tab.
 - **Shorts auto scroll**: in the Shorts ⋮ menu, turn on "Auto scroll" and the next Short plays when one ends. Turn it off and Shorts loop like normal. Your choice is saved.
 - **Cleaner Shorts menu**: "Send feedback" is removed.
 - **No time reminders**: no "Take a break" or bedtime reminders, and no "Video paused. Continue watching?" pause.
@@ -36,7 +36,7 @@ Needs **Android 8.0 or newer**.
 1. **Install MicroG first.** You need it to sign in with your Google account.
    Download **MicroG-RE** from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest): `MicroG-RE_7.2.2_arm64-v8a.apk` for most phones, or `MicroG-RE_7.2.2.apk` (universal) if you're not sure.
    Official source: [MorpheApp/MicroG-RE](https://github.com/MorpheApp/MicroG-RE/releases).
-2. **Install YouTube Ultra.** Download `YouTube_Ultra_v10.4.apk` from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest) and open it. If Android asks, allow installs from your browser or file manager.
+2. **Install YouTube Ultra.** Download `YouTube_Ultra_v10.5.apk` from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest) and open it. If Android asks, allow installs from your browser or file manager.
 3. **Sign in.** Open YouTube Ultra, tap your profile icon, then sign in. MicroG will ask for your Google account.
 
 You can watch without signing in. Without MicroG, YouTube Ultra still works signed out and shows a "MicroG needed to sign in" sheet.
