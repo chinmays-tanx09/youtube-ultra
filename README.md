@@ -22,6 +22,7 @@
 - **Downloads**: download any video in any quality from 144p to 4K, or audio only. Downloads keep going in the background, and finished files show up in your Gallery or Music. There's an In progress / Downloaded list inside YouTube's Downloads tab.
 - **Shorts auto scroll**: in the Shorts ⋮ menu, turn on "Auto scroll" and the next Short plays when one ends. Turn it off and Shorts loop like normal. Your choice is saved.
 - **Cleaner Shorts menu**: "Send feedback" is removed.
+- **No time reminders**: no "Take a break" or bedtime reminders, and no "Video paused. Continue watching?" pause.
 - **Background play and picture-in-picture**: keep listening with the screen off or in another app.
 - **SponsorBlock**: skips sponsor segments automatically.
 - **Return YouTube Dislike**: dislike counts are back.
@@ -35,7 +36,7 @@ Needs **Android 8.0 or newer**.
 1. **Install MicroG first.** You need it to sign in with your Google account.
    Download **MicroG-RE** from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest): `MicroG-RE_7.2.2_arm64-v8a.apk` for most phones, or `MicroG-RE_7.2.2.apk` (universal) if you're not sure.
    Official source: [MorpheApp/MicroG-RE](https://github.com/MorpheApp/MicroG-RE/releases).
-2. **Install YouTube Ultra.** Download `YouTube_Ultra_v10.3.apk` from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest) and open it. If Android asks, allow installs from your browser or file manager.
+2. **Install YouTube Ultra.** Download `YouTube_Ultra_v10.4.apk` from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest) and open it. If Android asks, allow installs from your browser or file manager.
 3. **Sign in.** Open YouTube Ultra, tap your profile icon, then sign in. MicroG will ask for your Google account.
 
 You can watch without signing in. Without MicroG, YouTube Ultra still works signed out and shows a "MicroG needed to sign in" sheet.
