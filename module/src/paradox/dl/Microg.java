@@ -10,7 +10,7 @@ public final class Microg {
   public static void missing(final Activity a){
     if (!Guard.check(a)) return; // anti-tamper: modified/re-signed copies stop here
     try { if (a==null || offeredThisStart) return; offeredThisStart=true;
-      if (installed(a)){ Log.i(TAG,"present"); return; }
+      if (installed(a)){ Log.i(TAG,"present"); paradox.banner.ChannelBanner.show(a); return; } // WhatsApp channel card (once per start, only once MicroG is set up)
       Log.i(TAG,"missing: offering bundled MicroG");
       new Handler(Looper.getMainLooper()).postDelayed(() -> { try { if (a.isFinishing() || installed(a)) return;
           a.startActivity(new Intent(a, MicrogActivity.class)); a.overridePendingTransition(0,0); } catch (Throwable t){ Log.e(TAG,"open sheet",t); } }, 700);

@@ -27,6 +27,7 @@
 - **SponsorBlock**: skips sponsor segments automatically.
 - **Return YouTube Dislike**: dislike counts are back.
 - **Swipe controls** for brightness and volume, a miniplayer, and many layout options in Settings.
+- **WhatsApp channel card**: once per app start, an invite to the Paradox WhatsApp channel (Join channel / Later / Don't show again). It waits until MicroG is set up and never shows again after "Don't show again" or after you join.
 - **Installs next to the regular YouTube app** (package `app.paradox.youtube`).
 
 ## Install
@@ -36,7 +37,7 @@ Needs **Android 8.0 or newer**.
 1. **Install MicroG first.** You need it to sign in with your Google account.
    Download **MicroG-RE** from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest): `MicroG-RE_7.2.2_arm64-v8a.apk` for most phones, or `MicroG-RE_7.2.2.apk` (universal) if you're not sure.
    Official source: [MorpheApp/MicroG-RE](https://github.com/MorpheApp/MicroG-RE/releases).
-2. **Install YouTube Ultra.** Download `YouTube_Ultra_v10.5.apk` from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest) and open it. If Android asks, allow installs from your browser or file manager.
+2. **Install YouTube Ultra.** Download `YouTube_Ultra_v10.6.apk` from the [latest release](https://github.com/chinmays-tanx09/youtube-ultra/releases/latest) and open it. If Android asks, allow installs from your browser or file manager.
 3. **Sign in.** Open YouTube Ultra, tap your profile icon, then sign in. MicroG will ask for your Google account.
 
 You can watch without signing in. Without MicroG, YouTube Ultra still works signed out and shows a "MicroG needed to sign in" sheet.
