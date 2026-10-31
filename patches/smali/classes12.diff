@@ -1,0 +1,1786 @@
+--- a/classes12/app/morphe/extension/shared/patches/AutoCaptionsPatch.smali
++++ b/classes12/app/morphe/extension/shared/patches/AutoCaptionsPatch.smali
+@@ -27,94 +27,22 @@
+ .method public static disableAutoCaptions()Z
+     .registers 1
+ 
+-    sget-object v0, Lapp/morphe/extension/shared/settings/BaseSettings;->DISABLE_AUTO_CAPTIONS:Lapp/morphe/extension/shared/settings/BooleanSetting;
+-
+-    invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/BooleanSetting;->get()Ljava/lang/Boolean;
+-
+-    move-result-object v0
+-
+-    invoke-virtual {v0}, Ljava/lang/Boolean;->booleanValue()Z
+-
+-    move-result v0
+-
+-    if-eqz v0, :cond_12
+-
+-    sget-boolean v0, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch;->captionsButtonStatus:Z
+-
+-    if-nez v0, :cond_12
+-
+-    const/4 v0, 0x1
+-
+-    return v0
+-
+-    :cond_12
+     const/4 v0, 0x0
+ 
+     return v0
+ .end method
+ 
+ .method public static disableAutoCaptionsByStyle()Z
+-    .registers 2
+-
+-    sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->AUTO_CAPTIONS_STYLE:Lapp/morphe/extension/shared/settings/EnumSetting;
+-
+-    invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/EnumSetting;->get()Ljava/lang/Enum;
+-
+-    move-result-object v0
+-
+-    check-cast v0, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;
+-
+-    sget-object v1, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;->BOTH_DISABLED:Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;
+-
+-    if-eq v0, v1, :cond_10
+-
+-    sget-object v1, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;->WITHOUT_VOLUME_ONLY:Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;
+-
+-    if-ne v0, v1, :cond_16
+-
+-    :cond_10
+-    sget-boolean v0, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch;->captionsButtonStatus:Z
+-
+-    if-nez v0, :cond_16
+-
+-    const/4 v0, 0x1
+-
+-    return v0
++    .registers 1
+ 
+-    :cond_16
+     const/4 v0, 0x0
+ 
+     return v0
+ .end method
+ 
+ .method public static disableMuteAutoCaptions()Z
+-    .registers 2
+-
+-    sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->AUTO_CAPTIONS_STYLE:Lapp/morphe/extension/shared/settings/EnumSetting;
+-
+-    invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/EnumSetting;->get()Ljava/lang/Enum;
+-
+-    move-result-object v0
+-
+-    check-cast v0, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;
+-
+-    sget-object v1, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;->BOTH_ENABLED:Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;
+-
+-    if-eq v0, v1, :cond_13
+-
+-    sget-object v1, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;->WITHOUT_VOLUME_ONLY:Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;
+-
+-    if-ne v0, v1, :cond_11
+-
+-    goto :goto_13
+-
+-    :cond_11
+-    const/4 v0, 0x0
+-
+-    return v0
++    .registers 1
+ 
+-    :cond_13
+-    :goto_13
+     const/4 v0, 0x1
+ 
+     return v0
+--- a/classes12/app/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch.smali
++++ b/classes12/app/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch.smali
+@@ -421,55 +421,7 @@
+ .end method
+ 
+ .method public static addTranslationLanguages(Ljava/util/List;)Ljava/util/List;
+-    .registers 3
+-    .annotation system Ldalvik/annotation/Signature;
+-        value = {
+-            "(",
+-            "Ljava/util/List<",
+-            "Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$CaptionTrackInterface;",
+-            ">;)",
+-            "Ljava/util/List<",
+-            "Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$CaptionTrackInterface;",
+-            ">;"
+-        }
+-    .end annotation
+-
+-    sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->AUTO_TRANSLATE_ADDITIONAL_LANGUAGES:Lapp/morphe/extension/shared/settings/BooleanSetting;
+-
+-    invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/BooleanSetting;->get()Ljava/lang/Boolean;
+-
+-    move-result-object v0
+-
+-    invoke-virtual {v0}, Ljava/lang/Boolean;->booleanValue()Z
+-
+-    move-result v0
+-
+-    if-nez v0, :cond_d
+-
+-    return-object p0
+-
+-    :cond_d
+-    :try_start_d
+-    invoke-static {}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->getAppLocale()Ljava/util/Locale;
+-
+-    move-result-object v0
+-
+-    invoke-static {p0, v0}, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch;->addTranslationLanguages(Ljava/util/List;Ljava/util/Locale;)Ljava/util/List;
+-
+-    move-result-object p0
+-    :try_end_15
+-    .catch Ljava/lang/Exception; {:try_start_d .. :try_end_15} :catch_16
+-
+-    return-object p0
+-
+-    :catch_16
+-    move-exception v0
+-
+-    new-instance v1, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$$ExternalSyntheticLambda1;
+-
+-    invoke-direct {v1}, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$$ExternalSyntheticLambda1;-><init>()V
+-
+-    invoke-static {v1, v0}, Lapp/morphe/extension/shared/utils/Logger;->printException(Lapp/morphe/extension/shared/utils/Logger$LogMessage;Ljava/lang/Throwable;)V
++    .registers 4
+ 
+     return-object p0
+ .end method
+@@ -1617,60 +1569,8 @@
+ .end method
+ 
+ .method public static getTranslationCount(ILjava/util/List;)I
+-    .registers 3
+-    .annotation system Ldalvik/annotation/Signature;
+-        value = {
+-            "(I",
+-            "Ljava/util/List<",
+-            "+",
+-            "Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;",
+-            ">;)I"
+-        }
+-    .end annotation
+-
+-    if-gtz p0, :cond_21
+-
+-    :try_start_2
+-    sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->AUTO_TRANSLATE_ADDITIONAL_LANGUAGES:Lapp/morphe/extension/shared/settings/BooleanSetting;
+-
+-    invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/BooleanSetting;->get()Ljava/lang/Boolean;
+-
+-    move-result-object v0
+-
+-    invoke-virtual {v0}, Ljava/lang/Boolean;->booleanValue()Z
+-
+-    move-result v0
+-
+-    if-eqz v0, :cond_21
+-
+-    const/4 v0, 0x0
+-
+-    invoke-static {p1, v0}, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch;->findFallbackSource(Ljava/util/List;Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$CaptionTrackInterface;
+-
+-    move-result-object p1
+-    :try_end_13
+-    .catch Ljava/lang/Exception; {:try_start_2 .. :try_end_13} :catch_18
+-
+-    if-nez p1, :cond_16
+-
+-    goto :goto_21
+-
+-    :cond_16
+-    const/4 p0, 0x1
+-
+-    return p0
+-
+-    :catch_18
+-    move-exception p1
+-
+-    new-instance v0, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$$ExternalSyntheticLambda2;
+-
+-    invoke-direct {v0}, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$$ExternalSyntheticLambda2;-><init>()V
+-
+-    invoke-static {v0, p1}, Lapp/morphe/extension/shared/utils/Logger;->printException(Lapp/morphe/extension/shared/utils/Logger$LogMessage;Ljava/lang/Throwable;)V
++    .registers 4
+ 
+-    :cond_21
+-    :goto_21
+     return p0
+ .end method
+ 
+@@ -1935,60 +1835,6 @@
+ 
+ .method public static restoreTranslationTracks(Ljava/util/List;Ljava/util/List;Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Ljava/util/List;
+     .registers 4
+-    .annotation system Ldalvik/annotation/Signature;
+-        value = {
+-            "(",
+-            "Ljava/util/List<",
+-            "Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$CaptionTrackInterface;",
+-            ">;",
+-            "Ljava/util/List<",
+-            "+",
+-            "Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;",
+-            ">;",
+-            "Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;",
+-            ")",
+-            "Ljava/util/List<",
+-            "Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$CaptionTrackInterface;",
+-            ">;"
+-        }
+-    .end annotation
+-
+-    sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->AUTO_TRANSLATE_ADDITIONAL_LANGUAGES:Lapp/morphe/extension/shared/settings/BooleanSetting;
+-
+-    invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/BooleanSetting;->get()Ljava/lang/Boolean;
+-
+-    move-result-object v0
+-
+-    invoke-virtual {v0}, Ljava/lang/Boolean;->booleanValue()Z
+-
+-    move-result v0
+-
+-    if-nez v0, :cond_d
+-
+-    return-object p0
+-
+-    :cond_d
+-    :try_start_d
+-    invoke-static {}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->getAppLocale()Ljava/util/Locale;
+-
+-    move-result-object v0
+-
+-    invoke-static {p0, p1, p2, v0}, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch;->restoreTranslationTracks(Ljava/util/List;Ljava/util/List;Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;Ljava/util/Locale;)Ljava/util/List;
+-
+-    move-result-object p0
+-    :try_end_15
+-    .catch Ljava/lang/Exception; {:try_start_d .. :try_end_15} :catch_16
+-
+-    return-object p0
+-
+-    :catch_16
+-    move-exception p1
+-
+-    new-instance p2, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$$ExternalSyntheticLambda3;
+-
+-    invoke-direct {p2}, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch$$ExternalSyntheticLambda3;-><init>()V
+-
+-    invoke-static {p2, p1}, Lapp/morphe/extension/shared/utils/Logger;->printException(Lapp/morphe/extension/shared/utils/Logger$LogMessage;Ljava/lang/Throwable;)V
+ 
+     return-object p0
+ .end method
+--- a/classes12/app/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch.smali
++++ b/classes12/app/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch.smali
+@@ -553,240 +553,7 @@
+ .end method
+ 
+ .method public static getPreferredCaptionTrack(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$SubtitleManagerInterface;Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-    .registers 9
+-
+-    :try_start_0
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->isExplicitlyDisabled(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Z
+-
+-    move-result v0
+-
+-    if-eqz v0, :cond_7
+-
+-    goto :goto_48
+-
+-    :cond_7
+-    sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->PREFERRED_CAPTION_LANGUAGE:Lapp/morphe/extension/shared/settings/StringSetting;
+-
+-    invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/StringSetting;->get()Ljava/lang/String;
+-
+-    move-result-object v0
+-
+-    new-instance v1, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda12;
+-
+-    invoke-direct {v1, p1, v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda12;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;Ljava/lang/String;)V
+-
+-    invoke-static {v1}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    const-string v1, "off"
+-
+-    invoke-virtual {v1, v0}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
+-
+-    move-result v1
+-
+-    if-eqz v1, :cond_1e
+-
+-    goto :goto_48
+-
+-    :cond_1e
+-    sget-object v1, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->userSelectedTrack:Ljava/util/concurrent/atomic/AtomicBoolean;
+-
+-    invoke-virtual {v1}, Ljava/util/concurrent/atomic/AtomicBoolean;->get()Z
+-
+-    move-result v1
+-
+-    if-eqz v1, :cond_32
+-
+-    new-instance p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda13;
+-
+-    invoke-direct {p0, p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda13;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)V
+-
+-    invoke-static {p0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    return-object p1
+-
+-    :catch_2f
+-    move-exception p0
+-
+-    goto/16 :goto_cc
+-
+-    :cond_32
+-    const-string v1, "default"
+-
+-    invoke-virtual {v1, v0}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
+-
+-    move-result v1
+-
+-    if-eqz v1, :cond_3e
+-
+-    invoke-static {}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->getAppLanguage()Ljava/lang/String;
+-
+-    move-result-object v0
+-
+-    :cond_3e
+-    invoke-static {v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->normalizeLanguageCode(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v0
+-
+-    invoke-virtual {v0}, Ljava/lang/String;->isEmpty()Z
+-
+-    move-result v1
+-
+-    if-eqz v1, :cond_49
+-
+-    :goto_48
+-    return-object p1
+-
+-    :cond_49
+-    invoke-interface {p0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$SubtitleManagerInterface;->patch_getDirectCaptionTracks()Ljava/util/List;
+-
+-    move-result-object v1
+-
+-    const/4 v2, 0x0
+-
+-    if-eqz v1, :cond_99
+-
+-    invoke-interface {v1}, Ljava/util/List;->iterator()Ljava/util/Iterator;
+-
+-    move-result-object v3
+-
+-    :cond_54
+-    :goto_54
+-    invoke-interface {v3}, Ljava/util/Iterator;->hasNext()Z
+-
+-    move-result v4
+-
+-    if-eqz v4, :cond_99
+-
+-    invoke-interface {v3}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+-
+-    move-result-object v4
+-
+-    check-cast v4, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    invoke-interface {v4}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;->patch_getLanguageCode()Ljava/lang/String;
+-
+-    move-result-object v5
+-
+-    const-string v6, "AUTO_TRANSLATE_CAPTIONS_OPTION"
+-
+-    invoke-virtual {v6, v5}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+-
+-    move-result v6
+-
+-    if-eqz v6, :cond_6d
+-
+-    goto :goto_54
+-
+-    :cond_6d
+-    const-string v6, "DISABLE_CAPTIONS_OPTION"
+-
+-    invoke-virtual {v6, v5}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+-
+-    move-result v6
+-
+-    if-nez v6, :cond_54
+-
+-    invoke-static {v5, v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->matchesLanguage(Ljava/lang/String;Ljava/lang/String;)Z
+-
+-    move-result v5
+-
+-    if-nez v5, :cond_7c
+-
+-    goto :goto_54
+-
+-    :cond_7c
+-    invoke-interface {v4}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;->patch_getVssId()Ljava/lang/String;
+-
+-    move-result-object v5
+-
+-    const-string v6, "."
+-
+-    invoke-virtual {v5, v6}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
+-
+-    move-result v5
+-
+-    if-eqz v5, :cond_95
+-
+-    new-instance p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda14;
+-
+-    invoke-direct {p0, v4}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda14;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)V
+-
+-    invoke-static {p0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    invoke-static {v4}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->recordProgrammaticSelection(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    move-result-object p0
+-
+-    return-object p0
+-
+-    :cond_95
+-    if-nez v2, :cond_54
+-
+-    move-object v2, v4
+-
+-    goto :goto_54
+-
+-    :cond_99
+-    if-eqz v2, :cond_a8
+-
+-    new-instance p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda15;
+-
+-    invoke-direct {p0, v2}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda15;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)V
+-
+-    invoke-static {p0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    invoke-static {v2}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->recordProgrammaticSelection(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    move-result-object p0
+-
+-    return-object p0
+-
+-    :cond_a8
+-    invoke-interface {p0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$SubtitleManagerInterface;->patch_getAutoTranslateCaptionTracks()Ljava/util/List;
+-
+-    move-result-object v2
+-
+-    invoke-interface {p0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$SubtitleManagerInterface;->patch_getCaptionTranslationSource()Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    move-result-object p0
+-
+-    invoke-static {}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->getAppLocale()Ljava/util/Locale;
+-
+-    move-result-object v3
+-
+-    invoke-static {v1, v2, p0, v0, v3}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->findAutoTranslatedTrack(Ljava/util/List;Ljava/util/List;Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;Ljava/lang/String;Ljava/util/Locale;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    move-result-object p0
+-
+-    if-eqz p0, :cond_bf
+-
+-    invoke-static {p0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->recordProgrammaticSelection(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    move-result-object p0
+-
+-    return-object p0
+-
+-    :cond_bf
+-    new-instance p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda16;
+-
+-    invoke-direct {p0, p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda16;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)V
+-
+-    invoke-static {p0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->recordProgrammaticSelection(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    move-result-object p0
+-    :try_end_cb
+-    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_cb} :catch_2f
+-
+-    return-object p0
+-
+-    :goto_cc
+-    new-instance v0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda17;
+-
+-    invoke-direct {v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda17;-><init>()V
+-
+-    invoke-static {v0, p0}, Lapp/morphe/extension/shared/utils/Logger;->printException(Lapp/morphe/extension/shared/utils/Logger$LogMessage;Ljava/lang/Throwable;)V
++    .registers 2
+ 
+     return-object p1
+ .end method
+@@ -1124,33 +891,7 @@
+ .end method
+ 
+ .method public static newVideoStarted()V
+-    .registers 2
+-
+-    sget-object v0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->userInteractionAllowed:Ljava/util/concurrent/atomic/AtomicBoolean;
+-
+-    const/4 v1, 0x0
+-
+-    invoke-virtual {v0, v1}, Ljava/util/concurrent/atomic/AtomicBoolean;->set(Z)V
+-
+-    sget-object v0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->userSelectedTrack:Ljava/util/concurrent/atomic/AtomicBoolean;
+-
+-    invoke-virtual {v0, v1}, Ljava/util/concurrent/atomic/AtomicBoolean;->set(Z)V
+-
+-    const/4 v0, 0x0
+-
+-    invoke-static {v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->recordProgrammaticSelection(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+-
+-    move-result-wide v0
+-
+-    sput-wide v0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->videoStartTime:J
+-
+-    new-instance v0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda10;
+-
+-    invoke-direct {v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda10;-><init>()V
+-
+-    invoke-static {v0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
++    .registers 1
+ 
+     return-void
+ .end method
+@@ -1288,163 +1029,7 @@
+ .end method
+ 
+ .method public static onSetSubtitleTrack(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$SubtitleManagerInterface;Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;Ljava/lang/Enum;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-    .registers 7
+-    .annotation system Ldalvik/annotation/Signature;
+-        value = {
+-            "(",
+-            "Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$SubtitleManagerInterface;",
+-            "Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;",
+-            "Ljava/lang/Enum<",
+-            "*>;)",
+-            "Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;"
+-        }
+-    .end annotation
+-
+-    :try_start_0
+-    sget-object v0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->userInteractionAllowed:Ljava/util/concurrent/atomic/AtomicBoolean;
+-
+-    invoke-virtual {v0}, Ljava/util/concurrent/atomic/AtomicBoolean;->get()Z
+-
+-    move-result v0
+-
+-    new-instance v1, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda3;
+-
+-    invoke-direct {v1, p1, p2, v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda3;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;Ljava/lang/Enum;Z)V
+-
+-    invoke-static {v1}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    if-eqz v0, :cond_4f
+-
+-    if-eqz p2, :cond_4f
+-
+-    const-string v0, "PREFERRED_TRACK"
+-
+-    invoke-virtual {p2}, Ljava/lang/Enum;->name()Ljava/lang/String;
+-
+-    move-result-object p2
+-
+-    invoke-virtual {v0, p2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+-
+-    move-result p2
+-
+-    if-eqz p2, :cond_4f
+-
+-    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+-
+-    move-result-wide v0
+-
+-    sget-wide v2, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->videoStartTime:J
+-
+-    sub-long/2addr v0, v2
+-
+-    const-wide/16 v2, 0x1f4
+-
+-    cmp-long p2, v0, v2
+-
+-    if-lez p2, :cond_4f
+-
+-    sget-object p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->lastProgrammaticTrackLang:Ljava/lang/String;
+-
+-    sget-object p2, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->lastProgrammaticTrackVss:Ljava/lang/String;
+-
+-    invoke-static {p1, p0, p2}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->isSameTrack(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;Ljava/lang/String;Ljava/lang/String;)Z
+-
+-    move-result p0
+-
+-    if-eqz p0, :cond_40
+-
+-    new-instance p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda4;
+-
+-    invoke-direct {p0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda4;-><init>()V
+-
+-    invoke-static {p0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    return-object p1
+-
+-    :catch_3e
+-    move-exception p0
+-
+-    goto :goto_82
+-
+-    :cond_40
+-    sget-object p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->userSelectedTrack:Ljava/util/concurrent/atomic/AtomicBoolean;
+-
+-    const/4 p2, 0x1
+-
+-    invoke-virtual {p0, p2}, Ljava/util/concurrent/atomic/AtomicBoolean;->set(Z)V
+-
+-    new-instance p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda5;
+-
+-    invoke-direct {p0, p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda5;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)V
+-
+-    invoke-static {p0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    return-object p1
+-
+-    :cond_4f
+-    sget-object p2, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->userSelectedTrack:Ljava/util/concurrent/atomic/AtomicBoolean;
+-
+-    invoke-virtual {p2}, Ljava/util/concurrent/atomic/AtomicBoolean;->get()Z
+-
+-    move-result p2
+-
+-    if-eqz p2, :cond_60
+-
+-    new-instance p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda6;
+-
+-    invoke-direct {p0, p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda6;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)V
+-
+-    invoke-static {p0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    return-object p1
+-
+-    :cond_60
+-    if-eqz p1, :cond_79
+-
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->isExplicitlyDisabled(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Z
+-
+-    move-result p2
+-
+-    if-eqz p2, :cond_69
+-
+-    goto :goto_79
+-
+-    :cond_69
+-    invoke-static {p0, p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch;->getPreferredCaptionTrack(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$SubtitleManagerInterface;Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    move-result-object p0
+-
+-    if-eqz p0, :cond_78
+-
+-    new-instance p2, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda8;
+-
+-    invoke-direct {p2, p0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda8;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)V
+-
+-    invoke-static {p2}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    return-object p0
+-
+-    :cond_78
+-    return-object p1
+-
+-    :cond_79
+-    :goto_79
+-    new-instance p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda7;
+-
+-    invoke-direct {p0, p1}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda7;-><init>(Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)V
+-
+-    invoke-static {p0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-    :try_end_81
+-    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_81} :catch_3e
+-
+-    return-object p1
+-
+-    :goto_82
+-    new-instance p2, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda9;
+-
+-    invoke-direct {p2}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda9;-><init>()V
+-
+-    invoke-static {p2, p0}, Lapp/morphe/extension/shared/utils/Logger;->printException(Lapp/morphe/extension/shared/utils/Logger$LogMessage;Ljava/lang/Throwable;)V
++    .registers 3
+ 
+     return-object p1
+ .end method
+@@ -1479,21 +1064,7 @@
+ .end method
+ 
+ .method public static videoInformationLoaded()V
+-    .registers 3
+-
+-    new-instance v0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda0;
+-
+-    invoke-direct {v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda0;-><init>()V
+-
+-    invoke-static {v0}, Lapp/morphe/extension/shared/utils/Logger;->printDebug(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+-
+-    new-instance v0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda1;
+-
+-    invoke-direct {v0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$$ExternalSyntheticLambda1;-><init>()V
+-
+-    const-wide/16 v1, 0x12c
+-
+-    invoke-static {v0, v1, v2}, Lapp/morphe/extension/shared/utils/Utils;->runOnMainThreadDelayed(Ljava/lang/Runnable;J)V
++    .registers 1
+ 
+     return-void
+ .end method
+--- a/classes12/app/morphe/extension/youtube/patches/TranslatedCaptionPensPatch.smali
++++ b/classes12/app/morphe/extension/youtube/patches/TranslatedCaptionPensPatch.smali
+@@ -47,76 +47,13 @@
+ .end method
+ 
+ .method public static getPenId(I)I
+-    .registers 3
++    .registers 1
+ 
+-    sget-object v0, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
+-
+-    sget-object v1, Lapp/morphe/extension/youtube/patches/TranslatedCaptionPensPatch;->isAutoTranslatedTrack:Ljava/lang/ThreadLocal;
+-
+-    invoke-virtual {v1}, Ljava/lang/ThreadLocal;->get()Ljava/lang/Object;
+-
+-    move-result-object v1
+-
+-    invoke-virtual {v0, v1}, Ljava/lang/Boolean;->equals(Ljava/lang/Object;)Z
+-
+-    move-result v0
+-
+-    if-eqz v0, :cond_10
+-
+-    const/high16 p0, -0x80000000
+-
+-    :cond_10
+     return p0
+ .end method
+ 
+ .method public static setParsedRequest(Ljava/lang/Object;)V
+-    .registers 3
+-
+-    const/4 v0, 0x0
+-
+-    :try_start_1
+-    instance-of v1, p0, Lapp/morphe/extension/youtube/patches/TranslatedCaptionPensPatch$CaptionRequestInterface;
+-
+-    if-eqz v1, :cond_1e
+-
+-    check-cast p0, Lapp/morphe/extension/youtube/patches/TranslatedCaptionPensPatch$CaptionRequestInterface;
+-
+-    invoke-interface {p0}, Lapp/morphe/extension/youtube/patches/TranslatedCaptionPensPatch$CaptionRequestInterface;->patch_getCaptionTrack()Ljava/lang/Object;
+-
+-    move-result-object p0
+-
+-    instance-of v1, p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    if-eqz v1, :cond_1e
+-
+-    check-cast p0, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;
+-
+-    invoke-interface {p0}, Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;->patch_getVssId()Ljava/lang/String;
+-
+-    move-result-object p0
+-
+-    const-string v1, "t"
+-
+-    invoke-virtual {p0, v1}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
+-
+-    move-result p0
+-    :try_end_1b
+-    .catch Ljava/lang/RuntimeException; {:try_start_1 .. :try_end_1b} :catch_1e
+-    .catch Ljava/lang/LinkageError; {:try_start_1 .. :try_end_1b} :catch_1e
+-
+-    if-eqz p0, :cond_1e
+-
+-    const/4 v0, 0x1
+-
+-    :catch_1e
+-    :cond_1e
+-    sget-object p0, Lapp/morphe/extension/youtube/patches/TranslatedCaptionPensPatch;->isAutoTranslatedTrack:Ljava/lang/ThreadLocal;
+-
+-    invoke-static {v0}, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
+-
+-    move-result-object v0
+-
+-    invoke-virtual {p0, v0}, Ljava/lang/ThreadLocal;->set(Ljava/lang/Object;)V
++    .registers 1
+ 
+     return-void
+ .end method
+--- a/classes12/app/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction.smali
++++ b/classes12/app/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction.smali
+@@ -120,18 +120,14 @@
+ 
+     if-nez v1, :cond_18
+ 
+-    const-string v0, "revanced_shorts_autoplay_enabled_toast"
++    const-string v0, "Auto scroll: On"
+ 
+     goto :goto_1a
+ 
+     :cond_18
+-    const-string v0, "revanced_shorts_autoplay_disabled_toast"
++    const-string v0, "Auto scroll: Off"
+ 
+     :goto_1a
+-    invoke-static {v0}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v0
+-
+     invoke-static {v0}, Lapp/morphe/extension/shared/utils/Utils;->showToastShort(Ljava/lang/String;)V
+ 
+     return-void
+@@ -243,12 +239,44 @@
+ .end method
+ 
+ .method public static synthetic $r8$lambda$cDvDJb1GhKVlGzCXuE7-KTl5Ytc()V
+-    .registers 1
++    .registers 4
+ 
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/components/ShortsCustomActionsFilter;->getShortsVideoId()Ljava/lang/String;
+ 
+     move-result-object v0
+ 
++    if-eqz v0, :cond_c
++
++    invoke-virtual {v0}, Ljava/lang/String;->isEmpty()Z
++
++    move-result v1
++
++    if-eqz v1, :cond_10
++
++    :cond_c
++    invoke-static {}, Lapp/morphe/extension/youtube/shared/VideoInformation;->getVideoId()Ljava/lang/String;
++
++    move-result-object v0
++
++    :cond_10
++    const-string v1, "ParadoxDL"
++
++    new-instance v2, Ljava/lang/StringBuilder;
++
++    invoke-direct {v2}, Ljava/lang/StringBuilder;-><init>()V
++
++    const-string v3, "shorts menu download id="
++
++    invoke-virtual {v2, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++
++    invoke-virtual {v2, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++
++    invoke-virtual {v2}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
++
++    move-result-object v2
++
++    invoke-static {v1, v2}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
++
+     invoke-static {v0}, Lapp/morphe/extension/youtube/utils/VideoUtils;->launchVideoExternalDownloader(Ljava/lang/String;)V
+ 
+     return-void
+@@ -867,8 +895,34 @@
+ .end method
+ 
+ .method public getLabel()Ljava/lang/String;
+-    .registers 1
++    .registers 2
++
++    sget-object v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->REPEAT_STATE:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
++
++    if-ne p0, v0, :cond_16
++
++    sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_AUTOPLAY:Lapp/morphe/extension/shared/settings/BooleanSetting;
++
++    invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/BooleanSetting;->get()Ljava/lang/Boolean;
++
++    move-result-object v0
++
++    invoke-virtual {v0}, Ljava/lang/Boolean;->booleanValue()Z
+ 
++    move-result v0
++
++    if-eqz v0, :cond_13
++
++    const-string v0, "Auto scroll: On"
++
++    return-object v0
++
++    :cond_13
++    const-string v0, "Auto scroll: Off"
++
++    return-object v0
++
++    :cond_16
+     iget-object p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->label:Ljava/lang/String;
+ 
+     return-object p0
+--- a/classes12/app/morphe/extension/youtube/settings/Settings.smali
++++ b/classes12/app/morphe/extension/youtube/settings/Settings.smali
+@@ -3468,8 +3468,12 @@
+ 
+     const-string v4, "revanced_override_playlist_download_button"
+ 
++    sget-object v2, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
++
+     invoke-direct {v1, v4, v2, v6}, Lapp/morphe/extension/shared/settings/BooleanSetting;-><init>(Ljava/lang/String;Ljava/lang/Boolean;Z)V
+ 
++    sget-object v2, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
++
+     sput-object v1, Lapp/morphe/extension/youtube/settings/Settings;->OVERRIDE_PLAYLIST_DOWNLOAD_BUTTON:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+     new-instance v1, Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -3484,8 +3488,12 @@
+ 
+     const-string v4, "revanced_override_video_download_button"
+ 
++    sget-object v2, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
++
+     invoke-direct {v1, v4, v2, v6}, Lapp/morphe/extension/shared/settings/BooleanSetting;-><init>(Ljava/lang/String;Ljava/lang/Boolean;Z)V
+ 
++    sget-object v2, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
++
+     sput-object v1, Lapp/morphe/extension/youtube/settings/Settings;->OVERRIDE_VIDEO_DOWNLOAD_BUTTON:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+     new-instance v20, Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -3558,7 +3566,7 @@
+ 
+     const-string v5, "revanced_external_downloader_package_name_playlist"
+ 
+-    const-string v6, "com.deniscerri.ytdl"
++    const-string v6, "app.paradox.youtube"
+ 
+     invoke-direct {v4, v5, v6}, Lapp/morphe/extension/shared/settings/StringSetting;-><init>(Ljava/lang/String;Ljava/lang/String;)V
+ 
+@@ -3580,7 +3588,7 @@
+ 
+     const-string v4, "revanced_external_downloader_package_name_video_long_press"
+ 
+-    const-string v5, "com.maheshtechnicals.sealplus"
++    const-string v5, "app.paradox.youtube"
+ 
+     invoke-direct {v2, v4, v5}, Lapp/morphe/extension/shared/settings/StringSetting;-><init>(Ljava/lang/String;Ljava/lang/String;)V
+ 
+@@ -5420,16 +5428,16 @@
+ 
+     sget-boolean v3, Lapp/morphe/extension/youtube/utils/ExtendedUtils;->IS_21_29_OR_GREATER:Z
+ 
+-    if-eqz v3, :cond_fe1
++    if-eqz v3, :cond_fe9
+ 
+     sget-object v3, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;->MODERN_4:Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;
+ 
+-    goto :goto_fe3
++    goto :goto_feb
+ 
+-    :cond_fe1
++    :cond_fe9
+     sget-object v3, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;->DEFAULT:Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;
+ 
+-    :goto_fe3
++    :goto_feb
+     const-string v5, "revanced_miniplayer_type"
+ 
+     invoke-direct {v1, v5, v3, v6}, Lapp/morphe/extension/shared/settings/EnumSetting;-><init>(Ljava/lang/String;Ljava/lang/Enum;Z)V
+@@ -5464,16 +5472,16 @@
+ 
+     sget-boolean v3, Lapp/morphe/extension/youtube/utils/ExtendedUtils;->IS_21_39_OR_GREATER:Z
+ 
+-    if-eqz v3, :cond_100e
++    if-eqz v3, :cond_1016
+ 
+     move-object v5, v2
+ 
+-    goto :goto_100f
++    goto :goto_1017
+ 
+-    :cond_100e
++    :cond_1016
+     move-object v5, v13
+ 
+-    :goto_100f
++    :goto_1017
+     new-instance v10, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerHorizontalDragAvailability;
+ 
+     invoke-direct {v10}, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerHorizontalDragAvailability;-><init>()V
+@@ -5488,16 +5496,16 @@
+ 
+     new-instance v1, Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+-    if-eqz v16, :cond_1023
++    if-eqz v16, :cond_102b
+ 
+     move-object v3, v2
+ 
+-    goto :goto_1024
++    goto :goto_102c
+ 
+-    :cond_1023
++    :cond_102b
+     move-object v3, v13
+ 
+-    :goto_1024
++    :goto_102c
+     new-instance v5, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerHorizontalDragPlaybackAvailability;
+ 
+     invoke-direct {v5}, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerHorizontalDragPlaybackAvailability;-><init>()V
+@@ -5914,8 +5922,12 @@
+ 
+     const-string v4, "revanced_overlay_button_external_downloader"
+ 
++    sget-object v2, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
++
+     invoke-direct {v1, v4, v2}, Lapp/morphe/extension/shared/settings/BooleanSetting;-><init>(Ljava/lang/String;Ljava/lang/Boolean;)V
+ 
++    sget-object v2, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
++
+     sput-object v1, Lapp/morphe/extension/youtube/settings/Settings;->OVERLAY_BUTTON_EXTERNAL_DOWNLOADER:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+     new-instance v27, Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -7074,8 +7086,12 @@
+ 
+     const-string v8, "revanced_shorts_custom_actions_external_downloader"
+ 
++    sget-object v1, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
++
+     invoke-direct {v6, v8, v1, v10}, Lapp/morphe/extension/shared/settings/BooleanSetting;-><init>(Ljava/lang/String;Ljava/lang/Boolean;Z)V
+ 
++    sget-object v1, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
++
+     sput-object v6, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_EXTERNAL_DOWNLOADER:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+     new-instance v8, Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -7114,8 +7130,12 @@
+ 
+     const-string v3, "revanced_shorts_custom_actions_repeat_state"
+ 
++    sget-object v1, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
++
+     invoke-direct {v2, v3, v1, v10}, Lapp/morphe/extension/shared/settings/BooleanSetting;-><init>(Ljava/lang/String;Ljava/lang/Boolean;Z)V
+ 
++    sget-object v1, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
++
+     sput-object v2, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_REPEAT_STATE:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+     new-instance v3, Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -7170,34 +7190,34 @@
+ 
+     sget-boolean v1, Lapp/morphe/extension/youtube/utils/ExtendedUtils;->IS_19_34_OR_GREATER:Z
+ 
+-    if-eqz v1, :cond_1757
++    if-eqz v1, :cond_176b
+ 
+-    :goto_1754
++    :goto_1768
+     move-object/from16 v37, v5
+ 
+-    goto :goto_175a
++    goto :goto_176e
+ 
+-    :cond_1757
++    :cond_176b
+     sget-object v5, Lapp/morphe/extension/youtube/patches/video/CustomPlaybackSpeedPatch$PlaybackSpeedMenuType;->CUSTOM_LEGACY:Lapp/morphe/extension/youtube/patches/video/CustomPlaybackSpeedPatch$PlaybackSpeedMenuType;
+ 
+-    goto :goto_1754
++    goto :goto_1768
+ 
+-    :goto_175a
+-    if-eqz v1, :cond_1760
++    :goto_176e
++    if-eqz v1, :cond_1774
+ 
+     const/4 v1, 0x0
+ 
+-    :goto_175d
++    :goto_1771
+     move-object/from16 v39, v1
+ 
+-    goto :goto_1763
++    goto :goto_1777
+ 
+-    :cond_1760
++    :cond_1774
+     const-string v1, "revanced_shorts_custom_actions_speed_dialog_type_user_dialog_message"
+ 
+-    goto :goto_175d
++    goto :goto_1771
+ 
+-    :goto_1763
++    :goto_1777
+     invoke-static/range {v31 .. v31}, Lapp/morphe/extension/shared/settings/Setting;->parent(Lapp/morphe/extension/shared/settings/BooleanSetting;)Lapp/morphe/extension/shared/settings/Setting$Availability;
+ 
+     move-result-object v40
+@@ -9644,7 +9664,7 @@
+ 
+     move-result v0
+ 
+-    if-nez v0, :cond_21f9
++    if-nez v0, :cond_220d
+ 
+     invoke-virtual/range {v16 .. v16}, Lapp/morphe/extension/shared/settings/IntegerSetting;->get()Ljava/lang/Integer;
+ 
+@@ -9684,12 +9704,12 @@
+ 
+     invoke-virtual/range {v16 .. v16}, Lapp/morphe/extension/shared/settings/Setting;->resetToDefault()Ljava/lang/Object;
+ 
+-    :cond_21f9
++    :cond_220d
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/utils/PatchStatus;->SpoofAppVersion()Z
+ 
+     move-result v0
+ 
+-    if-nez v0, :cond_221b
++    if-nez v0, :cond_222f
+ 
+     sget-object v1, Lapp/morphe/extension/youtube/settings/Settings;->SPOOF_APP_VERSION:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+@@ -9701,7 +9721,7 @@
+ 
+     move-result v2
+ 
+-    if-eqz v2, :cond_221b
++    if-eqz v2, :cond_222f
+ 
+     new-instance v2, Lapp/morphe/extension/youtube/settings/Settings$$ExternalSyntheticLambda0;
+ 
+@@ -9715,14 +9735,14 @@
+ 
+     invoke-virtual {v1}, Lapp/morphe/extension/shared/settings/Setting;->resetToDefault()Ljava/lang/Object;
+ 
+-    :cond_221b
++    :cond_222f
+     sget-object v1, Lapp/morphe/extension/youtube/settings/Settings;->SPOOF_APP_VERSION_TARGET:Lapp/morphe/extension/shared/settings/StringSetting;
+ 
+     invoke-virtual {v1}, Lapp/morphe/extension/shared/settings/StringSetting;->get()Ljava/lang/String;
+ 
+     move-result-object v2
+ 
+-    if-eqz v0, :cond_224e
++    if-eqz v0, :cond_2262
+ 
+     iget-object v0, v1, Lapp/morphe/extension/shared/settings/Setting;->defaultValue:Ljava/lang/Object;
+ 
+@@ -9732,7 +9752,7 @@
+ 
+     move-result v0
+ 
+-    if-gez v0, :cond_224e
++    if-gez v0, :cond_2262
+ 
+     const-string v0, "revanced_spoof_app_version_target_invalid_toast"
+ 
+@@ -9762,7 +9782,7 @@
+ 
+     invoke-virtual {v1}, Lapp/morphe/extension/shared/settings/Setting;->resetToDefault()Ljava/lang/Object;
+ 
+-    :cond_224e
++    :cond_2262
+     sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->SPOOF_VIDEO_STREAMS_CLIENT_TYPE:Lapp/morphe/extension/shared/settings/EnumSetting;
+ 
+     invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/EnumSetting;->get()Ljava/lang/Enum;
+@@ -9773,20 +9793,20 @@
+ 
+     sget-object v2, Lapp/morphe/extension/shared/spoof/ClientType;->ANDROID_XR_SABR:Lapp/morphe/extension/shared/spoof/ClientType;
+ 
+-    if-eq v1, v2, :cond_2262
++    if-eq v1, v2, :cond_2276
+ 
+     sget-object v2, Lapp/morphe/extension/shared/spoof/ClientType;->ANDROID_XR_DASH:Lapp/morphe/extension/shared/spoof/ClientType;
+ 
+-    if-eq v1, v2, :cond_2262
++    if-eq v1, v2, :cond_2276
+ 
+     sget-object v2, Lapp/morphe/extension/shared/spoof/ClientType;->VISIONOS_1_03:Lapp/morphe/extension/shared/spoof/ClientType;
+ 
+-    if-ne v1, v2, :cond_2265
++    if-ne v1, v2, :cond_2279
+ 
+-    :cond_2262
++    :cond_2276
+     invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/Setting;->resetToDefault()Ljava/lang/Object;
+ 
+-    :cond_2265
++    :cond_2279
+     new-instance v0, Ljava/util/HashSet;
+ 
+     move-object/from16 v57, v3
+@@ -9843,12 +9863,12 @@
+ 
+     move-result-object v4
+ 
+-    :goto_22a1
++    :goto_22b5
+     invoke-interface {v4}, Ljava/util/Iterator;->hasNext()Z
+ 
+     move-result v5
+ 
+-    if-eqz v5, :cond_22db
++    if-eqz v5, :cond_22ef
+ 
+     invoke-interface {v4}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+ 
+@@ -9864,13 +9884,13 @@
+ 
+     move-result v7
+ 
+-    if-eqz v7, :cond_22c8
++    if-eqz v7, :cond_22dc
+ 
+     invoke-interface {v0, v5}, Ljava/util/Set;->contains(Ljava/lang/Object;)Z
+ 
+     move-result v7
+ 
+-    if-eqz v7, :cond_22c3
++    if-eqz v7, :cond_22d7
+ 
+     const/4 v7, 0x3
+ 
+@@ -9878,17 +9898,17 @@
+ 
+     move-result-object v6
+ 
+-    goto :goto_22c4
++    goto :goto_22d8
+ 
+-    :cond_22c3
++    :cond_22d7
+     const/4 v7, 0x3
+ 
+-    :goto_22c4
++    :goto_22d8
+     invoke-static {v3, v5, v6}, Lapp/morphe/extension/shared/settings/Setting;->migrateFromOldPreferences(Lapp/morphe/extension/shared/settings/preference/SharedPrefCategory;Lapp/morphe/extension/shared/settings/Setting;Ljava/lang/String;)V
+ 
+-    goto :goto_22a1
++    goto :goto_22b5
+ 
+-    :cond_22c8
++    :cond_22dc
+     const/4 v7, 0x3
+ 
+     iget-object v8, v5, Lapp/morphe/extension/shared/settings/Setting;->key:Ljava/lang/String;
+@@ -9899,23 +9919,23 @@
+ 
+     move-result v8
+ 
+-    if-eqz v8, :cond_22d7
++    if-eqz v8, :cond_22eb
+ 
+     invoke-static {v2, v5, v6}, Lapp/morphe/extension/shared/settings/Setting;->migrateFromOldPreferences(Lapp/morphe/extension/shared/settings/preference/SharedPrefCategory;Lapp/morphe/extension/shared/settings/Setting;Ljava/lang/String;)V
+ 
+-    goto :goto_22a1
++    goto :goto_22b5
+ 
+-    :cond_22d7
++    :cond_22eb
+     invoke-static {v1, v5, v6}, Lapp/morphe/extension/shared/settings/Setting;->migrateFromOldPreferences(Lapp/morphe/extension/shared/settings/preference/SharedPrefCategory;Lapp/morphe/extension/shared/settings/Setting;Ljava/lang/String;)V
+ 
+-    goto :goto_22a1
++    goto :goto_22b5
+ 
+-    :cond_22db
++    :cond_22ef
+     invoke-static {}, Lapp/morphe/extension/youtube/settings/Settings;->migrateLegacyMiniplayerType()V
+ 
+     sget-boolean v0, Lapp/morphe/extension/youtube/utils/ExtendedUtils;->IS_21_29_OR_GREATER:Z
+ 
+-    if-eqz v0, :cond_230d
++    if-eqz v0, :cond_2321
+ 
+     sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->MINIPLAYER_TYPE:Lapp/morphe/extension/shared/settings/EnumSetting;
+ 
+@@ -9923,7 +9943,7 @@
+ 
+     move-result v2
+ 
+-    if-nez v2, :cond_230d
++    if-nez v2, :cond_2321
+ 
+     invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/EnumSetting;->get()Ljava/lang/Enum;
+ 
+@@ -9931,7 +9951,7 @@
+ 
+     sget-object v3, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;->MINIMAL_BAR:Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;
+ 
+-    if-eq v2, v3, :cond_230d
++    if-eq v2, v3, :cond_2321
+ 
+     invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/EnumSetting;->get()Ljava/lang/Enum;
+ 
+@@ -9939,7 +9959,7 @@
+ 
+     sget-object v3, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;->MINIMAL_BAR_2:Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;
+ 
+-    if-eq v2, v3, :cond_230d
++    if-eq v2, v3, :cond_2321
+ 
+     invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/EnumSetting;->get()Ljava/lang/Enum;
+ 
+@@ -9947,7 +9967,7 @@
+ 
+     sget-object v3, Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;->DISABLED:Lapp/morphe/extension/youtube/patches/player/MiniplayerPatch$MiniplayerType;
+ 
+-    if-eq v2, v3, :cond_230d
++    if-eq v2, v3, :cond_2321
+ 
+     new-instance v2, Lapp/morphe/extension/youtube/settings/Settings$$ExternalSyntheticLambda2;
+ 
+@@ -9957,7 +9977,7 @@
+ 
+     invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/Setting;->resetToDefault()Ljava/lang/Object;
+ 
+-    :cond_230d
++    :cond_2321
+     sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->AUTO_CAPTIONS_STYLE_MIGRATED:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+     invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/BooleanSetting;->get()Ljava/lang/Boolean;
+@@ -9968,7 +9988,7 @@
+ 
+     move-result v2
+ 
+-    if-nez v2, :cond_233d
++    if-nez v2, :cond_2351
+ 
+     sget-object v2, Lapp/morphe/extension/shared/settings/Setting;->preferences:Lapp/morphe/extension/shared/settings/preference/SharedPrefCategory;
+ 
+@@ -9982,7 +10002,7 @@
+ 
+     move-result v2
+ 
+-    if-nez v2, :cond_2338
++    if-nez v2, :cond_234c
+ 
+     sget-object v2, Lapp/morphe/extension/shared/settings/BaseSettings;->DISABLE_AUTO_CAPTIONS:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+@@ -9994,18 +10014,18 @@
+ 
+     move-result v2
+ 
+-    if-eqz v2, :cond_2338
++    if-eqz v2, :cond_234c
+ 
+     sget-object v2, Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;->BOTH_DISABLED:Lapp/morphe/extension/shared/patches/AutoCaptionsPatch$AutoCaptionsStyle;
+ 
+     invoke-virtual {v3, v2}, Lapp/morphe/extension/shared/settings/Setting;->save(Ljava/lang/Object;)V
+ 
+-    :cond_2338
++    :cond_234c
+     sget-object v2, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
+ 
+     invoke-virtual {v0, v2}, Lapp/morphe/extension/shared/settings/Setting;->save(Ljava/lang/Object;)V
+ 
+-    :cond_233d
++    :cond_2351
+     iget-object v0, v1, Lapp/morphe/extension/shared/settings/preference/SharedPrefCategory;->preferences:Landroid/content/SharedPreferences;
+ 
+     const-string v2, "revanced_open_shorts_in_regular_player"
+@@ -10014,7 +10034,7 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_235e
++    if-eqz v0, :cond_2372
+ 
+     const/4 v6, 0x0
+ 
+@@ -10024,7 +10044,7 @@
+ 
+     invoke-virtual {v1, v2}, Lapp/morphe/extension/shared/settings/preference/SharedPrefCategory;->removeKey(Ljava/lang/String;)V
+ 
+-    if-eqz v0, :cond_235e
++    if-eqz v0, :cond_2372
+ 
+     sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_PLAYER_TYPE:Lapp/morphe/extension/shared/settings/EnumSetting;
+ 
+@@ -10032,13 +10052,13 @@
+ 
+     move-result v1
+ 
+-    if-eqz v1, :cond_235e
++    if-eqz v1, :cond_2372
+ 
+     sget-object v1, Lapp/morphe/extension/youtube/patches/shorts/ShortsPatch$ShortsPlayerType;->REGULAR_PLAYER:Lapp/morphe/extension/youtube/patches/shorts/ShortsPatch$ShortsPlayerType;
+ 
+     invoke-virtual {v0, v1}, Lapp/morphe/extension/shared/settings/Setting;->save(Ljava/lang/Object;)V
+ 
+-    :cond_235e
++    :cond_2372
+     sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->SB_CATEGORY_SPONSOR_COLOR:Lapp/morphe/extension/shared/settings/StringSetting;
+ 
+     sget-object v1, Lapp/morphe/extension/youtube/settings/Settings;->DEPRECATED_SB_CATEGORY_SPONSOR_OPACITY:Lapp/morphe/extension/shared/settings/FloatSetting;
+--- a/classes12/app/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference.smali
++++ b/classes12/app/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference.smali
+@@ -651,116 +651,11 @@
+ .end method
+ 
+ .method public static showDialogIfAppIsNotInstalled(Landroid/content/Context;Ljava/lang/String;)Z
+-    .registers 15
+-
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference;->isAppInstalledAndEnabled(Ljava/lang/String;)Z
+-
+-    move-result v0
+-
+-    if-eqz v0, :cond_8
++    .registers 2
+ 
+     const/4 p0, 0x0
+ 
+     return p0
+-
+-    :cond_8
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$Downloader;->findByPackageName(Ljava/lang/String;)Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$Downloader;
+-
+-    move-result-object v0
+-
+-    const/4 v1, 0x0
+-
+-    if-eqz v0, :cond_12
+-
+-    iget-object v2, v0, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$Downloader;->downloadUrl:Ljava/lang/String;
+-
+-    goto :goto_13
+-
+-    :cond_12
+-    move-object v2, v1
+-
+-    :goto_13
+-    if-eqz v2, :cond_1b
+-
+-    const-string v1, "gms_core_dialog_open_website_text"
+-
+-    invoke-static {v1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v1
+-
+-    :cond_1b
+-    move-object v7, v1
+-
+-    if-eqz v0, :cond_2c
+-
+-    iget-object p1, v0, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$Downloader;->name:Ljava/lang/String;
+-
+-    filled-new-array {p1}, [Ljava/lang/Object;
+-
+-    move-result-object p1
+-
+-    const-string v1, "revanced_external_downloader_not_installed_warning"
+-
+-    invoke-static {v1, p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+-
+-    move-result-object p1
+-
+-    :goto_2a
+-    move-object v5, p1
+-
+-    goto :goto_37
+-
+-    :cond_2c
+-    const-string v1, "revanced_external_downloader_package_not_found_warning"
+-
+-    filled-new-array {p1}, [Ljava/lang/Object;
+-
+-    move-result-object p1
+-
+-    invoke-static {v1, p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+-
+-    move-result-object p1
+-
+-    goto :goto_2a
+-
+-    :goto_37
+-    const-string p1, "revanced_external_downloader_not_found_title"
+-
+-    invoke-static {p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v4
+-
+-    new-instance v8, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$$ExternalSyntheticLambda0;
+-
+-    invoke-direct {v8, v2, p0, v0}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$$ExternalSyntheticLambda0;-><init>(Ljava/lang/String;Landroid/content/Context;Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$Downloader;)V
+-
+-    new-instance v9, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$$ExternalSyntheticLambda1;
+-
+-    invoke-direct {v9}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderPlaylistPreference$$ExternalSyntheticLambda1;-><init>()V
+-
+-    const/4 v11, 0x0
+-
+-    const/4 v12, 0x0
+-
+-    const/4 v6, 0x0
+-
+-    const/4 v10, 0x0
+-
+-    move-object v3, p0
+-
+-    invoke-static/range {v3 .. v12}, Lapp/morphe/extension/shared/ui/CustomDialog;->create(Landroid/content/Context;Ljava/lang/String;Ljava/lang/CharSequence;Landroid/widget/EditText;Ljava/lang/String;Ljava/lang/Runnable;Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/Runnable;Z)Landroid/util/Pair;
+-
+-    move-result-object p0
+-
+-    iget-object p0, p0, Landroid/util/Pair;->first:Ljava/lang/Object;
+-
+-    check-cast p0, Landroid/app/Dialog;
+-
+-    invoke-virtual {p0}, Landroid/app/Dialog;->show()V
+-
+-    const/4 p0, 0x1
+-
+-    return p0
+ .end method
+ 
+ .method private updateEntries()V
+--- a/classes12/app/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference.smali
++++ b/classes12/app/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference.smali
+@@ -651,116 +651,11 @@
+ .end method
+ 
+ .method public static showDialogIfAppIsNotInstalled(Landroid/content/Context;Ljava/lang/String;)Z
+-    .registers 15
+-
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference;->isAppInstalledAndEnabled(Ljava/lang/String;)Z
+-
+-    move-result v0
+-
+-    if-eqz v0, :cond_8
++    .registers 2
+ 
+     const/4 p0, 0x0
+ 
+     return p0
+-
+-    :cond_8
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$Downloader;->findByPackageName(Ljava/lang/String;)Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$Downloader;
+-
+-    move-result-object v0
+-
+-    const/4 v1, 0x0
+-
+-    if-eqz v0, :cond_12
+-
+-    iget-object v2, v0, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$Downloader;->downloadUrl:Ljava/lang/String;
+-
+-    goto :goto_13
+-
+-    :cond_12
+-    move-object v2, v1
+-
+-    :goto_13
+-    if-eqz v2, :cond_1b
+-
+-    const-string v1, "gms_core_dialog_open_website_text"
+-
+-    invoke-static {v1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v1
+-
+-    :cond_1b
+-    move-object v7, v1
+-
+-    if-eqz v0, :cond_2c
+-
+-    iget-object p1, v0, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$Downloader;->name:Ljava/lang/String;
+-
+-    filled-new-array {p1}, [Ljava/lang/Object;
+-
+-    move-result-object p1
+-
+-    const-string v1, "revanced_external_downloader_not_installed_warning"
+-
+-    invoke-static {v1, p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+-
+-    move-result-object p1
+-
+-    :goto_2a
+-    move-object v5, p1
+-
+-    goto :goto_37
+-
+-    :cond_2c
+-    const-string v1, "revanced_external_downloader_package_not_found_warning"
+-
+-    filled-new-array {p1}, [Ljava/lang/Object;
+-
+-    move-result-object p1
+-
+-    invoke-static {v1, p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+-
+-    move-result-object p1
+-
+-    goto :goto_2a
+-
+-    :goto_37
+-    const-string p1, "revanced_external_downloader_not_found_title"
+-
+-    invoke-static {p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v4
+-
+-    new-instance v8, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$$ExternalSyntheticLambda10;
+-
+-    invoke-direct {v8, v2, p0, v0}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$$ExternalSyntheticLambda10;-><init>(Ljava/lang/String;Landroid/content/Context;Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$Downloader;)V
+-
+-    new-instance v9, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$$ExternalSyntheticLambda11;
+-
+-    invoke-direct {v9}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoLongPressPreference$$ExternalSyntheticLambda11;-><init>()V
+-
+-    const/4 v11, 0x0
+-
+-    const/4 v12, 0x0
+-
+-    const/4 v6, 0x0
+-
+-    const/4 v10, 0x0
+-
+-    move-object v3, p0
+-
+-    invoke-static/range {v3 .. v12}, Lapp/morphe/extension/shared/ui/CustomDialog;->create(Landroid/content/Context;Ljava/lang/String;Ljava/lang/CharSequence;Landroid/widget/EditText;Ljava/lang/String;Ljava/lang/Runnable;Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/Runnable;Z)Landroid/util/Pair;
+-
+-    move-result-object p0
+-
+-    iget-object p0, p0, Landroid/util/Pair;->first:Ljava/lang/Object;
+-
+-    check-cast p0, Landroid/app/Dialog;
+-
+-    invoke-virtual {p0}, Landroid/app/Dialog;->show()V
+-
+-    const/4 p0, 0x1
+-
+-    return p0
+ .end method
+ 
+ .method private updateEntries()V
+--- a/classes12/app/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference.smali
++++ b/classes12/app/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference.smali
+@@ -651,116 +651,11 @@
+ .end method
+ 
+ .method public static showDialogIfAppIsNotInstalled(Landroid/content/Context;Ljava/lang/String;)Z
+-    .registers 15
+-
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference;->isAppInstalledAndEnabled(Ljava/lang/String;)Z
+-
+-    move-result v0
+-
+-    if-eqz v0, :cond_8
++    .registers 2
+ 
+     const/4 p0, 0x0
+ 
+     return p0
+-
+-    :cond_8
+-    invoke-static {p1}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$Downloader;->findByPackageName(Ljava/lang/String;)Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$Downloader;
+-
+-    move-result-object v0
+-
+-    const/4 v1, 0x0
+-
+-    if-eqz v0, :cond_12
+-
+-    iget-object v2, v0, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$Downloader;->downloadUrl:Ljava/lang/String;
+-
+-    goto :goto_13
+-
+-    :cond_12
+-    move-object v2, v1
+-
+-    :goto_13
+-    if-eqz v2, :cond_1b
+-
+-    const-string v1, "gms_core_dialog_open_website_text"
+-
+-    invoke-static {v1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v1
+-
+-    :cond_1b
+-    move-object v7, v1
+-
+-    if-eqz v0, :cond_2c
+-
+-    iget-object p1, v0, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$Downloader;->name:Ljava/lang/String;
+-
+-    filled-new-array {p1}, [Ljava/lang/Object;
+-
+-    move-result-object p1
+-
+-    const-string v1, "revanced_external_downloader_not_installed_warning"
+-
+-    invoke-static {v1, p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+-
+-    move-result-object p1
+-
+-    :goto_2a
+-    move-object v5, p1
+-
+-    goto :goto_37
+-
+-    :cond_2c
+-    const-string v1, "revanced_external_downloader_package_not_found_warning"
+-
+-    filled-new-array {p1}, [Ljava/lang/Object;
+-
+-    move-result-object p1
+-
+-    invoke-static {v1, p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+-
+-    move-result-object p1
+-
+-    goto :goto_2a
+-
+-    :goto_37
+-    const-string p1, "revanced_external_downloader_not_found_title"
+-
+-    invoke-static {p1}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v4
+-
+-    new-instance v8, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$$ExternalSyntheticLambda0;
+-
+-    invoke-direct {v8, v2, p0, v0}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$$ExternalSyntheticLambda0;-><init>(Ljava/lang/String;Landroid/content/Context;Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$Downloader;)V
+-
+-    new-instance v9, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$$ExternalSyntheticLambda1;
+-
+-    invoke-direct {v9}, Lapp/morphe/extension/youtube/settings/preference/ExternalDownloaderVideoPreference$$ExternalSyntheticLambda1;-><init>()V
+-
+-    const/4 v11, 0x0
+-
+-    const/4 v12, 0x0
+-
+-    const/4 v6, 0x0
+-
+-    const/4 v10, 0x0
+-
+-    move-object v3, p0
+-
+-    invoke-static/range {v3 .. v12}, Lapp/morphe/extension/shared/ui/CustomDialog;->create(Landroid/content/Context;Ljava/lang/String;Ljava/lang/CharSequence;Landroid/widget/EditText;Ljava/lang/String;Ljava/lang/Runnable;Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/Runnable;Z)Landroid/util/Pair;
+-
+-    move-result-object p0
+-
+-    iget-object p0, p0, Landroid/util/Pair;->first:Ljava/lang/Object;
+-
+-    check-cast p0, Landroid/app/Dialog;
+-
+-    invoke-virtual {p0}, Landroid/app/Dialog;->show()V
+-
+-    const/4 p0, 0x1
+-
+-    return p0
+ .end method
+ 
+ .method private updateEntries()V

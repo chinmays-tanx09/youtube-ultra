@@ -1,0 +1,575 @@
+--- a/classes3/com/google/android/apps/youtube/app/settings/GeneralPrefsFragment.smali
++++ b/classes3/com/google/android/apps/youtube/app/settings/GeneralPrefsFragment.smali
+@@ -316,13 +316,10 @@
+ 
+     move-result v0
+ 
+-    if-nez v0, :cond_30
+-
+     const-string v0, "bedtime_reminder_toggle"
+ 
+     invoke-direct {p0, v0}, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aV(Ljava/lang/CharSequence;)V
+ 
+-    :cond_30
+     invoke-static {}, Layw;->Z()Z
+ 
+     move-result v0
+@@ -331,7 +328,7 @@
+ 
+     const-string v2, "app_theme_appearance"
+ 
+-    if-eqz v0, :cond_6d
++    if-eqz v0, :cond_6b
+ 
+     invoke-direct {p0, v1}, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aV(Ljava/lang/CharSequence;)V
+ 
+@@ -341,11 +338,11 @@
+ 
+     check-cast v0, Lcom/google/android/libraries/youtube/common/ui/preferences/ProtoDataStoreListPreference;
+ 
+-    if-nez v0, :cond_46
++    if-nez v0, :cond_44
+ 
+-    goto :goto_80
++    goto :goto_7e
+ 
+-    :cond_46
++    :cond_44
+     iget-object v1, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->at:Lywj;
+ 
+     sget v2, Lywo;->a:I
+@@ -356,11 +353,11 @@
+ 
+     move-result v1
+ 
+-    if-eqz v1, :cond_64
++    if-eqz v1, :cond_62
+ 
+     iget-object v1, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->as:Ldfg;
+ 
+-    if-nez v1, :cond_5f
++    if-nez v1, :cond_5d
+ 
+     new-instance v1, Lltk;
+ 
+@@ -370,14 +367,14 @@
+ 
+     iput-object v1, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->as:Ldfg;
+ 
+-    :cond_5f
++    :cond_5d
+     iget-object v1, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->as:Ldfg;
+ 
+     iput-object v1, v0, Landroidx/preference/Preference;->n:Ldfg;
+ 
+-    goto :goto_80
++    goto :goto_7e
+ 
+-    :cond_64
++    :cond_62
+     new-instance v1, Llta;
+ 
+     const/4 v2, 0x2
+@@ -386,9 +383,9 @@
+ 
+     iput-object v1, v0, Lcom/google/android/libraries/youtube/common/ui/preferences/ProtoDataStoreListPreference;->H:Lzcb;
+ 
+-    goto :goto_80
++    goto :goto_7e
+ 
+-    :cond_6d
++    :cond_6b
+     invoke-direct {p0, v2}, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aV(Ljava/lang/CharSequence;)V
+ 
+     invoke-virtual {p0, v1}, Ldfq;->jz(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
+@@ -397,7 +394,7 @@
+ 
+     check-cast v0, Lcom/google/android/libraries/youtube/common/ui/preferences/ProtoDataStoreSwitchPreference;
+ 
+-    if-eqz v0, :cond_80
++    if-eqz v0, :cond_7e
+ 
+     new-instance v1, Llta;
+ 
+@@ -407,8 +404,8 @@
+ 
+     iput-object v1, v0, Lcom/google/android/libraries/youtube/common/ui/preferences/ProtoDataStoreSwitchPreference;->c:Lzcb;
+ 
+-    :cond_80
+-    :goto_80
++    :cond_7e
++    :goto_7e
+     invoke-virtual {p0}, Lce;->A()Landroid/content/Context;
+ 
+     move-result-object v0
+@@ -427,11 +424,11 @@
+ 
+     move-result-object v0
+ 
+-    if-nez v0, :cond_97
++    if-nez v0, :cond_95
+ 
+-    goto/16 :goto_10f
++    goto/16 :goto_10d
+ 
+-    :cond_97
++    :cond_95
+     iget-object v1, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->at:Lywj;
+ 
+     sget v2, Lywo;->a:I
+@@ -442,7 +439,7 @@
+ 
+     move-result v1
+ 
+-    if-nez v1, :cond_ac
++    if-nez v1, :cond_aa
+ 
+     invoke-virtual {p0}, Ldfq;->g()Landroidx/preference/PreferenceScreen;
+ 
+@@ -450,9 +447,9 @@
+ 
+     invoke-virtual {v1, v0}, Landroidx/preference/PreferenceGroup;->ai(Landroidx/preference/Preference;)V
+ 
+-    goto :goto_10f
++    goto :goto_10d
+ 
+-    :cond_ac
++    :cond_aa
+     new-instance v1, Ladyh;
+ 
+     const v2, 0x2b37b
+@@ -487,13 +484,13 @@
+ 
+     move-result-object v5
+ 
+-    if-nez v6, :cond_ec
++    if-nez v6, :cond_ea
+ 
+     invoke-virtual {v5}, Laxa;->g()Z
+ 
+     move-result v4
+ 
+-    if-nez v4, :cond_e9
++    if-nez v4, :cond_e7
+ 
+     invoke-virtual {v5, v3}, Laxa;->f(I)Ljava/util/Locale;
+ 
+@@ -509,14 +506,14 @@
+ 
+     move-result-object v4
+ 
+-    goto :goto_fa
++    goto :goto_f8
+ 
+-    :cond_e9
++    :cond_e7
+     const-string v4, ""
+ 
+-    goto :goto_fa
++    goto :goto_f8
+ 
+-    :cond_ec
++    :cond_ea
+     invoke-virtual {v4}, Lamty;->c()Ljava/lang/Object;
+ 
+     move-result-object v4
+@@ -531,7 +528,7 @@
+ 
+     move-result-object v4
+ 
+-    :goto_fa
++    :goto_f8
+     invoke-virtual {v0, v4}, Landroidx/preference/Preference;->n(Ljava/lang/CharSequence;)V
+ 
+     new-instance v4, Llsz;
+@@ -546,12 +543,12 @@
+ 
+     move-result v1
+ 
+-    if-nez v1, :cond_10f
++    if-nez v1, :cond_10d
+ 
+     invoke-virtual {v0, v3}, Landroidx/preference/Preference;->G(Z)V
+ 
+-    :cond_10f
+-    :goto_10f
++    :cond_10d
++    :goto_10d
+     iget-object v0, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->av:Labtv;
+ 
+     invoke-static {v0}, Lazv;->aH(Labtv;)Z
+@@ -560,13 +557,10 @@
+ 
+     const-string v1, "watch_break_frequency_picker_preference"
+ 
+-    if-nez v0, :cond_11d
+-
+     invoke-direct {p0, v1}, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aV(Ljava/lang/CharSequence;)V
+ 
+-    goto :goto_13c
++    goto :goto_138
+ 
+-    :cond_11d
+     iget-object v0, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aj:Ladyi;
+ 
+     invoke-interface {v0}, Ladyi;->ib()Ladyj;
+@@ -591,19 +585,19 @@
+ 
+     check-cast v0, Lcom/google/android/apps/youtube/app/wellness/WatchBreakFrequencyPickerPreference;
+ 
+-    if-eqz v0, :cond_13c
++    if-eqz v0, :cond_138
+ 
+     iput-object p0, v0, Landroidx/preference/Preference;->o:Ldfh;
+ 
+-    :cond_13c
+-    :goto_13c
++    :cond_138
++    :goto_138
+     iget-object v0, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->au:Lynn;
+ 
+     invoke-virtual {v0}, Lynn;->k()Z
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_14c
++    if-eqz v0, :cond_148
+ 
+     iget-object v0, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->f:Labub;
+ 
+@@ -611,14 +605,14 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_151
++    if-eqz v0, :cond_14d
+ 
+-    :cond_14c
++    :cond_148
+     const-string v0, "limit_mobile_data_usage"
+ 
+     invoke-direct {p0, v0}, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aV(Ljava/lang/CharSequence;)V
+ 
+-    :cond_151
++    :cond_14d
+     iget-object v0, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->au:Lynn;
+ 
+     iget-object v1, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->f:Labub;
+@@ -627,7 +621,7 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_163
++    if-eqz v0, :cond_15f
+ 
+     iget-object v0, p0, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aA:Lbcvr;
+ 
+@@ -635,14 +629,14 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_168
++    if-eqz v0, :cond_164
+ 
+-    :cond_163
++    :cond_15f
+     const-string v0, "upload_policy"
+ 
+     invoke-direct {p0, v0}, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aV(Ljava/lang/CharSequence;)V
+ 
+-    :cond_168
++    :cond_164
+     iget-object v0, p0, Ldfq;->a:Ldfy;
+ 
+     iput-object p0, v0, Ldfy;->d:Ldfv;
+@@ -653,11 +647,11 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_177
++    if-eqz v0, :cond_173
+ 
+     invoke-virtual {p0}, Lcom/google/android/apps/youtube/app/settings/GeneralPrefsFragment;->aR()V
+ 
+-    :cond_177
++    :cond_173
+     return-void
+ .end method
+ 
+--- a/classes3/glp.smali
++++ b/classes3/glp.smali
+@@ -323,6 +323,8 @@
+ .method public final y(Laclh;Lbfjl;Lj$/util/Optional;)V
+     .registers 15
+ 
++    return-void
++
+     iget-object v2, p0, Lglp;->m:Lbcvt;
+ 
+     invoke-virtual {v2}, Lbcvt;->fK()Lbdll;
+@@ -345,7 +347,7 @@
+ 
+     move-result v2
+ 
+-    if-eqz v2, :cond_2c
++    if-eqz v2, :cond_2d
+ 
+     iget-object v2, p0, Lglp;->o:Lbclj;
+ 
+@@ -359,70 +361,70 @@
+ 
+     move-result v2
+ 
+-    if-nez v2, :cond_26
++    if-nez v2, :cond_27
+ 
+-    goto :goto_2c
++    goto :goto_2d
+ 
+-    :cond_26
++    :cond_27
+     iget-object v1, p0, Lglp;->h:Loat;
+ 
+     invoke-virtual {v1}, Loat;->j()V
+ 
+     return-void
+ 
+-    :cond_2c
+-    :goto_2c
++    :cond_2d
++    :goto_2d
+     iget-object v2, p1, Laclh;->a:Latkd;
+ 
+     iget v4, v2, Latkd;->b:I
+ 
+     and-int/lit16 v4, v4, 0x400
+ 
+-    if-eqz v4, :cond_12c
++    if-eqz v4, :cond_12d
+ 
+     iget-object v2, v2, Latkd;->g:Laxcj;
+ 
+-    if-nez v2, :cond_3a
++    if-nez v2, :cond_3b
+ 
+     sget-object v2, Laxcj;->a:Laxcj;
+ 
+-    :cond_3a
++    :cond_3b
+     iget v2, v2, Laxcj;->b:I
+ 
+     const/4 v4, 0x1
+ 
+     and-int/2addr v2, v4
+ 
+-    if-eqz v2, :cond_12c
++    if-eqz v2, :cond_12d
+ 
+     iget-object v2, p1, Laclh;->a:Latkd;
+ 
+     iget-object v2, v2, Latkd;->g:Laxcj;
+ 
+-    if-nez v2, :cond_48
++    if-nez v2, :cond_49
+ 
+     sget-object v2, Laxcj;->a:Laxcj;
+ 
+-    :cond_48
++    :cond_49
+     iget-object v2, v2, Laxcj;->c:Laxci;
+ 
+-    if-nez v2, :cond_4e
++    if-nez v2, :cond_4f
+ 
+     sget-object v2, Laxci;->a:Laxci;
+ 
+-    :cond_4e
++    :cond_4f
+     iget v5, v2, Laxci;->b:I
+ 
+     and-int/lit8 v6, v5, 0x1
+ 
+-    if-eqz v6, :cond_55
++    if-eqz v6, :cond_56
+ 
+-    goto :goto_71
++    goto :goto_72
+ 
+-    :cond_55
++    :cond_56
+     and-int/lit8 v5, v5, 0x8
+ 
+-    if-nez v5, :cond_71
++    if-nez v5, :cond_72
+ 
+     iget-object v1, p0, Lglp;->q:Lbhl;
+ 
+@@ -448,26 +450,26 @@
+ 
+     return-void
+ 
+-    :cond_71
+-    :goto_71
++    :cond_72
++    :goto_72
+     iget-object v1, p1, Laclh;->a:Latkd;
+ 
+     iget-object v1, v1, Latkd;->e:Laozr;
+ 
+     iget-object v5, v2, Laxci;->c:Laqyt;
+ 
+-    if-nez v5, :cond_7b
++    if-nez v5, :cond_7c
+ 
+     sget-object v5, Laqyt;->a:Laqyt;
+ 
+-    :cond_7b
++    :cond_7c
+     iget-object v7, v2, Laxci;->e:Laxda;
+ 
+-    if-nez v7, :cond_81
++    if-nez v7, :cond_82
+ 
+     sget-object v7, Laxda;->a:Laxda;
+ 
+-    :cond_81
++    :cond_82
+     sget-object v8, Lcom/google/protos/youtube/api/innertube/ConfirmDialogRendererOuterClass;->confirmDialogRenderer:Lapau;
+ 
+     invoke-static {v8}, Lapaw;->-$$Nest$smcheckIsLite(Lapag;)Lapau;
+@@ -484,34 +486,34 @@
+ 
+     move-result-object v7
+ 
+-    if-nez v7, :cond_97
++    if-nez v7, :cond_98
+ 
+     iget-object v7, v8, Lapau;->b:Ljava/lang/Object;
+ 
+-    goto :goto_9b
++    goto :goto_9c
+ 
+-    :cond_97
++    :cond_98
+     invoke-virtual {v8, v7}, Lapau;->c(Ljava/lang/Object;)Ljava/lang/Object;
+ 
+     move-result-object v7
+ 
+-    :goto_9b
++    :goto_9c
+     check-cast v7, Largr;
+ 
+     iget v2, v2, Laxci;->b:I
+ 
+     and-int/lit8 v2, v2, 0x8
+ 
+-    if-eqz v2, :cond_a5
++    if-eqz v2, :cond_a6
+ 
+     move v2, v4
+ 
+-    goto :goto_a6
++    goto :goto_a7
+ 
+-    :cond_a5
++    :cond_a6
+     move v2, v3
+ 
+-    :goto_a6
++    :goto_a7
+     invoke-virtual {p2}, Lbfjl;->a()Ljava/lang/Object;
+ 
+     move-result-object v8
+@@ -538,25 +540,25 @@
+ 
+     check-cast v10, Lgxp;
+ 
+-    if-nez v2, :cond_c3
++    if-nez v2, :cond_c4
+ 
+-    goto :goto_ce
++    goto :goto_cf
+ 
+-    :cond_c3
++    :cond_c4
+     invoke-static {v10}, Lglp;->x(Lgxp;)Z
+ 
+     move-result v10
+ 
+-    if-eqz v8, :cond_ce
++    if-eqz v8, :cond_cf
+ 
+-    if-eqz v10, :cond_ce
++    if-eqz v10, :cond_cf
+ 
+-    if-eqz v9, :cond_ce
++    if-eqz v9, :cond_cf
+ 
+     move v3, v4
+ 
+-    :cond_ce
+-    :goto_ce
++    :cond_cf
++    :goto_cf
+     invoke-virtual {p2}, Lbfjl;->a()Ljava/lang/Object;
+ 
+     move-result-object v8
+@@ -593,7 +595,7 @@
+ 
+     move-result v8
+ 
+-    if-eqz v8, :cond_105
++    if-eqz v8, :cond_106
+ 
+     invoke-virtual {p2}, Lbfjl;->a()Ljava/lang/Object;
+ 
+@@ -605,25 +607,25 @@
+ 
+     move-result v6
+ 
+-    if-nez v6, :cond_105
++    if-nez v6, :cond_106
+ 
+-    if-nez v3, :cond_105
++    if-nez v3, :cond_106
+ 
+-    if-eqz v2, :cond_12c
++    if-eqz v2, :cond_12d
+ 
+-    goto :goto_106
++    goto :goto_107
+ 
+-    :cond_105
++    :cond_106
+     move v4, v2
+ 
+-    :goto_106
++    :goto_107
+     iget-object v2, p0, Lglp;->m:Lbcvt;
+ 
+     invoke-virtual {v2}, Lbcvt;->fP()Z
+ 
+     move-result v2
+ 
+-    if-eqz v2, :cond_11c
++    if-eqz v2, :cond_11d
+ 
+     iget-object v2, p0, Lglp;->r:Ladyi;
+ 
+@@ -637,7 +639,7 @@
+ 
+     invoke-interface {v2, v6}, Ladyj;->e(Ladyt;)Ladzo;
+ 
+-    :cond_11c
++    :cond_11d
+     invoke-static {v5}, Lj$/util/Optional;->of(Ljava/lang/Object;)Lj$/util/Optional;
+ 
+     move-result-object v1
+@@ -658,6 +660,6 @@
+ 
+     invoke-virtual/range {v0 .. v5}, Lgka;->n(Lj$/util/Optional;Lj$/util/Optional;Lj$/util/Optional;ZZ)V
+ 
+-    :cond_12c
++    :cond_12d
+     return-void
+ .end method

@@ -1,0 +1,122 @@
+YouTube Ultra
+Copyright (C) 2026 Chinmay Shastry (github.com/chinmays-tanx09)
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License version 3 (see LICENSE), together
+with the Additional Terms below, which are permitted by section 7 of the GPL.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+YouTube Ultra is not affiliated with or endorsed by Google LLC or YouTube.
+YouTube is a trademark of Google LLC. This repository does not contain the
+YouTube app: you supply the stock APK yourself when building.
+
+=============================================================================
+Additional Terms (GPLv3 section 7) for YouTube Ultra
+=============================================================================
+
+7(b) Preservation of notices. Every copy or derivative work, in source or
+     binary form, must keep this NOTICE file (including the third-party
+     notices below) and show the attribution "Based on YouTube Ultra by
+     Chinmay Shastry (github.com/chinmays-tanx09)" to its users.
+
+7(c) No misrepresentation of origin. You may not present a modified version
+     as the official YouTube Ultra. Modified versions must be clearly marked
+     as different from the original, use a different app name and package
+     name, and must not be signed or distributed in a way that suggests they
+     come from this repository.
+
+7(e) No trademark rights. This license grants no right to use the names
+     "YouTube Ultra" or "Paradox", the YouTube Ultra icon, or the Paradox
+     intro animation and artwork (the files in branding/ and images/).
+     Those stay (C) Chinmay Shastry, all rights reserved, and may only be
+     used in the official builds published at
+     https://github.com/chinmays-tanx09/youtube-ultra/releases
+
+Official builds are signed with the developer's private key and verify their
+own signature at launch (module/src/paradox/dl/Guard.java). The signing key is
+not part of this repository.
+
+=============================================================================
+Third-party components
+=============================================================================
+
+Bundled in the app (classes13.dex, relocated under paradox.lib.*):
+  - NewPipe Extractor 0.26.5 - GPL-3.0
+    https://github.com/TeamNewPipe/NewPipeExtractor (module/libs/extractor.jar,
+    unmodified; its source is at the v0.26.5 tag)
+  - nanojson (TeamNewPipe fork, 1.8-SNAPSHOT) - Apache-2.0
+    https://github.com/TeamNewPipe/nanojson (module/libs/nanojson.jar, unmodified)
+  - jsoup 1.22.2 - MIT - https://jsoup.org
+  - Protocol Buffers Java Lite 4.35.1 - BSD-3-Clause - https://github.com/protocolbuffers/protobuf
+  - Mozilla Rhino 1.8.1 - MPL-2.0 - https://github.com/mozilla/rhino
+  - JSR-305 annotations 3.0.2 - Apache-2.0
+
+Applied to the stock YouTube APK at build time:
+  - anddea/revanced-patches v4.4.0-dev.3 - GPL-3.0 with section 7 terms
+    https://github.com/anddea/revanced-patches (its NOTICE is reproduced below)
+  - Morphe patcher / morphe-desktop CLI 1.19.1 - GPL-3.0
+    https://github.com/MorpheApp/morphe-desktop
+
+Build tools (not distributed with the app): Apktool 3.0.3 (Apache-2.0),
+smali/baksmali 2.5.2 (BSD-3-Clause), jarjar 1.7.2 (Apache-2.0), ASM 9.7
+(BSD-3-Clause), Android SDK build tools.
+
+Not bundled: MicroG RE (Apache-2.0, https://github.com/MorpheApp/MicroG-RE) is
+a separate app, offered unchanged on the Releases page.
+
+=============================================================================
+anddea/revanced-patches NOTICE (reproduced as required by its section 7(b))
+=============================================================================
+
+NOTICE
+
+This software contains original work by anddea:
+https://github.com/anddea/revanced-patches
+
+Copyright (C) 2026 anddea
+
+=============
+
+microG Project Team NOTICE
+
+Portions of this software incorporate or are derived from code provided by the microG Project:
+https://github.com/microg/GmsCore
+
+Copyright 2020 microG Project Team
+Licensed under the Apache License, Version 2.0.
+
+=============
+
+Morphe NOTICE
+
+Portions of this software incorporate or are derived from code provided by the Morphe software project:
+https://github.com/MorpheApp/morphe-patches
+
+=============
+
+GPLv3 Section 7b: Preservation of User Notices
+
+All derivative works (source code and binaries) must include this
+NOTICE text and provide it to the software user.
+
+Portions of this software are provided "AS IS" by the Morphe software project.
+Any express or implied warranties, including the implied warranties of
+merchantability and fitness for a particular purpose, are disclaimed.
+
+
+GPLv3 Section 7c: Prohibiting Misrepresentation of Origin
+
+You are prohibited from misrepresenting the origin of the Program,
+and modified versions of the Program must be identified and marked in
+reasonable ways as different from the original version so as not to cause
+confusion regarding their origin.
+
+
+GPLv3 Section 7e: Declining Grant of Trademark Rights
+
+This License does not grant any rights or permission under trademark law
+to use the name "Morphe" or any of the Program's trade names, trademarks,
+service marks, or logos.

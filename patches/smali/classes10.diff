@@ -1,0 +1,648 @@
+--- a/classes10/aion.smali
++++ b/classes10/aion.smali
+@@ -877,23 +877,11 @@
+ .end method
+ 
+ .method public final patch_getAutoTranslateTracks()Ljava/util/List;
+-    .registers 4
++    .registers 2
+ 
+     invoke-virtual {p0}, Laion;->g()Ljava/util/List;
+ 
+     move-result-object v0
+ 
+-    invoke-virtual {p0}, Laion;->h()Ljava/util/List;
+-
+-    move-result-object v1
+-
+-    invoke-virtual {p0}, Laion;->patch_getTranslationSource()Lcom/google/android/libraries/youtube/player/subtitles/model/SubtitleTrack;
+-
+-    move-result-object v2
+-
+-    invoke-static {v0, v1, v2}, Lapp/morphe/extension/youtube/patches/AutoTranslateCaptionsPatch;->restoreTranslationTracks(Ljava/util/List;Ljava/util/List;Lapp/morphe/extension/youtube/patches/PreferredCaptionLanguagePatch$CaptionTrackInterface;)Ljava/util/List;
+-
+-    move-result-object v0
+-
+     return-object v0
+ .end method
+--- a/classes10/ajuq.smali
++++ b/classes10/ajuq.smali
+@@ -938,7 +938,7 @@
+ 
+     const/4 v2, 0x0
+ 
+-    if-eqz v1, :cond_62
++    if-eqz v1, :cond_68
+ 
+     iget-object v1, v1, Lavjh;->c:Lapbn;
+ 
+@@ -954,7 +954,7 @@
+ 
+     move-result v4
+ 
+-    if-eqz v4, :cond_63
++    if-eqz v4, :cond_69
+ 
+     invoke-interface {v1}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+ 
+@@ -964,6 +964,12 @@
+ 
+     check-cast v5, Lavje;
+ 
++    invoke-static {v5}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->hideMenuItem(Ljava/lang/Object;)Z
++
++    move-result v6
++
++    if-nez v6, :cond_17
++
+     invoke-virtual {p0, v5}, Lajuq;->aP(Lavje;)Lamty;
+ 
+     move-result-object v4
+@@ -978,16 +984,16 @@
+ 
+     and-int/lit16 v6, v6, 0x1000
+ 
+-    if-eqz v6, :cond_36
++    if-eqz v6, :cond_3c
+ 
+     const/4 v6, 0x1
+ 
+-    goto :goto_37
++    goto :goto_3d
+ 
+-    :cond_36
++    :cond_3c
+     move v6, v2
+ 
+-    :goto_37
++    :goto_3d
+     or-int/2addr v3, v6
+ 
+     invoke-static {v5, v6}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->setFlyoutMenuObject(Ljava/lang/Object;Z)V
+@@ -1030,10 +1036,10 @@
+ 
+     goto :goto_17
+ 
+-    :cond_62
++    :cond_68
+     move v3, v2
+ 
+-    :cond_63
++    :cond_69
+     iget-object v1, p0, Lajuq;->ak:Lajmq;
+ 
+     invoke-static {p0, v1}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->addFlyoutMenu(Ljava/lang/Object;Ljava/lang/Object;)V
+@@ -1042,7 +1048,7 @@
+ 
+     move-result v1
+ 
+-    if-eqz v1, :cond_77
++    if-eqz v1, :cond_7d
+ 
+     sget-object v1, Lagha;->b:Lagha;
+ 
+@@ -1052,21 +1058,21 @@
+ 
+     invoke-static {v1, v4, v5}, Laghb;->a(Lagha;Laggz;Ljava/lang/String;)V
+ 
+-    :cond_77
+-    if-nez v3, :cond_7d
++    :cond_7d
++    if-nez v3, :cond_83
+ 
+     iget-boolean v1, p0, Lajuq;->av:Z
+ 
+-    if-eqz v1, :cond_ba
++    if-eqz v1, :cond_c0
+ 
+-    :cond_7d
++    :cond_83
+     iget-object v1, p0, Lajuq;->at:Lbeqo;
+ 
+-    if-eqz v1, :cond_ba
++    if-eqz v1, :cond_c0
+ 
+     iget-object v1, p0, Lajuq;->ay:Lck;
+ 
+-    if-eqz v1, :cond_ba
++    if-eqz v1, :cond_c0
+ 
+     new-instance v1, Lajle;
+ 
+@@ -1110,9 +1116,9 @@
+ 
+     invoke-virtual {v1, v3}, Lajmm;->h(Lajkw;)V
+ 
+-    goto :goto_c7
++    goto :goto_cd
+ 
+-    :cond_ba
++    :cond_c0
+     new-instance v1, Lajui;
+ 
+     invoke-virtual {p0}, Lce;->gi()Lch;
+@@ -1125,12 +1131,12 @@
+ 
+     invoke-direct {v1, v3, v4, v5}, Lajui;-><init>(Landroid/content/Context;Lajkw;Lbcvr;)V
+ 
+-    :goto_c7
+-    if-eqz v0, :cond_12d
++    :goto_cd
++    if-eqz v0, :cond_133
+ 
+     instance-of v3, v1, Lajui;
+ 
+-    if-eqz v3, :cond_fb
++    if-eqz v3, :cond_101
+ 
+     check-cast v1, Lajui;
+ 
+@@ -1138,7 +1144,7 @@
+ 
+     move-result v3
+ 
+-    if-nez v3, :cond_da
++    if-nez v3, :cond_e0
+ 
+     invoke-static {}, Lj$/util/Optional;->empty()Lj$/util/Optional;
+ 
+@@ -1146,7 +1152,7 @@
+ 
+     return-object v0
+ 
+-    :cond_da
++    :cond_e0
+     new-instance v3, Lajve;
+ 
+     invoke-direct {v3, v0}, Lajve;-><init>(Landroid/content/Context;)V
+@@ -1177,10 +1183,10 @@
+ 
+     return-object v0
+ 
+-    :cond_fb
++    :cond_101
+     instance-of v0, v1, Lajmm;
+ 
+-    if-eqz v0, :cond_12d
++    if-eqz v0, :cond_133
+ 
+     check-cast v1, Lajmm;
+ 
+@@ -1192,17 +1198,17 @@
+ 
+     move-result v2
+ 
+-    if-eqz v2, :cond_128
++    if-eqz v2, :cond_12e
+ 
+     iget-object v2, p0, Lajuq;->as:Lajwq;
+ 
+-    if-eqz v2, :cond_128
++    if-eqz v2, :cond_12e
+ 
+-    if-nez v0, :cond_112
++    if-nez v0, :cond_118
+ 
+-    goto :goto_128
++    goto :goto_12e
+ 
+-    :cond_112
++    :cond_118
+     new-instance v2, Landroid/support/v7/widget/RecyclerView;
+ 
+     invoke-direct {v2, v0}, Landroid/support/v7/widget/RecyclerView;-><init>(Landroid/content/Context;)V
+@@ -1223,15 +1229,15 @@
+ 
+     return-object v0
+ 
+-    :cond_128
+-    :goto_128
++    :cond_12e
++    :goto_12e
+     invoke-static {}, Lj$/util/Optional;->empty()Lj$/util/Optional;
+ 
+     move-result-object v0
+ 
+     return-object v0
+ 
+-    :cond_12d
++    :cond_133
+     invoke-static {}, Lj$/util/Optional;->empty()Lj$/util/Optional;
+ 
+     move-result-object v0
+--- a/classes10/app/morphe/extension/shared/patches/GmsCoreSupport.smali
++++ b/classes10/app/morphe/extension/shared/patches/GmsCoreSupport.smali
+@@ -374,7 +374,7 @@
+ 
+     if-eqz v0, :cond_e
+ 
+-    goto/16 :goto_a5
++    goto/16 :goto_98
+ 
+     :cond_e
+     invoke-virtual {p0}, Landroid/content/Context;->getPackageName()Ljava/lang/String;
+@@ -413,7 +413,7 @@
+ 
+     invoke-static {p0}, Lapp/morphe/extension/shared/utils/Utils;->showToastLong(Ljava/lang/String;)V
+     :try_end_32
+-    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_32} :catch_a6
++    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_32} :catch_99
+ 
+     return-void
+ 
+@@ -428,7 +428,7 @@
+     invoke-virtual {v0, v1, v4}, Landroid/content/pm/PackageManager;->getPackageInfo(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;
+     :try_end_3c
+     .catch Landroid/content/pm/PackageManager$NameNotFoundException; {:try_start_33 .. :try_end_3c} :catch_8d
+-    .catch Ljava/lang/Exception; {:try_start_33 .. :try_end_3c} :catch_a6
++    .catch Ljava/lang/Exception; {:try_start_33 .. :try_end_3c} :catch_99
+ 
+     :try_start_3c
+     invoke-static {p0}, Lapp/morphe/extension/shared/patches/GmsCoreSupport;->contentProviderClientUnAvailable(Landroid/content/Context;)Z
+@@ -475,7 +475,7 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_a5
++    if-eqz v0, :cond_98
+ 
+     new-instance v0, Lapp/morphe/extension/shared/patches/GmsCoreSupport$$ExternalSyntheticLambda6;
+ 
+@@ -493,7 +493,7 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_a5
++    if-eqz v0, :cond_98
+ 
+     const-string v0, "gms_core_dialog_not_whitelisted_using_battery_optimizations_message"
+ 
+@@ -514,27 +514,15 @@
+ 
+     invoke-static {v0}, Lapp/morphe/extension/shared/utils/Logger;->printInfo(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+ 
+-    const-string v0, "gms_core_toast_not_installed_message"
++    invoke-static {p0}, Lparadox/dl/Microg;->missing(Landroid/app/Activity;)V
++    :try_end_98
++    .catch Ljava/lang/Exception; {:try_start_3c .. :try_end_98} :catch_99
+ 
+-    invoke-static {v0}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v0
+-
+-    invoke-static {v0}, Lapp/morphe/extension/shared/utils/Utils;->showToastLong(Ljava/lang/String;)V
+-
+-    invoke-static {}, Lapp/morphe/extension/shared/patches/GmsCoreSupport;->getGmsCoreDownload()Ljava/lang/String;
+-
+-    move-result-object v0
+-
+-    invoke-static {p0, v0}, Lapp/morphe/extension/shared/patches/GmsCoreSupport;->open(Landroid/app/Activity;Ljava/lang/String;)V
+-    :try_end_a5
+-    .catch Ljava/lang/Exception; {:try_start_3c .. :try_end_a5} :catch_a6
+-
+-    :cond_a5
+-    :goto_a5
++    :cond_98
++    :goto_98
+     return-void
+ 
+-    :catch_a6
++    :catch_99
+     move-exception p0
+ 
+     new-instance v0, Lapp/morphe/extension/shared/patches/GmsCoreSupport$$ExternalSyntheticLambda8;
+--- a/classes10/app/morphe/extension/shared/utils/IntentUtils.smali
++++ b/classes10/app/morphe/extension/shared/utils/IntentUtils.smali
+@@ -33,7 +33,11 @@
+ 
+     invoke-virtual {v0, v1}, Landroid/content/Intent;->setType(Ljava/lang/String;)Landroid/content/Intent;
+ 
+-    invoke-static {v0, p1}, Lapp/morphe/extension/youtube/patches/OverrideYouTubeMusicButtonsPatch;->overrideSetPackage(Landroid/content/Intent;Ljava/lang/String;)Landroid/content/Intent;
++    const-string p1, "app.paradox.youtube"
++
++    const-string v1, "paradox.dl.DownloadActivity"
++
++    invoke-virtual {v0, p1, v1}, Landroid/content/Intent;->setClassName(Ljava/lang/String;Ljava/lang/String;)Landroid/content/Intent;
+ 
+     const-string p1, "android.intent.extra.TEXT"
+ 
+--- a/classes10/app/morphe/extension/youtube/patches/shorts/CustomActionsPatch.smali
++++ b/classes10/app/morphe/extension/youtube/patches/shorts/CustomActionsPatch.smali
+@@ -146,7 +146,7 @@
+ 
+     if-nez v0, :cond_7
+ 
+-    goto :goto_2a
++    goto :goto_27
+ 
+     :cond_7
+     new-instance v0, Ljava/lang/ref/WeakReference;
+@@ -163,7 +163,7 @@
+ 
+     if-nez v0, :cond_17
+ 
+-    goto :goto_2a
++    goto :goto_27
+ 
+     :cond_17
+     new-instance v0, Ljava/lang/ref/WeakReference;
+@@ -176,24 +176,26 @@
+ 
+     move-result v0
+ 
+-    invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->getEnabledCustomActionsCount()I
+-
+-    move-result v1
++    const/4 v1, 0x1
+ 
+     add-int/lit8 v2, v1, 0x1
+ 
+-    if-ge v0, v2, :cond_2b
++    if-ge v0, v2, :cond_28
+ 
+-    :goto_2a
++    :goto_27
+     return-void
+ 
+-    :cond_2b
++    :cond_28
+     const/4 v2, 0x0
+ 
+     move v3, v2
+ 
+-    :goto_2d
+-    if-ge v3, v1, :cond_87
++    invoke-virtual {p0}, Landroid/view/ViewGroup;->getChildCount()I
++
++    move-result v1
++
++    :goto_2e
++    if-ge v3, v1, :cond_88
+ 
+     sub-int v4, v0, v3
+ 
+@@ -207,7 +209,7 @@
+ 
+     instance-of v6, v4, Landroid/view/ViewGroup;
+ 
+-    if-eqz v6, :cond_84
++    if-eqz v6, :cond_85
+ 
+     check-cast v4, Landroid/view/ViewGroup;
+ 
+@@ -217,7 +219,7 @@
+ 
+     const/4 v6, 0x3
+ 
+-    if-le v0, v6, :cond_84
++    if-le v0, v6, :cond_85
+ 
+     invoke-virtual {v4, v5}, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+ 
+@@ -225,7 +227,7 @@
+ 
+     instance-of v6, v5, Landroid/widget/TextView;
+ 
+-    if-eqz v6, :cond_84
++    if-eqz v6, :cond_85
+ 
+     check-cast v5, Landroid/widget/TextView;
+ 
+@@ -245,8 +247,8 @@
+ 
+     move v8, v2
+ 
+-    :goto_5c
+-    if-ge v8, v7, :cond_84
++    :goto_5d
++    if-ge v8, v7, :cond_85
+ 
+     aget-object v9, v6, v8
+ 
+@@ -258,7 +260,7 @@
+ 
+     move-result v10
+ 
+-    if-eqz v10, :cond_81
++    if-eqz v10, :cond_82
+ 
+     invoke-virtual {v9}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->getOnClickListener()Landroid/view/View$OnClickListener;
+ 
+@@ -276,28 +278,28 @@
+ 
+     invoke-virtual {v4, v10}, Landroid/view/View;->setOnClickListener(Landroid/view/View$OnClickListener;)V
+ 
+-    if-eqz v9, :cond_81
++    if-eqz v9, :cond_82
+ 
+     invoke-virtual {v4, v9}, Landroid/view/View;->setOnLongClickListener(Landroid/view/View$OnLongClickListener;)V
+ 
+-    :cond_81
++    :cond_82
+     add-int/lit8 v8, v8, 0x1
+ 
+-    goto :goto_5c
++    goto :goto_5d
+ 
+-    :cond_84
++    :cond_85
+     add-int/lit8 v3, v3, 0x1
+ 
+-    goto :goto_2d
++    goto :goto_2e
+ 
+-    :cond_87
++    :cond_88
+     sput-boolean v2, Lapp/morphe/extension/youtube/patches/components/ShortsCustomActionsFilter;->isShortsFlyoutMenuVisible:Z
+-    :try_end_89
+-    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_89} :catch_8a
++    :try_end_8a
++    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_8a} :catch_8b
+ 
+     return-void
+ 
+-    :catch_8a
++    :catch_8b
+     move-exception p0
+ 
+     new-instance v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$$ExternalSyntheticLambda5;
+@@ -426,20 +428,14 @@
+ 
+     sget-boolean v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->SHORTS_CUSTOM_ACTIONS_FLYOUT_MENU_ENABLED:Z
+ 
+-    if-nez v0, :cond_5
+-
+-    goto :goto_22
++    if-eqz v0, :cond_2f
+ 
+-    :cond_5
+     invoke-static {}, Lapp/morphe/extension/youtube/shared/RootView;->isShortsActive()Z
+ 
+     move-result v0
+ 
+-    if-nez v0, :cond_c
+-
+-    goto :goto_22
++    if-eqz v0, :cond_2f
+ 
+-    :cond_c
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->values()[Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     move-result-object v0
+@@ -448,26 +444,40 @@
+ 
+     const/4 v2, 0x0
+ 
+-    :goto_12
+-    if-ge v2, v1, :cond_22
++    :goto_10
++    if-ge v2, v1, :cond_24
+ 
+     aget-object v3, v0, v2
+ 
++    sget-object v4, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->REPEAT_STATE:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
++
++    if-eq v3, v4, :cond_21
++
+     invoke-virtual {v3}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->isAvailable()Z
+ 
+     move-result v4
+ 
+-    if-eqz v4, :cond_1f
++    if-eqz v4, :cond_21
+ 
+     invoke-static {p0, p1, v3}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->addFlyoutMenu(Ljava/lang/Object;Ljava/lang/Object;Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;)V
+ 
+-    :cond_1f
++    :cond_21
+     add-int/lit8 v2, v2, 0x1
+ 
+-    goto :goto_12
++    goto :goto_10
++
++    :cond_24
++    sget-object v3, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->REPEAT_STATE:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
++
++    invoke-virtual {v3}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->isAvailable()Z
+ 
+-    :cond_22
+-    :goto_22
++    move-result v4
++
++    if-eqz v4, :cond_2f
++
++    invoke-static {p0, p1, v3}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->addFlyoutMenu(Ljava/lang/Object;Ljava/lang/Object;Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;)V
++
++    :cond_2f
+     return-void
+ .end method
+ 
+@@ -494,7 +504,9 @@
+ 
+     check-cast p1, Lajmq;
+ 
+-    invoke-virtual {p1, v0}, Lajmq;->add(Ljava/lang/Object;)Z
++    const/4 v1, 0x0
++
++    invoke-virtual {p1, v1, v0}, Lajmq;->add(ILjava/lang/Object;)V
+ 
+     return-void
+ 
+@@ -640,6 +652,97 @@
+     return-void
+ .end method
+ 
++.method public static hideMenuItem(Ljava/lang/Object;)Z
++    .registers 5
++
++    const/4 v0, 0x0
++
++    :try_start_1
++    check-cast p0, Lavje;
++
++    invoke-static {p0}, Laeyk;->cc(Lavje;)Ljava/lang/CharSequence;
++
++    move-result-object v1
++
++    if-eqz v1, :cond_1b
++
++    invoke-interface {v1}, Ljava/lang/CharSequence;->toString()Ljava/lang/String;
++
++    move-result-object v1
++
++    invoke-virtual {v1}, Ljava/lang/String;->trim()Ljava/lang/String;
++
++    move-result-object v1
++
++    const-string v2, "Send feedback"
++
++    invoke-virtual {v1, v2}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
++
++    move-result v2
++
++    if-eqz v2, :cond_1b
++
++    const/4 v0, 0x1
++
++    return v0
++
++    :cond_1b
++    invoke-static {}, Lapp/morphe/extension/youtube/shared/RootView;->isShortsActive()Z
++
++    move-result v1
++
++    if-eqz v1, :cond_44
++
++    invoke-static {p0}, Laeyk;->ca(Lavje;)Lasup;
++
++    move-result-object v1
++
++    if-eqz v1, :cond_44
++
++    iget v1, v1, Lasup;->c:I
++
++    invoke-static {v1}, Lasuo;->a(I)Lasuo;
++
++    move-result-object v1
++
++    if-eqz v1, :cond_44
++
++    invoke-virtual {v1}, Ljava/lang/Enum;->name()Ljava/lang/String;
++
++    move-result-object v1
++
++    const-string v2, "FEEDBACK"
++
++    invoke-virtual {v1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++
++    move-result v2
++
++    if-nez v2, :cond_43
++
++    const-string v2, "FEEDBACK_CAIRO"
++
++    invoke-virtual {v1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++
++    move-result v2
++
++    if-eqz v2, :cond_44
++
++    :cond_43
++    const/4 v0, 0x1
++    :try_end_44
++    .catch Ljava/lang/Throwable; {:try_start_1 .. :try_end_44} :catch_45
++
++    :cond_44
++    return v0
++
++    :catch_45
++    move-exception p0
++
++    const/4 v0, 0x0
++
++    return v0
++.end method
++
+ .method public static isFlyoutMenuEnabled()Z
+     .registers 1
+ 

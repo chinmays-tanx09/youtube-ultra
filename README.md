@@ -47,11 +47,48 @@ You can watch without signing in. Without MicroG, YouTube Ultra still works sign
 
 ## Official builds only
 
-YouTube Ultra checks its own signature. If someone modifies and re-signs it, it shows "Modified copy" and closes. Only download it from this repository's [Releases](https://github.com/chinmays-tanx09/youtube-ultra/releases).
+Official builds are signed with the developer's private key, and YouTube Ultra checks its own signature every time it starts. If someone modifies and re-signs it, it shows "Modified copy" and closes. Only releases from this repository's [Releases](https://github.com/chinmays-tanx09/youtube-ultra/releases) page are genuine.
+
+## Source code
+
+YouTube Ultra is open source under the **GPL-3.0** license (see [LICENSE](LICENSE) and [NOTICE](NOTICE)). This repository holds everything that makes YouTube Ultra different from stock YouTube:
+
+| Folder | What's in it |
+|---|---|
+| [`module/`](module) | The Paradox module, plain Java: the download engine (multi-connection, resumable), the Downloads page, quality picker, MicroG sheet, intro screen and the signature check ([`Guard.java`](module/src/paradox/dl/Guard.java)) |
+| [`patches/`](patches) | The smali hooks into YouTube and the anddea extension, plus the manifest/resource edits ([what each one does](patches/README.md)) |
+| [`scripts/`](scripts) | The full build: fetch pinned tools, build the module, patch, sign |
+| [`branding/`](branding) | Intro animation and MicroG sheet icon (not covered by the GPL, see NOTICE) |
+
+The YouTube app itself is not included. It's Google's, so you supply the stock APK when you build.
+
+## Build from source
+
+You need Linux (or WSL on Windows), **JDK 21**, Python 3, `patch`, `curl`, `zip`/`unzip`, and the **Android SDK** with `platforms;android-35` and `build-tools;35.0.0` (Android Studio installs these; point `ANDROID_HOME` at the SDK). About 3 GB of free disk.
+
+1. Get the stock **YouTube 20.05.46** universal APK (nodpi, `com.google.android.youtube`, versionCode 1552692672).
+2. Build:
+   ```sh
+   git clone https://github.com/chinmays-tanx09/youtube-ultra.git
+   cd youtube-ultra
+   export ANDROID_HOME=$HOME/Android/Sdk
+
+   # sign with YOUR OWN keystore (create one with: keytool -genkeypair -keystore my.jks -alias me -keyalg RSA -keysize 2048 -validity 10000)
+   export ULTRA_KEYSTORE=$PWD/my.jks ULTRA_KEY_ALIAS=me
+   read -s ULTRA_STORE_PASS; export ULTRA_STORE_PASS
+
+   scripts/build.sh /path/to/youtube_20.05.46_universal.apk
+   ```
+   The APK lands in `build/out/YouTube_Ultra.apk`. Without the `ULTRA_*` variables you get an unsigned APK instead.
+
+`scripts/fetch-deps.sh` downloads the pinned tools (Morphe CLI 1.19.1, anddea patches 4.4.0-dev.3, Apktool 3.0.3, smali 2.5.2, jarjar, the Java libraries) into `.deps/` and checks each file's SHA-256. To work on the module alone, open `module/src` in Android Studio or any Java IDE and run `scripts/build-module.sh`.
+
+**Your own build is not the official app.** It's signed with your key, so the signature check will show "Modified copy" unless you put your own certificate's SHA-256 into `Guard.CERT_SHA256`. If you publish a modified version, the GPL lets you, but under the [NOTICE](NOTICE) terms you must give it a different name and package, keep the credits, and not use the YouTube Ultra name, icon or intro.
 
 ## License
 
-Copyright © 2026 Chinmay. All rights reserved. See [LICENSE](LICENSE).
-No redistribution, re-uploading or modification without permission.
+YouTube Ultra © 2026 Chinmay Shastry, licensed under the [GNU GPL v3.0](LICENSE) with the additional terms in [NOTICE](NOTICE). It's GPL because it bundles GPL code: [NewPipe Extractor](https://github.com/TeamNewPipe/NewPipeExtractor) for downloads and [anddea's patches](https://github.com/anddea/revanced-patches). The "YouTube Ultra" and "Paradox" names, icon and intro aren't licensed for reuse.
+
+Credits: [anddea/revanced-patches](https://github.com/anddea/revanced-patches), [Morphe](https://github.com/MorpheApp), [NewPipe Extractor](https://github.com/TeamNewPipe/NewPipeExtractor), [MicroG RE](https://github.com/MorpheApp/MicroG-RE), jsoup, Mozilla Rhino, Protocol Buffers. Full list in [NOTICE](NOTICE).
 
 YouTube Ultra isn't affiliated with or endorsed by Google or YouTube. YouTube is a trademark of Google LLC. MicroG RE is a separate app by its own developers. It's provided here unchanged from its official release.

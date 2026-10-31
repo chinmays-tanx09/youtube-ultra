@@ -1,0 +1,27 @@
+# build output and downloaded tools
+build/
+.deps/
+*.apk
+*.apks
+*.aab
+*.idsig
+*.dex
+!module/libs/*.jar
+
+# signing material - never commit
+*.jks
+*.keystore
+*.p12
+*.pem
+*.der
+sign.env
+keystore.properties
+local.properties
+
+# IDE / OS
+.gradle/
+.idea/
+*.iml
+.vscode/
+.DS_Store
+node_modules/

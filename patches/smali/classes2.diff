@@ -1,0 +1,124 @@
+--- a/classes2/aibt.smali
++++ b/classes2/aibt.smali
+@@ -109,28 +109,30 @@
+ .method public final b(Lazsb;Z)V
+     .registers 11
+ 
++    return-void
++
+     iget v0, p1, Lazsb;->b:I
+ 
+     const v1, 0x8000
+ 
+     and-int/2addr v1, v0
+ 
+-    if-eqz v1, :cond_25
++    if-eqz v1, :cond_26
+ 
+     and-int/lit8 v0, v0, 0x4
+ 
+-    if-eqz v0, :cond_10
++    if-eqz v0, :cond_11
+ 
+     iget v0, p1, Lazsb;->e:I
+ 
+     int-to-long v0, v0
+ 
+-    goto :goto_12
++    goto :goto_13
+ 
+-    :cond_10
++    :cond_11
+     const-wide/16 v0, 0x0
+ 
+-    :goto_12
++    :goto_13
+     new-instance v2, Lbwm;
+ 
+     const/16 v6, 0x12
+@@ -153,7 +155,7 @@
+ 
+     return-void
+ 
+-    :cond_25
++    :cond_26
+     move-object v3, p0
+ 
+     move-object v5, p1
+@@ -227,6 +229,8 @@
+ .method public final d(Lazsb;)V
+     .registers 4
+ 
++    return-void
++
+     iget-object v0, p0, Laibt;->c:Laiki;
+ 
+     const/16 v1, 0x2b
+@@ -409,6 +413,8 @@
+ .method public final g(Lazsb;)V
+     .registers 5
+ 
++    return-void
++
+     new-instance v0, Lahup;
+ 
+     const/4 v1, 0x4
+@@ -433,6 +439,8 @@
+ .method public final h(Lazsb;)V
+     .registers 3
+ 
++    return-void
++
+     new-instance v0, Laibs;
+ 
+     invoke-direct {v0, p0, p1}, Laibs;-><init>(Laibt;Lazsb;)V
+--- a/classes2/wog.smali
++++ b/classes2/wog.smali
+@@ -44,7 +44,7 @@
+ 
+     move-result p1
+ 
+-    if-nez p1, :cond_12
++    if-nez p1, :cond_f
+ 
+     const-string p1, "Failed to fetch kids onboarding status, finishing the App."
+ 
+@@ -52,9 +52,7 @@
+ 
+     iget-object p1, p0, Lwog;->c:Lch;
+ 
+-    invoke-virtual {p1}, Lch;->finishAffinity()V
+-
+-    :cond_12
++    :cond_f
+     return-void
+ .end method
+ 
+@@ -194,7 +192,7 @@
+ 
+     move-result v0
+ 
+-    if-nez v0, :cond_be
++    if-nez v0, :cond_bb
+ 
+     iget-object v0, p1, Luny;->c:Ljava/lang/Object;
+ 
+@@ -229,7 +227,7 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_be
++    if-eqz v0, :cond_bb
+ 
+     invoke-interface {p1}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+ 
+@@ -254,8 +252,6 @@
+ 
+     iget-object p1, p0, Lwog;->c:Lch;
+ 
+-    invoke-virtual {p1}, Lch;->finishAffinity()V
+-
+-    :cond_be
++    :cond_bb
+     return-void
+ .end method

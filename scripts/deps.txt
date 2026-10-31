@@ -1,0 +1,15 @@
+# name|url|sha256   (fetched by scripts/fetch-deps.sh into .deps/, verified before use)
+apktool.jar|https://github.com/iBotPeaches/Apktool/releases/download/v3.0.3/apktool_3.0.3.jar|dbf930b076c6b9be08d57c449cacefc3bdd6b71ebd59b3066fc0e1f5b14f9423
+smali.jar|https://bitbucket.org/JesusFreke/smali/downloads/smali-2.5.2.jar|9544299578b16f771d8aa8eaefe0d3718ca03478c16f3c356f2fcf1366bfb116
+baksmali.jar|https://bitbucket.org/JesusFreke/smali/downloads/baksmali-2.5.2.jar|d3116248cce4f82ec5a31eb7f95ee75daff42ddf6eed0ab573973dc53fbad2e5
+morphe-cli.jar|https://github.com/MorpheApp/morphe-desktop/releases/download/v1.19.1/morphe-desktop-1.19.1-all.jar|a51472252cd63b2eac635dbb5a154ff918bfc15268da89679feb3d760230c573
+patches.mpp|https://github.com/anddea/revanced-patches/releases/download/v4.4.0-dev.3/patches-4.4.0-dev.3.mpp|04c02b35bd48e8160fbc30519113659242073c3958dee954f60b22bc582eae57
+jarjar/jarjar-1.7.2.jar|https://repo1.maven.org/maven2/org/pantsbuild/jarjar/1.7.2/jarjar-1.7.2.jar|0706a455e17b67718abe212e3a77688bbe8260852fc74e3e836d9f2e76d91c27
+jarjar/asm-9.7.jar|https://repo1.maven.org/maven2/org/ow2/asm/asm/9.7/asm-9.7.jar|adf46d5e34940bdf148ecdd26a9ee8eea94496a72034ff7141066b3eea5c4e9d
+jarjar/asm-commons-9.7.jar|https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.7/asm-commons-9.7.jar|389bc247958e049fc9a0408d398c92c6d370c18035120395d4cba1d9d9304b7a
+jarjar/asm-tree-9.7.jar|https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.7/asm-tree-9.7.jar|62f4b3bc436045c1acb5c3ba2d8ec556ec3369093d7f5d06c747eb04b56d52b1
+libs/jsoup.jar|https://repo1.maven.org/maven2/org/jsoup/jsoup/1.22.2/jsoup-1.22.2.jar|596785996d3c6df16f544c232d10a9a1d88783b2a4740cf5251cb616f2be704d
+libs/jsr305.jar|https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar|766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7
+libs/protobuf-javalite.jar|https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/4.35.1/protobuf-javalite-4.35.1.jar|45d3769189888e491ab7d58125f2014c2a86fb8104c7aa3878c723943fce7a14
+libs/rhino.jar|https://repo1.maven.org/maven2/org/mozilla/rhino/1.8.1/rhino-1.8.1.jar|98a06d42bdd69da15bf9c2a7812b4cfe648ca9e64fe8baaeb502a32b0ed2c8ac
+libs/rhino-engine.jar|https://repo1.maven.org/maven2/org/mozilla/rhino-engine/1.8.1/rhino-engine-1.8.1.jar|ff38ad60aa32a23942f60242a433a2583a5407841745510754a43e0e61dd95cf

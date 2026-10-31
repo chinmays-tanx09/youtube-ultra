@@ -1,0 +1,834 @@
+--- a/classes8/com/google/android/apps/youtube/app/watchwhile/MainActivity.smali
++++ b/classes8/com/google/android/apps/youtube/app/watchwhile/MainActivity.smali
+@@ -2243,6 +2243,8 @@
+ 
+     invoke-static/range {p0 .. p0}, Lapp/morphe/extension/shared/patches/GmsCoreSupport;->checkGmsCore(Landroid/app/Activity;)V
+ 
++    invoke-static/range {p0 .. p0}, Lparadox/dl/Microg;->missing(Landroid/app/Activity;)V
++
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/spoof/SpoofVideoStreamsPatch;->setClientOrderToUse()V
+ 
+     invoke-static/range {p0 .. p0}, Lapp/morphe/extension/youtube/patches/shorts/ShortsRepeatStatePatch;->setMainActivity(Landroid/app/Activity;)V
+@@ -2267,7 +2269,7 @@
+ 
+     const/4 v3, 0x1
+ 
+-    :try_start_29
++    :try_start_2c
+     iput-boolean v3, v1, Lcom/google/android/apps/youtube/app/watchwhile/MainActivity;->l:Z
+ 
+     invoke-virtual {v1}, Leg;->getLifecycle()Lbhe;
+@@ -2298,7 +2300,7 @@
+ 
+     const/4 v6, 0x0
+ 
+-    if-eqz v5, :cond_56
++    if-eqz v5, :cond_59
+ 
+     iget-object v5, v4, Lnuy;->a:Lcom/google/android/apps/youtube/app/watchwhile/MainActivity;
+ 
+@@ -2306,14 +2308,14 @@
+ 
+     move-result v5
+ 
+-    if-nez v5, :cond_56
++    if-nez v5, :cond_59
+ 
+-    :goto_53
++    :goto_56
+     move v3, v6
+ 
+-    goto/16 :goto_68f
++    goto/16 :goto_692
+ 
+-    :cond_56
++    :cond_59
+     iget-object v5, v4, Lnuy;->bn:Lj$/util/Optional;
+ 
+     invoke-virtual {v5}, Lj$/util/Optional;->isPresent()Z
+@@ -2326,7 +2328,7 @@
+ 
+     move-result v5
+ 
+-    if-eqz v5, :cond_7d
++    if-eqz v5, :cond_80
+ 
+     iget-object v0, v4, Lnuy;->a:Lcom/google/android/apps/youtube/app/watchwhile/MainActivity;
+ 
+@@ -2348,9 +2350,9 @@
+ 
+     invoke-virtual {v0}, Lcom/google/android/apps/youtube/app/watchwhile/MainActivity;->finish()V
+ 
+-    goto :goto_53
++    goto :goto_56
+ 
+-    :cond_7d
++    :cond_80
+     iget-object v5, v4, Lnuy;->aO:Lywj;
+ 
+     const v7, 0x10031b38
+@@ -2365,7 +2367,7 @@
+ 
+     const/4 v8, 0x3
+ 
+-    if-nez v5, :cond_bb
++    if-nez v5, :cond_be
+ 
+     iget-object v5, v4, Lnuy;->aP:Lgjs;
+ 
+@@ -2387,7 +2389,7 @@
+ 
+     move-result v5
+ 
+-    if-nez v5, :cond_bb
++    if-nez v5, :cond_be
+ 
+     iget-object v5, v4, Lnuy;->aQ:Lyxj;
+ 
+@@ -2413,7 +2415,7 @@
+ 
+     invoke-virtual {v5, v9, v10}, Lyxj;->i(II)Z
+ 
+-    :cond_bb
++    :cond_be
+     iget-object v5, v4, Lnuy;->bq:Lbeqo;
+ 
+     invoke-interface {v5}, Lbeqo;->a()Ljava/lang/Object;
+@@ -2468,7 +2470,7 @@
+ 
+     const/16 v10, 0x12
+ 
+-    if-nez v9, :cond_109
++    if-nez v9, :cond_10c
+ 
+     iget-object v9, v5, Layw;->a:Ljava/lang/Object;
+ 
+@@ -2486,7 +2488,7 @@
+ 
+     invoke-interface {v9, v5}, Ljava/util/concurrent/Executor;->execute(Ljava/lang/Runnable;)V
+ 
+-    :cond_109
++    :cond_10c
+     iget-object v5, v4, Lnuy;->bs:Lyxi;
+ 
+     invoke-virtual {v5}, Lyxi;->b()I
+@@ -2497,7 +2499,7 @@
+ 
+     move-result v5
+ 
+-    if-nez v5, :cond_12e
++    if-nez v5, :cond_131
+ 
+     iget-object v5, v4, Lnuy;->aQ:Lyxj;
+ 
+@@ -2523,7 +2525,7 @@
+ 
+     invoke-virtual {v5, v9, v11}, Lyxj;->i(II)Z
+ 
+-    :cond_12e
++    :cond_131
+     iget-object v5, v4, Lnuy;->a:Lcom/google/android/apps/youtube/app/watchwhile/MainActivity;
+ 
+     invoke-virtual {v5}, Lcom/google/android/apps/youtube/app/watchwhile/MainActivity;->getApplicationContext()Landroid/content/Context;
+@@ -2536,7 +2538,7 @@
+ 
+     move-result v5
+ 
+-    if-eqz v5, :cond_151
++    if-eqz v5, :cond_154
+ 
+     iget-object v5, v4, Lnuy;->bd:Lbeqo;
+ 
+@@ -2558,7 +2560,7 @@
+ 
+     iput-wide v13, v5, Laizh;->f:J
+ 
+-    :cond_151
++    :cond_154
+     iget-object v5, v4, Lnuy;->aJ:Lbeqo;
+ 
+     invoke-interface {v5}, Lbeqo;->a()Ljava/lang/Object;
+@@ -2569,7 +2571,7 @@
+ 
+     invoke-virtual {v5}, Lakov;->i()V
+ 
+-    if-eqz v0, :cond_180
++    if-eqz v0, :cond_183
+ 
+     const-string v5, "AccountChangedCalledKey"
+ 
+@@ -2605,7 +2607,7 @@
+ 
+     iput-boolean v5, v4, Lnuy;->bt:Z
+ 
+-    :cond_180
++    :cond_183
+     iget-object v5, v4, Lnuy;->aO:Lywj;
+ 
+     const v9, 0x100a02f3
+@@ -2790,16 +2792,16 @@
+ 
+     invoke-direct {v6, v4, v12}, Lnun;-><init>(Ljava/lang/Object;I)V
+ 
+-    if-gtz v5, :cond_255
++    if-gtz v5, :cond_258
+ 
+     move/from16 v5, v16
+ 
+-    goto :goto_256
++    goto :goto_259
+ 
+-    :cond_255
++    :cond_258
+     const/4 v5, 0x0
+ 
+-    :goto_256
++    :goto_259
+     invoke-virtual {v15, v3, v6, v5}, Lyxe;->g(Ljava/lang/String;Ljava/lang/Runnable;Z)V
+ 
+     const-string v3, "scc"
+@@ -2870,13 +2872,13 @@
+ 
+     move-result-object v3
+ 
+-    if-eqz v3, :cond_2ac
++    if-eqz v3, :cond_2af
+ 
+     invoke-direct {v5, v4, v12}, Lnur;-><init>(Ljava/lang/Object;I)V
+ 
+     invoke-virtual {v15, v3, v5}, Lyxe;->c(Ljava/lang/String;Ljava/lang/Runnable;)V
+ 
+-    :cond_2ac
++    :cond_2af
+     const-string v3, "pcc"
+ 
+     new-instance v5, Llgb;
+@@ -2911,16 +2913,16 @@
+ 
+     invoke-direct {v5, v4, v12}, Llgb;-><init>(Ljava/lang/Object;I)V
+ 
+-    if-gtz v9, :cond_2d8
++    if-gtz v9, :cond_2db
+ 
+     move/from16 v6, v16
+ 
+-    goto :goto_2d9
++    goto :goto_2dc
+ 
+-    :cond_2d8
++    :cond_2db
+     const/4 v6, 0x0
+ 
+-    :goto_2d9
++    :goto_2dc
+     invoke-virtual {v15, v3, v5, v6}, Lyxe;->g(Ljava/lang/String;Ljava/lang/Runnable;Z)V
+ 
+     const/4 v3, 0x0
+@@ -2979,16 +2981,16 @@
+ 
+     cmp-long v9, v17, v7
+ 
+-    if-eqz v9, :cond_31e
++    if-eqz v9, :cond_321
+ 
+     move/from16 v9, v16
+ 
+-    goto :goto_31f
++    goto :goto_322
+ 
+-    :cond_31e
++    :cond_321
+     const/4 v9, 0x0
+ 
+-    :goto_31f
++    :goto_322
+     invoke-virtual {v5, v3, v6, v9}, Lyxe;->g(Ljava/lang/String;Ljava/lang/Runnable;Z)V
+ 
+     const-string v3, "npr"
+@@ -3045,16 +3047,16 @@
+ 
+     move/from16 v10, v16
+ 
+-    if-eq v10, v9, :cond_364
++    if-eq v10, v9, :cond_367
+ 
+     const/4 v9, 0x0
+ 
+-    goto :goto_365
++    goto :goto_368
+ 
+-    :cond_364
++    :cond_367
+     const/4 v9, 0x1
+ 
+-    :goto_365
++    :goto_368
+     invoke-virtual {v3, v5, v6, v9}, Lyxe;->g(Ljava/lang/String;Ljava/lang/Runnable;Z)V
+ 
+     const-string v5, "rtc"
+@@ -3189,18 +3191,18 @@
+ 
+     move-result v3
+ 
+-    if-eqz v3, :cond_403
++    if-eqz v3, :cond_406
+ 
+-    goto :goto_415
++    goto :goto_418
+ 
+-    :cond_403
++    :cond_406
+     const/4 v3, 0x5
+ 
+     invoke-static {v0, v3}, Lapp/morphe/extension/youtube/patches/theme/ThemePatch;->showSplashScreen(II)I
+ 
+     move-result v0
+ 
+-    if-ne v0, v3, :cond_5d9
++    if-ne v0, v3, :cond_5dc
+ 
+     iget-object v0, v4, Lnuy;->aO:Lywj;
+ 
+@@ -3210,9 +3212,9 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_5d9
++    if-eqz v0, :cond_5dc
+ 
+-    :goto_415
++    :goto_418
+     iget-object v0, v4, Lnuy;->bs:Lyxi;
+ 
+     invoke-virtual {v0}, Lyxi;->b()I
+@@ -3227,36 +3229,36 @@
+ 
+     move-result v3
+ 
+-    packed-switch v0, :pswitch_data_6a6
++    packed-switch v0, :pswitch_data_6a8
+ 
+-    goto/16 :goto_5d9
++    goto/16 :goto_5dc
+ 
+-    :pswitch_429
++    :pswitch_42c
+     const/16 v16, 0x1
+ 
+     and-int/lit8 v0, v3, 0x1
+ 
+-    if-lez v0, :cond_5d9
++    if-lez v0, :cond_5dc
+ 
+-    goto :goto_452
++    goto :goto_455
+ 
+-    :pswitch_430
++    :pswitch_433
+     const/4 v12, 0x4
+ 
+     and-int/lit8 v0, v3, 0x4
+ 
+-    if-lez v0, :cond_5d9
++    if-lez v0, :cond_5dc
+ 
+-    goto :goto_452
++    goto :goto_455
+ 
+-    :pswitch_436
++    :pswitch_439
+     and-int/lit8 v0, v3, 0x2
+ 
+-    if-lez v0, :cond_5d9
++    if-lez v0, :cond_5dc
+ 
+-    goto :goto_452
++    goto :goto_455
+ 
+-    :pswitch_43b
++    :pswitch_43e
+     iget-object v0, v4, Lnuy;->bK:Lbcvr;
+ 
+     const-wide/32 v5, 0x2b4e247
+@@ -3267,7 +3269,7 @@
+ 
+     move-result v0
+ 
+-    if-nez v0, :cond_452
++    if-nez v0, :cond_455
+ 
+     iget-object v0, v4, Lnuy;->bK:Lbcvr;
+ 
+@@ -3277,10 +3279,10 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_5d9
++    if-eqz v0, :cond_5dc
+ 
+-    :cond_452
+-    :goto_452
++    :cond_455
++    :goto_455
+     iget-object v0, v4, Lnuy;->ag:Lbeqo;
+ 
+     invoke-interface {v0}, Lbeqo;->a()Ljava/lang/Object;
+@@ -3311,7 +3313,7 @@
+ 
+     move-result-object v9
+ 
+-    if-nez v9, :cond_485
++    if-nez v9, :cond_488
+ 
+     iget-object v9, v0, Lnwn;->b:Lbclj;
+ 
+@@ -3333,7 +3335,7 @@
+ 
+     invoke-virtual {v9, v11, v10}, Landroid/view/ViewGroup;->addView(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V
+ 
+-    :cond_485
++    :cond_488
+     check-cast v6, Landroid/view/View;
+ 
+     invoke-virtual {v6}, Landroid/view/View;->bringToFront()V
+@@ -3346,7 +3348,7 @@
+ 
+     move-result v6
+ 
+-    if-eqz v6, :cond_55d
++    if-eqz v6, :cond_560
+ 
+     iget-object v6, v0, Lnwn;->i:Ltab;
+ 
+@@ -3382,169 +3384,169 @@
+ 
+     move-result v9
+ 
+-    if-eqz v9, :cond_53e
++    if-eqz v9, :cond_541
+ 
+     const/4 v10, 0x1
+ 
+     invoke-virtual {v6, v10}, Lcom/airbnb/lottie/LottieAnimationView;->s(Z)V
+ 
+-    packed-switch v9, :pswitch_data_6b6
++    packed-switch v9, :pswitch_data_6b8
+ 
+-    goto/16 :goto_53e
++    goto/16 :goto_541
+ 
+-    :pswitch_4c4
++    :pswitch_4c7
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_4cc
++    if-ne v3, v9, :cond_4cf
+ 
+     const v3, 0x7f130080
+ 
+-    goto :goto_4cf
++    goto :goto_4d2
+ 
+-    :cond_4cc
++    :cond_4cf
+     const v3, 0x7f130081
+ 
+-    :goto_4cf
++    :goto_4d2
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    goto/16 :goto_54c
++    goto/16 :goto_54f
+ 
+-    :pswitch_4d4
++    :pswitch_4d7
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_4dc
++    if-ne v3, v9, :cond_4df
+ 
+     const v3, 0x7f13007c
+ 
+-    goto :goto_4df
++    goto :goto_4e2
+ 
+-    :cond_4dc
++    :cond_4df
+     const v3, 0x7f13007d
+ 
+-    :goto_4df
++    :goto_4e2
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    goto/16 :goto_54c
++    goto/16 :goto_54f
+ 
+-    :pswitch_4e4
++    :pswitch_4e7
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_4ec
++    if-ne v3, v9, :cond_4ef
+ 
+     const v3, 0x7f130078
+ 
+-    goto :goto_4ef
++    goto :goto_4f2
+ 
+-    :cond_4ec
++    :cond_4ef
+     const v3, 0x7f130079
+ 
+-    :goto_4ef
++    :goto_4f2
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    goto :goto_54c
++    goto :goto_54f
+ 
+-    :pswitch_4f3
++    :pswitch_4f6
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_4fb
++    if-ne v3, v9, :cond_4fe
+ 
+     const v3, 0x7f130074
+ 
+-    goto :goto_4fe
++    goto :goto_501
+ 
+-    :cond_4fb
++    :cond_4fe
+     const v3, 0x7f130075
+ 
+-    :goto_4fe
++    :goto_501
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    goto :goto_54c
++    goto :goto_54f
+ 
+-    :pswitch_502
++    :pswitch_505
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_50a
++    if-ne v3, v9, :cond_50d
+ 
+     const v3, 0x7f130082
+ 
+-    goto :goto_50d
++    goto :goto_510
+ 
+-    :cond_50a
++    :cond_50d
+     const v3, 0x7f130083
+ 
+-    :goto_50d
++    :goto_510
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    goto :goto_54c
++    goto :goto_54f
+ 
+-    :pswitch_511
++    :pswitch_514
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_519
++    if-ne v3, v9, :cond_51c
+ 
+     const v3, 0x7f13007e
+ 
+-    goto :goto_51c
++    goto :goto_51f
+ 
+-    :cond_519
++    :cond_51c
+     const v3, 0x7f13007f
+ 
+-    :goto_51c
++    :goto_51f
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    goto :goto_54c
++    goto :goto_54f
+ 
+-    :pswitch_520
++    :pswitch_523
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_528
++    if-ne v3, v9, :cond_52b
+ 
+     const v3, 0x7f13007a
+ 
+-    goto :goto_52b
++    goto :goto_52e
+ 
+-    :cond_528
++    :cond_52b
+     const v3, 0x7f13007b
+ 
+-    :goto_52b
++    :goto_52e
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    goto :goto_54c
++    goto :goto_54f
+ 
+-    :pswitch_52f
++    :pswitch_532
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_537
++    if-ne v3, v9, :cond_53a
+ 
+     const v3, 0x7f130076
+ 
+-    goto :goto_53a
++    goto :goto_53d
+ 
+-    :cond_537
++    :cond_53a
+     const v3, 0x7f130077
+ 
+-    :goto_53a
++    :goto_53d
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    goto :goto_54c
++    goto :goto_54f
+ 
+-    :cond_53e
+-    :goto_53e
++    :cond_541
++    :goto_541
+     sget-object v9, Licb;->b:Licb;
+ 
+-    if-ne v3, v9, :cond_546
++    if-ne v3, v9, :cond_549
+ 
+     const v3, 0x7f130084
+ 
+-    goto :goto_549
++    goto :goto_54c
+ 
+-    :cond_546
++    :cond_549
+     const v3, 0x7f130085
+ 
+-    :goto_549
++    :goto_54c
+     invoke-static {v6, v3}, Lapp/morphe/extension/youtube/patches/player/SeekbarColorPatch;->setSplashAnimationLottie(Lcom/airbnb/lottie/LottieAnimationView;I)V
+ 
+-    :goto_54c
++    :goto_54f
+     iget-object v3, v0, Lnwn;->g:Lcom/airbnb/lottie/LottieAnimationView;
+ 
+     new-instance v6, Lijq;
+@@ -3559,9 +3561,9 @@
+ 
+     invoke-virtual {v3}, Lcom/airbnb/lottie/LottieAnimationView;->g()V
+ 
+-    goto :goto_5ca
++    goto :goto_5cd
+ 
+-    :cond_55d
++    :cond_560
+     iget-object v6, v0, Lnwn;->i:Ltab;
+ 
+     iget-object v6, v6, Ltab;->a:Ljava/lang/Object;
+@@ -3586,7 +3588,7 @@
+ 
+     const/4 v9, 0x0
+ 
+-    if-ne v3, v6, :cond_587
++    if-ne v3, v6, :cond_58a
+ 
+     iget-object v3, v0, Lnwn;->a:Landroid/app/Activity;
+ 
+@@ -3602,9 +3604,9 @@
+ 
+     move-result-object v3
+ 
+-    goto :goto_596
++    goto :goto_599
+ 
+-    :cond_587
++    :cond_58a
+     iget-object v3, v0, Lnwn;->a:Landroid/app/Activity;
+ 
+     invoke-virtual {v3}, Landroid/app/Activity;->getResources()Landroid/content/res/Resources;
+@@ -3619,7 +3621,7 @@
+ 
+     move-result-object v3
+ 
+-    :goto_596
++    :goto_599
+     iget-object v6, v0, Lnwn;->f:Landroid/widget/ImageView;
+ 
+     invoke-virtual {v6, v3}, Landroid/widget/ImageView;->setImageDrawable(Landroid/graphics/drawable/Drawable;)V
+@@ -3668,7 +3670,7 @@
+ 
+     invoke-virtual {v3}, Landroid/graphics/drawable/AnimatedVectorDrawable;->start()V
+ 
+-    :goto_5ca
++    :goto_5cd
+     iget-object v0, v0, Lnwn;->c:Lykz;
+ 
+     new-instance v3, Lyjs;
+@@ -3681,8 +3683,8 @@
+ 
+     invoke-virtual {v5, v0}, Lyxi;->F(I)V
+ 
+-    :cond_5d9
+-    :goto_5d9
++    :cond_5dc
++    :goto_5dc
+     iget-object v0, v4, Lnuy;->aJ:Lbeqo;
+ 
+     invoke-interface {v0}, Lbeqo;->a()Ljava/lang/Object;
+@@ -3737,16 +3739,16 @@
+ 
+     sget-object v11, Licb;->a:Licb;
+ 
+-    if-ne v3, v11, :cond_615
++    if-ne v3, v11, :cond_618
+ 
+     sget-object v3, Lapye;->b:Lapye;
+ 
+-    goto :goto_617
++    goto :goto_61a
+ 
+-    :cond_615
++    :cond_618
+     sget-object v3, Lapye;->c:Lapye;
+ 
+-    :goto_617
++    :goto_61a
+     invoke-virtual {v10}, Lapao;->copyOnWrite()V
+ 
+     iget-object v11, v10, Lapao;->instance:Lapaw;
+@@ -3767,7 +3769,7 @@
+ 
+     move-result v3
+ 
+-    if-eqz v3, :cond_64b
++    if-eqz v3, :cond_64e
+ 
+     invoke-virtual {v5}, Lamty;->c()Ljava/lang/Object;
+ 
+@@ -3797,12 +3799,12 @@
+ 
+     iput-object v3, v5, Lapyf;->o:Ljava/lang/String;
+ 
+-    :cond_64b
++    :cond_64e
+     invoke-virtual {v6}, Lamty;->h()Z
+ 
+     move-result v3
+ 
+-    if-eqz v3, :cond_66e
++    if-eqz v3, :cond_671
+ 
+     invoke-virtual {v6}, Lamty;->c()Ljava/lang/Object;
+ 
+@@ -3832,7 +3834,7 @@
+ 
+     iput-object v3, v5, Lapyf;->p:Ljava/lang/String;
+ 
+-    :cond_66e
++    :cond_671
+     invoke-virtual {v10}, Lapao;->build()Lapaw;
+ 
+     move-result-object v3
+@@ -3865,61 +3867,59 @@
+ 
+     const/4 v3, 0x0
+ 
+-    :goto_68f
++    :goto_692
+     iput-boolean v3, v1, Lcom/google/android/apps/youtube/app/watchwhile/MainActivity;->l:Z
+ 
+     iget-object v0, v1, Lcom/google/android/apps/youtube/app/watchwhile/MainActivity;->k:Lamhk;
+ 
+     invoke-virtual {v0}, Lamhk;->m()V
+-    :try_end_696
+-    .catchall {:try_start_29 .. :try_end_696} :catchall_69a
++    :try_end_699
++    .catchall {:try_start_2c .. :try_end_699} :catchall_69d
+ 
+     invoke-interface {v2}, Lamjt;->close()V
+ 
+     return-void
+ 
+-    :catchall_69a
++    :catchall_69d
+     move-exception v0
+ 
+     move-object v3, v0
+ 
+-    :try_start_69c
++    :try_start_69f
+     invoke-interface {v2}, Lamjt;->close()V
+-    :try_end_69f
+-    .catchall {:try_start_69c .. :try_end_69f} :catchall_6a0
++    :try_end_6a2
++    .catchall {:try_start_69f .. :try_end_6a2} :catchall_6a3
+ 
+-    goto :goto_6a4
++    goto :goto_6a7
+ 
+-    :catchall_6a0
++    :catchall_6a3
+     move-exception v0
+ 
+     invoke-virtual {v3, v0}, Ljava/lang/Throwable;->addSuppressed(Ljava/lang/Throwable;)V
+ 
+-    :goto_6a4
++    :goto_6a7
+     throw v3
+ 
+-    nop
+-
+-    :pswitch_data_6a6
++    :pswitch_data_6a8
+     .packed-switch 0x3
+-        :pswitch_43b
+-        :pswitch_436
+-        :pswitch_430
+-        :pswitch_429
+-        :pswitch_429
+-        :pswitch_429
++        :pswitch_43e
++        :pswitch_439
++        :pswitch_433
++        :pswitch_42c
++        :pswitch_42c
++        :pswitch_42c
+     .end packed-switch
+ 
+-    :pswitch_data_6b6
++    :pswitch_data_6b8
+     .packed-switch 0x1
+-        :pswitch_52f
+-        :pswitch_520
+-        :pswitch_511
+-        :pswitch_502
+-        :pswitch_4f3
+-        :pswitch_4e4
+-        :pswitch_4d4
+-        :pswitch_4c4
++        :pswitch_532
++        :pswitch_523
++        :pswitch_514
++        :pswitch_505
++        :pswitch_4f6
++        :pswitch_4e7
++        :pswitch_4d7
++        :pswitch_4c7
+     .end packed-switch
+ .end method
+ 

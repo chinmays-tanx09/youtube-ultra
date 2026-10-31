@@ -1,0 +1,6 @@
+rule org.schabi.** paradox.lib.np.@1
+rule org.jsoup.** paradox.lib.jsoup.@1
+rule com.grack.nanojson.** paradox.lib.nanojson.@1
+rule com.google.protobuf.** paradox.lib.pb.@1
+rule org.mozilla.** paradox.lib.mozilla.@1
+rule javax.annotation.** paradox.lib.jx.@1
