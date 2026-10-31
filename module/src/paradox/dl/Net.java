@@ -5,6 +5,10 @@ import java.io.*; import java.net.*; import java.util.*;
 public final class Net extends Downloader {
   public static final String UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0";
   private static boolean inited;
+  /** User-Agent per stream URL for streams fetched with the account (each client's own UA); in memory only. */
+  private static final Map<String,String> UAS=Collections.synchronizedMap(new LinkedHashMap<String,String>(64, 0.75f, true){ @Override protected boolean removeEldestEntry(Map.Entry<String,String> e){ return size()>512; } });
+  public static void uaFor(String url, String ua){ if (url!=null && ua!=null && !ua.isEmpty()) UAS.put(url, ua); }
+  public static String ua(String url){ String u= url==null? null: UAS.get(url); return u!=null? u: UA; }
   public static synchronized void init(){
     if (inited) return; NewPipe.init(new Net(), Localization.DEFAULT, ContentCountry.DEFAULT); inited=true;
   }

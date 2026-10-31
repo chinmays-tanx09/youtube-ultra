@@ -51,7 +51,7 @@ public class DownloadService extends Service {
   static String clean(String s){ String r=s.replaceAll("[\\\\/:*?\"<>|\\p{Cntrl}]","_").trim(); if (r.length()>120) r=r.substring(0,120); return r.isEmpty()? "video": r; }
   void work(final Store.Item it, final Engine eng) throws Exception {
     Net.init(); it.status="resolving"; Store.notifyChanged();
-    final StreamInfo[] info={StreamInfo.getInfo(ServiceList.YouTube, it.url)}; it.title=info[0].getName(); it.channel=info[0].getUploaderName();
+    final StreamInfo[] info={Resolve.info(it.url)}; it.title=info[0].getName(); it.channel=info[0].getUploaderName();
     final StreamInfo ti=info[0]; new Thread(new Runnable(){ public void run(){ try { java.util.List<org.schabi.newpipe.extractor.Image> th=ti.getThumbnails(); String tu=null; int best=0; for (org.schabi.newpipe.extractor.Image im: th){ int w=im.getWidth(); if (tu==null || (w>best && w<=720)) { tu=im.getUrl(); best=w; } }
       if (tu!=null){ File td=new File(getFilesDir(),"thumbs"); td.mkdirs(); File tf=new File(td, it.id+".jpg"); java.net.HttpURLConnection c=(java.net.HttpURLConnection)new java.net.URL(tu).openConnection(); c.setConnectTimeout(10000); c.setReadTimeout(15000);
         InputStream tin=c.getInputStream(); FileOutputStream to=new FileOutputStream(tf); byte[] bb=new byte[16384]; int nn; while((nn=tin.read(bb))>0) to.write(bb,0,nn); to.close(); tin.close(); it.thumb=tf.getAbsolutePath(); Store.notifyChanged(); } } catch(Throwable t){ Log.w(TAG,"thumb",t); } } }).start();
@@ -63,7 +63,7 @@ public class DownloadService extends Service {
     File[] files=new File[parts.size()]; long[] L=new long[parts.size()];
     for (int i=0;i<files.length;i++){ files[i]=new File(tmp, parts.get(i)+".part"); L[i]=lens.get(i); }
     Engine.UrlSource src=new Engine.UrlSource(){ public String url(int p){ return parts.get(p).equals("v")? pk[0].videoUrl: pk[0].audioUrl; }
-      public String refresh(int p) throws Exception { String old=url(p); info[0]=StreamInfo.getInfo(ServiceList.YouTube, it.url); String same=sameStream(info[0], old);
+      public String refresh(int p) throws Exception { String old=url(p); info[0]=Resolve.info(it.url); String same=sameStream(info[0], old);
         if (same!=null) { if (parts.get(p).equals("v")) pk[0].videoUrl=same; else pk[0].audioUrl=same; return same; }
         throw new IOException("stream no longer available"); } };
     it.status="downloading"; Store.notifyChanged();

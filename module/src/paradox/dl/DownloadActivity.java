@@ -4,7 +4,7 @@ import org.schabi.newpipe.extractor.*; import org.schabi.newpipe.extractor.strea
 import java.util.*; import java.util.regex.*;
 /** YouTube-style download flow: Video/Audio sheet -> quality sheet (tap a row to start) -> our 16-connection engine. */
 public class DownloadActivity extends Activity {
-  Ui.Pal P; FrameLayout root; Ui.Sheet sheet; String url; volatile StreamInfo info; volatile List<String[]> vids; volatile String err; String type; boolean playlist, remember; TextView subtitle;
+  Ui.Pal P; FrameLayout root; Ui.Sheet sheet; String url; volatile StreamInfo info; volatile List<String[]> vids; volatile String err; volatile boolean plainErr; String type; boolean playlist, remember; TextView subtitle;
   final Handler h=new Handler(Looper.getMainLooper()); Runnable waiting;
   static String findUrl(String s){ if (s==null) return null; Matcher m=Pattern.compile("https?://\\S+").matcher(s); return m.find()? m.group(): null; }
   int dp(float v){ return Ui.dp(this,v); }
@@ -22,8 +22,8 @@ public class DownloadActivity extends Activity {
       if (playlist){ PlaylistInfo pi=PlaylistInfo.getInfo(ServiceList.YouTube, url); List<String[]> v=new ArrayList<>(); for (StreamInfoItem s: pi.getRelatedItems()) v.add(new String[]{s.getUrl(), s.getName()});
         Page next=pi.getNextPage(); int guard=0; while (next!=null && guard++<20){ ListExtractor.InfoItemsPage<StreamInfoItem> pg=PlaylistInfo.getMoreItems(ServiceList.YouTube, url, next); for (StreamInfoItem s: pg.getItems()) v.add(new String[]{s.getUrl(), s.getName()}); next=pg.getNextPage(); }
         vids=v; }
-      else info=StreamInfo.getInfo(ServiceList.YouTube, url);
-    } catch (Throwable e){ android.util.Log.e("ParadoxDL","resolve failed",e); err=String.valueOf(e.getMessage()); }
+      else info=Resolve.info(url);
+    } catch (Throwable e){ android.util.Log.e("ParadoxDL","resolve failed",e); plainErr= e instanceof Resolve.Plain; err=String.valueOf(e.getMessage()); }
     h.post(() -> { fillSubtitle(); if (waiting!=null){ Runnable x=waiting; waiting=null; x.run(); } }); }).start(); }
   String what(){ if (info!=null) return info.getName(); if (vids!=null) return vids.size()+" videos in this playlist"; return null; }
   void fillSubtitle(){ if (subtitle==null) return; String w=what(); if (w==null) return; boolean blank=subtitle.getText().toString().trim().isEmpty(); subtitle.setText(w); subtitle.setVisibility(View.VISIBLE); if (blank){ subtitle.setAlpha(0f); subtitle.animate().alpha(1f).setDuration(260).start(); } }
@@ -47,7 +47,7 @@ public class DownloadActivity extends Activity {
         Ui.Shimmer a=new Ui.Shimmer(this,P); LinearLayout.LayoutParams al=new LinearLayout.LayoutParams(dp(k%2==0? 132: 104),dp(14)); rw.addView(a,al);
         rw.addView(new View(this),new LinearLayout.LayoutParams(0,1,1f)); Ui.Shimmer s=new Ui.Shimmer(this,P); rw.addView(s,new LinearLayout.LayoutParams(dp(60),dp(12))); sheet.body.addView(rw); } });
     waiting=() -> { if (err!=null) fail(); else r.run(); }; }
-  void fail(){ Toast.makeText(this,"Couldn't load this video: "+err,Toast.LENGTH_LONG).show(); sheet.dismiss(null); }
+  void fail(){ Toast.makeText(this, plainErr? err: "Couldn't load this video: "+err, Toast.LENGTH_LONG).show(); sheet.dismiss(null); }
   List<String[]> rows(){ boolean au=type.equals("audio");
     if (playlist){ if (au) return Arrays.asList(new String[]{"a:rank:0","High","0"},new String[]{"a:rank:1","Medium","0"},new String[]{"a:rank:2","Low","0"});
       return Arrays.asList(new String[]{"v:1080:mp4","1080p (Full HD)","0"},new String[]{"v:720:mp4","720p (HD)","0"},new String[]{"v:480:mp4","480p","0"},new String[]{"v:360:mp4","360p","0"},new String[]{"v:144:mp4","144p","0"}); }

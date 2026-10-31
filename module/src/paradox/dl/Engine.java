@@ -21,7 +21,7 @@ public final class Engine {
   static HttpURLConnection open(String url, long a, long b) throws IOException {
     String u= google(url)? url+"&range="+a+"-"+b : url;
     HttpURLConnection c=(HttpURLConnection)new URL(u).openConnection();
-    c.setConnectTimeout(15000); c.setReadTimeout(20000); c.setUseCaches(false); c.setRequestProperty("User-Agent", Net.UA);
+    c.setConnectTimeout(15000); c.setReadTimeout(20000); c.setUseCaches(false); c.setRequestProperty("User-Agent", Net.ua(url));
     c.setRequestProperty("Accept-Encoding", "identity"); c.setRequestProperty("Connection", "keep-alive");
     if (!google(url)) c.setRequestProperty("Range","bytes="+a+"-"+b);
     return c; }
