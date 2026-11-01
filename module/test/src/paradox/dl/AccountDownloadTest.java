@@ -40,6 +40,7 @@ public class AccountDownloadTest {
   static final String URL="https://www.youtube.com/watch?v=fAkEmEmB3r0";
 
   public static void main(String[] a) throws Exception {
+    Formats.av1MaxHeight=0;   // plain JVM: no MediaCodec; FormatsTest covers the AV1 paths
     Path dir=Paths.get(a.length>0? a[0]: "module/test/fixtures");
     if (a.length>1 && a[1].equals("--write-fixtures")) { Files.write(dir.resolve("player_signed_in.pb"), signedFixture()); Files.write(dir.resolve("player_members_locked.pb"), lockedFixture()); System.out.println("fixtures written"); return; }
     byte[] signed=Files.readAllBytes(dir.resolve("player_signed_in.pb")), locked=Files.readAllBytes(dir.resolve("player_members_locked.pb"));
@@ -66,13 +67,13 @@ public class AccountDownloadTest {
     Formats.Pick pk=Formats.pick(si, "v:1080:mp4");
     check(pk!=null && pk.videoUrl.contains("itag=137") && pk.audioUrl.contains("itag=140") && pk.videoLen==50_000_000 && pk.audioLen==3_000_000 && pk.ext.equals("mp4"), "pick 1080 mp4 -> 137 + 140");
     Formats.Pick pw=Formats.pick(si, "v:1080:webm");
-    check(pw!=null && pw.videoUrl.contains("itag=248") && pw.audioUrl.contains("itag=251") && pw.ext.equals("webm"), "pick 1080 webm -> 248 + 251");
+    check(pw!=null && pw.videoUrl.contains("itag=137") && pw.audioUrl.contains("itag=140") && pw.ext.equals("mp4"), "old v10.8 'webm' spec now saves MP4 -> 137 + 140");
     Formats.Pick p720=Formats.pick(si, "v:720:mp4");
     check(p720!=null && p720.videoUrl.contains("itag=136"), "pick 720 -> 136");
     List<String[]> ac=Formats.audioChoices(si);
-    check(ac.size()==2 && ac.get(0)[0].equals("a:itag:251"), "audio rows best first: "+rows(ac));
+    check(ac.size()==3 && ac.get(0)[0].equals("a:mp3:320") && ac.get(1)[0].equals("a:mp3:192") && ac.get(2)[0].equals("a:mp3:128"), "audio rows are MP3 320/192/128: "+rows(ac));
     Formats.Pick pa=Formats.pick(si, "a:itag:140");
-    check(pa!=null && pa.audioOnly && pa.audioUrl.contains("itag=140") && pa.ext.equals("m4a"), "pick audio 140");
+    check(pa!=null && pa.audioOnly && pa.ext.equals("mp3") && (pa.kbps==192 || pa.kbps==320), "old v10.8 'a:itag:140' spec now saves MP3 (kbps "+(pa==null?0:pa.kbps)+")");
     check(DownloadService.sameStream(si, fakeUrl(137, 1).replace("FAKEVIDEO","OLD"))!=null && DownloadService.sameStream(si, fakeUrl(137,1)).contains("itag=137"), "URL refresh finds same itag");
     check(si.getName().startsWith("Members stream") && si.getUploaderName().equals("Fake Channel") && si.getThumbnails().size()==2, "title/channel/thumbs carried");
 

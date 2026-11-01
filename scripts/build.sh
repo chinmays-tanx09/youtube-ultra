@@ -15,11 +15,12 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; DEPS="$ROOT/.deps"; W="$ROOT/build/work"; OUT="$ROOT/build/out"
 STOCK="${1:?usage: scripts/build.sh <stock YouTube 20.05.46 universal APK>}"
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}"; BT="$SDK/build-tools/35.0.0"
-VERSION_CODE="${ULTRA_VERSION_CODE:-1552692683}"
+VERSION_CODE="${ULTRA_VERSION_CODE:-1552692684}"
 JAVA="${JAVA:-java}"   # Morphe CLI needs Java 21+
 
 "$ROOT/scripts/fetch-deps.sh"
 "$ROOT/scripts/build-module.sh"
+"$ROOT/scripts/build-native.sh"            # MP3 encoder (LAME) for arm64-v8a + armeabi-v7a; needs ANDROID_NDK_HOME
 rm -rf "$W"; mkdir -p "$W" "$OUT"
 
 echo "== 1/5 patch stock YouTube with anddea patches (Morphe CLI)"
@@ -43,6 +44,7 @@ mkdir -p "$W/app/unknown"; cp -r "$ROOT/build/module/res/paradox" "$W/app/unknow
 echo "== 4/5 resources, manifest, assets"
 python3 "$ROOT/patches/apply_resources.py" "$W/app" --version-code "$VERSION_CODE"
 rm -rf "$W/app/lib/x86" "$W/app/lib/x86_64"            # arm64-v8a + armeabi-v7a only
+for abi in arm64-v8a armeabi-v7a; do cp "$ROOT/build/native/$abi/libparadoxmp3.so" "$W/app/lib/$abi/"; done
 mkdir -p "$W/app/assets"
 for f in paradox_intro.mp4 microg_icon.png; do          # optional branding; the app works without it
   [ -f "$ROOT/branding/$f" ] && cp "$ROOT/branding/$f" "$W/app/assets/$f" || true

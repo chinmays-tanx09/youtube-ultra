@@ -35,8 +35,8 @@ public class DownloadActivity extends Activity {
     if (sub!=null){ TextView s=Ui.text(this,sub,14,P.sub,false); s.setPadding(0,dp(2),0,0); col.addView(s); } r.addView(col,new LinearLayout.LayoutParams(0,-2,1f));
     r.addView(Ui.icon(this,Ui.I_CHEVRON,P.sub,20)); Ui.enter(r,idx); return r; }
   void typeSheet(){ subtitle=sheet.header("Download", what()==null? " ": what());
-    View v=iconRow(Ui.I_VIDEO,"Video","With sound, saved to Gallery",0); v.setOnClickListener(x -> chooseType("video"));
-    View a=iconRow(Ui.I_AUDIO,"Audio","Audio only, saved to Music",1); a.setOnClickListener(x -> chooseType("audio"));
+    View v=iconRow(Ui.I_VIDEO,"Video","MP4 with sound, saved to Gallery",0); v.setOnClickListener(x -> chooseType("video"));
+    View a=iconRow(Ui.I_AUDIO,"Audio","MP3, saved to Music",1); a.setOnClickListener(x -> chooseType("audio"));
     sheet.body.addView(v); sheet.body.addView(a); }
   void chooseType(String t){ type=t; String rem=Prefs.get(this, t); if (rem!=null){ startRemembered(rem); return; } qualitySheet(); }
   String qTitle(){ return type.equals("audio")?"Audio quality":"Download quality"; }
@@ -49,7 +49,7 @@ public class DownloadActivity extends Activity {
     waiting=() -> { if (err!=null) fail(); else r.run(); }; }
   void fail(){ Toast.makeText(this, plainErr? err: "Couldn't load this video: "+err, Toast.LENGTH_LONG).show(); sheet.dismiss(null); }
   List<String[]> rows(){ boolean au=type.equals("audio");
-    if (playlist){ if (au) return Arrays.asList(new String[]{"a:rank:0","High","0"},new String[]{"a:rank:1","Medium","0"},new String[]{"a:rank:2","Low","0"});
+    if (playlist){ if (au) return Arrays.asList(new String[]{"a:rank:0","MP3 320 kbps (Best)","0"},new String[]{"a:rank:1","MP3 192 kbps (Standard)","0"},new String[]{"a:rank:2","MP3 128 kbps (Smaller)","0"});
       return Arrays.asList(new String[]{"v:1080:mp4","1080p (Full HD)","0"},new String[]{"v:720:mp4","720p (HD)","0"},new String[]{"v:480:mp4","480p","0"},new String[]{"v:360:mp4","360p","0"},new String[]{"v:144:mp4","144p","0"}); }
     return au? Formats.audioChoices(info): Formats.videoChoices(info); }
   /** "1080p (Full HD) 60fps" -> main "1080p", rest "Full HD · 60fps". */

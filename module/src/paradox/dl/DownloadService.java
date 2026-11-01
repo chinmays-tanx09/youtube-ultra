@@ -48,13 +48,21 @@ public class DownloadService extends Service {
   static String sameStream(StreamInfo i, String oldUrl){ int it=itagOf(oldUrl); if (it<0) return null;
     List<Stream> all=new ArrayList<>(); all.addAll(i.getVideoOnlyStreams()); all.addAll(i.getAudioStreams()); all.addAll(i.getVideoStreams());
     for (Stream s: all) { try { if (s.isUrl() && s.getItagItem()!=null && s.getItagItem().id==it) return s.getContent(); } catch (Throwable t){} } return null; }
-  static String clean(String s){ String r=s.replaceAll("[\\\\/:*?\"<>|\\p{Cntrl}]","_").trim(); if (r.length()>120) r=r.substring(0,120); return r.isEmpty()? "video": r; }
+  static String clean(String s){ return Names.clean(s, "video"); }
+  /** Thumbnail as JPEG bytes for the MP3 cover (YouTube may serve WebP: re-encoded; large images scaled to 720 px). */
+  static byte[] cover(String path){ try { if (path==null || path.isEmpty()) return null; File f=new File(path); if (!f.isFile() || f.length()==0 || f.length()>8_000_000) return null;
+      byte[] b=new byte[(int)f.length()]; DataInputStream in=new DataInputStream(new FileInputStream(f)); try { in.readFully(b); } finally { in.close(); }
+      if (Id3.isJpeg(b) && b.length<400_000) return b;
+      android.graphics.Bitmap bm=android.graphics.BitmapFactory.decodeByteArray(b,0,b.length); if (bm==null) return null;
+      int w=bm.getWidth(), hh=bm.getHeight(); if (w>720){ android.graphics.Bitmap s2=android.graphics.Bitmap.createScaledBitmap(bm,720,Math.max(1,hh*720/w),true); bm.recycle(); bm=s2; }
+      ByteArrayOutputStream o=new ByteArrayOutputStream(); bm.compress(android.graphics.Bitmap.CompressFormat.JPEG, 90, o); bm.recycle(); return o.toByteArray();
+    } catch (Throwable t){ Log.w(TAG,"cover",t); return null; } }
   void work(final Store.Item it, final Engine eng) throws Exception {
     Net.init(); it.status="resolving"; Store.notifyChanged();
     final StreamInfo[] info={Resolve.info(it.url)}; it.title=info[0].getName(); it.channel=info[0].getUploaderName();
-    final StreamInfo ti=info[0]; new Thread(new Runnable(){ public void run(){ try { java.util.List<org.schabi.newpipe.extractor.Image> th=ti.getThumbnails(); String tu=null; int best=0; for (org.schabi.newpipe.extractor.Image im: th){ int w=im.getWidth(); if (tu==null || (w>best && w<=720)) { tu=im.getUrl(); best=w; } }
+    final StreamInfo ti=info[0]; final Thread thumbs=new Thread(new Runnable(){ public void run(){ try { java.util.List<org.schabi.newpipe.extractor.Image> th=ti.getThumbnails(); String tu=null; int best=0; for (org.schabi.newpipe.extractor.Image im: th){ int w=im.getWidth(); if (tu==null || (w>best && w<=720)) { tu=im.getUrl(); best=w; } }
       if (tu!=null){ File td=new File(getFilesDir(),"thumbs"); td.mkdirs(); File tf=new File(td, it.id+".jpg"); java.net.HttpURLConnection c=(java.net.HttpURLConnection)new java.net.URL(tu).openConnection(); c.setConnectTimeout(10000); c.setReadTimeout(15000);
-        InputStream tin=c.getInputStream(); FileOutputStream to=new FileOutputStream(tf); byte[] bb=new byte[16384]; int nn; while((nn=tin.read(bb))>0) to.write(bb,0,nn); to.close(); tin.close(); it.thumb=tf.getAbsolutePath(); Store.notifyChanged(); } } catch(Throwable t){ Log.w(TAG,"thumb",t); } } }).start();
+        InputStream tin=c.getInputStream(); FileOutputStream to=new FileOutputStream(tf); byte[] bb=new byte[16384]; int nn; while((nn=tin.read(bb))>0) to.write(bb,0,nn); to.close(); tin.close(); it.thumb=tf.getAbsolutePath(); Store.notifyChanged(); } } catch(Throwable t){ Log.w(TAG,"thumb",t); } } }); thumbs.start();
     final Formats.Pick[] pk={Formats.pick(info[0], it.spec)}; if (pk[0]==null) throw new IOException("format not available");
     it.label=pk[0].label;
     final List<String> parts=new ArrayList<>(); List<Long> lens=new ArrayList<>();
@@ -76,33 +84,46 @@ public class DownloadService extends Service {
     long secs=Math.max(1, SystemClock.elapsedRealtime()-t0);
     long got=eng.total-eng.resumed; it.done=eng.total; it.total=eng.total; it.progress=100; it.speed=got*1000.0/secs;
     Log.i(TAG, "downloaded "+got+" bytes (resumed from "+eng.resumed+") in "+secs+" ms = "+String.format(Locale.US,"%.2f MB/s", got*1000.0/secs/1048576)+" connections="+Engine.CONNECTIONS);
-    it.status="merging"; Store.notifyChanged();
-    boolean audio=pk[0].audioOnly; boolean opus= audio && pk[0].ext.equals("opus"); boolean webm=!audio && pk[0].ext.endsWith("webm");
-    boolean ogg= opus && Build.VERSION.SDK_INT>=29;
-    String ext= audio? (pk[0].ext.equals("m4a")? "m4a": (ogg? "opus":"webm")) : (webm? "webm":"mp4");
-    String mime= audio? (ext.equals("m4a")? "audio/mp4": ext.equals("opus")? "audio/ogg":"audio/webm") : (webm? "video/webm":"video/mp4");
-    int muxFmt= audio? (ext.equals("m4a")? 0: ogg? 2: 1) : (webm? 1: 0);
-    String name=clean(it.title)+(audio? "": " ["+pk[0].label+"]")+"."+ext;
+    final boolean audio=pk[0].audioOnly;
+    // Video: H.264 (or AV1) + AAC remuxed into a real .mp4.  Audio: decoded and re-encoded to a real .mp3.
+    String ext= audio? Names.MP3: Names.MP4; String mime=Names.mime(ext);
+    String name=Names.file(it.title, ext);
     String vPath= pk[0].videoUrl!=null? files[0].getAbsolutePath(): null; String aPath= pk[0].audioUrl!=null? files[files.length-1].getAbsolutePath(): null;
+    File mp3=null;
+    if (audio) {
+      it.status="converting"; it.progress=0; Store.notifyChanged();
+      try { thumbs.join(8000); } catch (InterruptedException e){}
+      byte[] id3=Id3.tag(it.title, it.channel, null, cover(it.thumb));
+      mp3=new File(tmp, "out.mp3");
+      ToMp3.convert(aPath, mp3, pk[0].kbps, id3, pk[0].durationUs, new ToMp3.Progress(){
+        public void at(int pc){ it.progress=pc; Store.notifyChanged();
+          try { ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(NID, note(it.title+" · converting to MP3 · "+pc+"%", pc)); } catch(Exception e){} }
+        public boolean cancelled(){ return eng.cancelled; } });
+      it.total=mp3.length(); it.done=it.total;
+    }
+    it.status="merging"; it.progress=100; Store.notifyChanged();
     if (Build.VERSION.SDK_INT>=29) {
       Uri coll= audio? MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY): MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
       ContentValues cv=new ContentValues(); cv.put(MediaStore.MediaColumns.DISPLAY_NAME, name); cv.put(MediaStore.MediaColumns.MIME_TYPE, mime);
       cv.put(MediaStore.MediaColumns.RELATIVE_PATH, (audio? Environment.DIRECTORY_MUSIC: Environment.DIRECTORY_MOVIES)+"/"+DIR); cv.put(MediaStore.MediaColumns.IS_PENDING, 1);
-      if (!audio) cv.put(MediaStore.MediaColumns.TITLE, it.title);
+      cv.put(MediaStore.MediaColumns.TITLE, it.title);
       Uri u=getContentResolver().insert(coll, cv); if (u==null) throw new IOException("MediaStore insert failed");
       try { ParcelFileDescriptor pfd=getContentResolver().openFileDescriptor(u,"rw");
-        if (pk[0].progressive) copy(files[0], new FileOutputStream(pfd.getFileDescriptor()));
-        else Mux.merge(vPath, aPath, pfd.getFileDescriptor(), null, muxFmt);
-        pfd.close();
+        if (pfd==null) throw new IOException("MediaStore open failed");
+        if (audio || pk[0].progressive) copy(audio? mp3: files[0], new ParcelFileDescriptor.AutoCloseOutputStream(pfd));   // closes pfd
+        else { try { Mux.mp4(vPath, aPath, pfd.getFileDescriptor(), null); } finally { pfd.close(); } }
         ContentValues done=new ContentValues(); done.put(MediaStore.MediaColumns.IS_PENDING, 0); getContentResolver().update(u, done, null, null);
       } catch (Exception e) { getContentResolver().delete(u,null,null); throw e; }
       it.path=u.toString();
     } else {
       File dir=new File(Environment.getExternalStoragePublicDirectory(audio? Environment.DIRECTORY_MUSIC: Environment.DIRECTORY_MOVIES), DIR); dir.mkdirs();
-      File out=new File(dir, name); int n=1; while (out.exists()) out=new File(dir, name.replaceFirst("(\\.[^.]+)$"," ("+(n++)+")$1"));
-      if (pk[0].progressive) copy(files[0], new FileOutputStream(out)); else Mux.merge(vPath, aPath, null, out.getAbsolutePath(), muxFmt);
-      it.path=out.getAbsolutePath(); MediaScannerConnection.scanFile(this, new String[]{it.path}, null, null);
+      File out=new File(dir, name); int n=1; while (out.exists()) out=new File(dir, Names.numbered(name, n++));
+      try {
+        if (audio) copy(mp3, new FileOutputStream(out)); else if (pk[0].progressive) copy(files[0], new FileOutputStream(out)); else Mux.mp4(vPath, aPath, null, out.getAbsolutePath());
+      } catch (Exception e){ out.delete(); throw e; }
+      it.path=out.getAbsolutePath(); MediaScannerConnection.scanFile(this, new String[]{it.path}, new String[]{mime}, null);
     }
+    if (mp3!=null) mp3.delete();
     for (File x: files) { x.delete(); Engine.mapFile(x).delete(); } tmp.delete();
     it.status="done"; Store.save(this);
     try { NotificationManager nm=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
@@ -112,5 +133,5 @@ public class DownloadService extends Service {
        .setContentIntent(PendingIntent.getActivity(this, it.id.hashCode(), play, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT));
       nm.notify(it.id.hashCode(), b.build()); } catch(Exception e){}
   }
-  static void copy(File f, OutputStream o) throws IOException { FileInputStream in=new FileInputStream(f); byte[] b=new byte[1<<20]; int n; while((n=in.read(b))>0) o.write(b,0,n); in.close(); o.close(); }
+  static void copy(File f, OutputStream o) throws IOException { FileInputStream in=new FileInputStream(f); try { byte[] b=new byte[1<<20]; int n; while((n=in.read(b))>0) o.write(b,0,n); } finally { in.close(); o.close(); } }
 }

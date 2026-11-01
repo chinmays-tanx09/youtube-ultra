@@ -4,7 +4,7 @@ public final class Store {
   public static final class Item { public String id, url, spec, title="Resolving…", status="queued", path, error, label="", thumb="", channel=""; public long total, done, created; public double speed; public int progress; public boolean audio;
     JSONObject json() throws JSONException { JSONObject o=new JSONObject(); o.put("id",id).put("url",url).put("spec",spec).put("title",title).put("status",status).put("path",path==null?"":path).put("error",error==null?"":error).put("label",label).put("total",total).put("done",done).put("created",created).put("audio",audio).put("thumb",thumb).put("channel",channel); return o; }
     static Item from(JSONObject o){ Item i=new Item(); i.id=o.optString("id"); i.url=o.optString("url"); i.spec=o.optString("spec"); i.title=o.optString("title"); i.status=o.optString("status"); i.path=o.optString("path"); i.error=o.optString("error"); i.label=o.optString("label"); i.total=o.optLong("total"); i.done=o.optLong("done"); i.created=o.optLong("created"); i.audio=o.optBoolean("audio"); i.thumb=o.optString("thumb"); i.channel=o.optString("channel");
-      if (i.status.equals("downloading")||i.status.equals("merging")||i.status.equals("resolving")||i.status.equals("queued")) i.status="paused"; if (i.total>0) i.progress=(int)(i.done*100/i.total); return i; } }
+      if (i.status.equals("downloading")||i.status.equals("merging")||i.status.equals("converting")||i.status.equals("resolving")||i.status.equals("queued")) i.status="paused"; if (i.total>0) i.progress=(int)(i.done*100/i.total); return i; } }
   private static final List<Item> items=new ArrayList<>(); private static boolean loaded;
   public interface Listener { void changed(); }
   private static final List<Listener> ls=new ArrayList<>();

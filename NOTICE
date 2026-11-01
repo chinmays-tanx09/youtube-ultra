@@ -54,6 +54,13 @@ Bundled in the app (classes13.dex, relocated under paradox.lib.*):
   - Mozilla Rhino 1.8.1 - MPL-2.0 - https://github.com/mozilla/rhino
   - JSR-305 annotations 3.0.2 - Apache-2.0
 
+Bundled as native code (lib/arm64-v8a and lib/armeabi-v7a/libparadoxmp3.so):
+  - LAME 3.100 MP3 encoder - LGPL-2.0-or-later - https://lame.sourceforge.io
+    Unmodified source, fetched by scripts/build-native.sh (lame-3.100.tar.gz,
+    SHA-256 ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e),
+    linked with the JNI bridge module/jni/paradox_mp3.c. You may rebuild and
+    replace libparadoxmp3.so with your own LAME build using that script.
+
 Applied to the stock YouTube APK at build time:
   - anddea/revanced-patches v4.4.0-dev.3 - GPL-3.0 with section 7 terms
     https://github.com/anddea/revanced-patches (its NOTICE is reproduced below)

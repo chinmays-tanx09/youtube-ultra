@@ -31,7 +31,7 @@ def pref_block(indent):
                    f'{i}</Preference>\n')
     return "".join(out)
 
-PARADOX_COMPONENTS = """        <activity android:excludeFromRecents="false" android:exported="true" android:label="YouTube Ultra" android:name="paradox.dl.IntroActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+PARADOX_COMPONENTS = """        <activity android:configChanges="keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:excludeFromRecents="false" android:exported="true" android:label="YouTube Ultra" android:name="paradox.dl.IntroActivity" android:screenOrientation="unspecified" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

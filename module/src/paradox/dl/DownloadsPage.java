@@ -36,7 +36,7 @@ public class DownloadsPage extends FrameLayout implements Store.Listener {
       Bitmap bm=thumb(it); if (bm!=null) iv.setImageBitmap(bm); tf.addView(iv,new FrameLayout.LayoutParams(-1,-1));
       String badge= it.audio? "♪ audio": it.label; if (badge!=null && !badge.isEmpty()){ TextView bd=Ui.text(c,badge,11,0xFFFFFFFF,false); bd.setBackground(Ui.round(0xCC000000, Ui.dp(c,4),0)); bd.setPadding(Ui.dp(c,4),Ui.dp(c,1),Ui.dp(c,4),Ui.dp(c,1));
         FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(-2,-2,Gravity.BOTTOM|Gravity.END); lp.setMargins(0,0,Ui.dp(c,4),Ui.dp(c, it.status.equals("done")? 4: 16)); tf.addView(bd,lp); }
-      if (!it.status.equals("done")){ Ui.SheenBar pb=new Ui.SheenBar(c, 0xFFFFFFFF, 0x66000000); pb.setProgress(it.progress, it.status.equals("downloading")||it.status.equals("merging")||it.status.equals("resolving")||it.status.equals("queued"));
+      if (!it.status.equals("done")){ Ui.SheenBar pb=new Ui.SheenBar(c, 0xFFFFFFFF, 0x66000000); pb.setProgress(it.progress, it.status.equals("downloading")||it.status.equals("merging")||it.status.equals("converting")||it.status.equals("resolving")||it.status.equals("queued"));
         FrameLayout.LayoutParams pl=new FrameLayout.LayoutParams(-1,Ui.dp(c,4),Gravity.BOTTOM); pl.setMargins(Ui.dp(c,6),0,Ui.dp(c,6),Ui.dp(c,6)); tf.addView(pb,pl); }
       row.addView(tf,new LinearLayout.LayoutParams(Ui.dp(c,160),Ui.dp(c,90)));
       LinearLayout col=new LinearLayout(c); col.setOrientation(LinearLayout.VERTICAL); col.setPadding(Ui.dp(c,12),0,0,0);
@@ -44,7 +44,8 @@ public class DownloadsPage extends FrameLayout implements Store.Listener {
       String st;
       switch (it.status){ case "downloading": st="Downloading · "+it.progress+"%\n"+Ui.size(it.done)+" / "+Ui.size(it.total)+" · "+String.format(Locale.US,"%.1f MB/s", it.speed/1048576); break;
         case "done": st=(it.channel==null||it.channel.isEmpty()? "": it.channel+" · ")+Ui.size(it.total); break;
-        case "failed": st="Download failed · tap to retry"; break; case "merging": st="Finishing…"; break; case "resolving": st="Preparing…"; break;
+        case "failed": st= it.error!=null && (it.error.startsWith("MP3 ")||it.error.startsWith("MP4 "))? it.error+" · tap to retry": "Download failed · tap to retry"; break;
+        case "converting": st="Converting to MP3 · "+it.progress+"%"; break; case "merging": st= it.audio? "Saving MP3…": "Saving MP4…"; break; case "resolving": st="Preparing…"; break;
         case "paused": case "cancelled": st="Paused · "+it.progress+"% · tap to resume"; break; default: st="Waiting…"; }
       TextView s=Ui.text(c,st,13,it.status.equals("failed")? 0xFFFF8A80: SUB,false); s.setPadding(0,Ui.dp(c,4),0,0); col.addView(s);
       row.addView(col,new LinearLayout.LayoutParams(0,-2,1f));
