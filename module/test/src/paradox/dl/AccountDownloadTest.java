@@ -33,8 +33,15 @@ public class AccountDownloadTest {
     return new Pb().m(1, new Pb().s(9,"FAKEVISITORDATA")).m(2, new Pb().v(1,3).s(2,"Join this channel to get access to members-only content like this video, and other exclusive perks."))
       .m(11, new Pb().s(1,"fAkEmEmB3r0").s(15,"Members stream #12 (fake)")).bytes(); }
 
+  /** Our own innertube requests in tests: recorded, and YouTube's bot check is the answer (no network). */
+  static final List<String> own=new ArrayList<>();
+  static final String BOT_JSON="{\"playabilityStatus\":{\"status\":\"LOGIN_REQUIRED\",\"reason\":\"Sign in to confirm you\u2019re not a bot\"}}";
   static void reset(){ AuthUtils.authorization=""; AuthUtils.visitorId=""; AuthUtils.pageId=""; AuthUtils.incognito=false;
-    app.morphe.extension.shared.spoof.SpoofVideoStreamsPatch.currentVideoRequestHeader=null; StreamOrDetailsDataRequest.responses.clear(); StreamOrDetailsDataRequest.calls.clear(); }
+    app.morphe.extension.shared.spoof.SpoofVideoStreamsPatch.currentVideoRequestHeader=null; app.morphe.extension.shared.spoof.SpoofVideoStreamsPatch.preferred=ClientType.VISIONOS_1_02;
+    app.morphe.extension.shared.spoof.js.JavaScriptEngineSupport.supported=true;
+    StreamOrDetailsDataRequest.responses.clear(); StreamOrDetailsDataRequest.calls.clear(); StreamOrDetailsDataRequest.streamCache.clear(); own.clear();
+    Innertube.http=(u,h,b) -> { own.add(h.get("X-YouTube-Client-Name")+"|"+h.get("Authorization")); return new Innertube.Reply(200, BOT_JSON); };
+    Resolve.probe=(u,ua) -> 206; Resolve.meta=id -> null; Resolve.BUDGET_MS=45000; }
   static void signIn(){ AuthUtils.authorization="Bearer FAKE_TOKEN_FOR_TESTS"; AuthUtils.visitorId="FAKEVISITOR"; AuthUtils.pageId=""; }
   static Callable<StreamInfo> throwing(final Exception e){ return () -> { throw e; }; }
   static final String URL="https://www.youtube.com/watch?v=fAkEmEmB3r0";
@@ -82,15 +89,20 @@ public class AccountDownloadTest {
     check(Account.headers()==null, "signed out -> no headers");
     try { Resolve.resolve(URL, throwing(new PaidContentException("This video is only available for members of the channel of this video"))); check(false, "signed-out members should throw"); }
     catch (Resolve.Plain e){ check(e.getMessage().equals(Resolve.MEMBERS_SIGNED_OUT), "signed-out members message: "+e.getMessage()); }
-    check(StreamOrDetailsDataRequest.calls.isEmpty(), "signed out -> account path never called");
+    boolean noAuth=true, noLoginClient=true; for (String c: StreamOrDetailsDataRequest.calls) { if (!c.endsWith("|null")) noAuth=false; if (c.contains("ANDROID_CREATOR") || c.contains("|ANDROID|")) noLoginClient=false; }
+    for (String c: own) if (!c.endsWith("|null")) noAuth=false;
+    check(noAuth && noLoginClient, "signed out -> no account header anywhere, sign-in-only clients skipped: "+StreamOrDetailsDataRequest.calls+own);
+    check(StreamOrDetailsDataRequest.calls.equals(Arrays.asList("fAkEmEmB3r0|VISIONOS_1_02|null","fAkEmEmB3r0|VISIONOS_1_03|null","fAkEmEmB3r0|TV_SIMPLY|null","fAkEmEmB3r0|TV_DASH|null","fAkEmEmB3r0|ANDROID_VR_DASH|null")), "signed out: the app's no-sign-in clients are still tried: "+StreamOrDetailsDataRequest.calls);
     Exception bot=new SignInConfirmNotBotException("Sign in to confirm that you're not a bot");
-    try { Resolve.resolve(URL, throwing(bot)); check(false,"should throw"); } catch (Exception e){ check(e==bot, "signed out, other error -> original error unchanged"); }
+    try { Resolve.resolve(URL, throwing(bot)); check(false,"should throw"); }
+    catch (Resolve.Failed e){ check(e.getMessage().contains("Public: YouTube asked to confirm it's not a bot") && e.getMessage().contains("No sign-in (Android VR): YouTube asked to confirm it's not a bot"), "signed out, everything blocked -> every route's reason listed: "+e.getMessage()); }
 
     // 4. signed in, membership on the account: public extractor fails, account path succeeds
     reset(); signIn(); StreamOrDetailsDataRequest.responses.put(ClientType.ANDROID_CREATOR, signed);
     StreamInfo r=Resolve.resolve(URL, throwing(new PaidContentException("This video is only available for members of the channel of this video")));
     check(r!=null && Formats.videoChoices(r).size()==2, "signed-in members video resolves");
-    check(StreamOrDetailsDataRequest.calls.equals(Arrays.asList("fAkEmEmB3r0|TV_SIMPLY|Bearer FAKE_TOKEN_FOR_TESTS", "fAkEmEmB3r0|ANDROID_CREATOR|Bearer FAKE_TOKEN_FOR_TESTS")), "clients tried in the app's order with the app's session: "+StreamOrDetailsDataRequest.calls);
+    check(StreamOrDetailsDataRequest.calls.equals(Arrays.asList("fAkEmEmB3r0|VISIONOS_1_02|Bearer FAKE_TOKEN_FOR_TESTS", "fAkEmEmB3r0|VISIONOS_1_03|Bearer FAKE_TOKEN_FOR_TESTS", "fAkEmEmB3r0|ANDROID_CREATOR|Bearer FAKE_TOKEN_FOR_TESTS")), "app clients tried in order with the app's session: "+StreamOrDetailsDataRequest.calls);
+    check(own.equals(Arrays.asList("28|Bearer FAKE_TOKEN_FOR_TESTS","101|Bearer FAKE_TOKEN_FOR_TESTS","5|Bearer FAKE_TOKEN_FOR_TESTS","3|Bearer FAKE_TOKEN_FOR_TESTS")), "own signed-in requests went first (Android VR, visionOS, iOS, Android): "+own);
     Formats.Pick rp=Formats.pick(r, "v:1080:mp4");
     check(Net.ua(rp.videoUrl).equals(ClientType.ANDROID_CREATOR.userAgent) && Net.ua(rp.audioUrl).equals(ClientType.ANDROID_CREATOR.userAgent), "engine uses the fetching client's User-Agent");
     check(Net.ua("https://example.com/other").equals(Net.UA), "other URLs keep the default User-Agent");
@@ -109,7 +121,10 @@ public class AccountDownloadTest {
 
     // 7. public videos unchanged: the public extractor's result is used, account path untouched
     reset(); signIn(); final StreamInfo pub=Resolve.toInfo(PlayerProto.parse(signed), "fAkEmEmB3r0", URL);
-    check(Resolve.resolve(URL, () -> pub)==pub && StreamOrDetailsDataRequest.calls.isEmpty(), "public success -> no account call");
+    check(Resolve.resolve(URL, () -> pub)==pub, "every app route fails -> public extractor's result is used");
+    reset(); signIn(); StreamOrDetailsDataRequest.responses.put(ClientType.VISIONOS_1_02, signed); final boolean[] pubCalled={false};
+    StreamInfo viaApp=Resolve.resolve(URL, () -> { pubCalled[0]=true; return pub; });
+    check(viaApp!=null && viaApp!=pub && !pubCalled[0], "an app route works -> public extractor (anonymous) never called");
 
     // 8. session sources
     reset(); signIn(); AuthUtils.incognito=true;

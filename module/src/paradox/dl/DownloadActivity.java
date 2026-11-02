@@ -47,7 +47,17 @@ public class DownloadActivity extends Activity {
         Ui.Shimmer a=new Ui.Shimmer(this,P); LinearLayout.LayoutParams al=new LinearLayout.LayoutParams(dp(k%2==0? 132: 104),dp(14)); rw.addView(a,al);
         rw.addView(new View(this),new LinearLayout.LayoutParams(0,1,1f)); Ui.Shimmer s=new Ui.Shimmer(this,P); rw.addView(s,new LinearLayout.LayoutParams(dp(60),dp(12))); sheet.body.addView(rw); } });
     waiting=() -> { if (err!=null) fail(); else r.run(); }; }
-  void fail(){ Toast.makeText(this, plainErr? err: "Couldn't load this video: "+err, Toast.LENGTH_LONG).show(); sheet.dismiss(null); }
+  /** The whole reason in a dialog (a toast cut it off after two lines), with Try again. */
+  void fail(){ final String msg= plainErr? err: "Couldn't load this video: "+err; if (isFinishing()) return;
+    try { android.app.AlertDialog d=new android.app.AlertDialog.Builder(this, P.dark? android.R.style.Theme_DeviceDefault_Dialog_Alert: android.R.style.Theme_DeviceDefault_Light_Dialog_Alert)
+        .setTitle("Can't download this video").setMessage(msg)
+        .setPositiveButton("Try again", (x,w) -> retry())
+        .setNegativeButton("Close", (x,w) -> sheet.dismiss(null))
+        .setOnCancelListener(x -> sheet.dismiss(null)).create();
+      d.show(); }
+    catch (Throwable t){ Toast.makeText(this, msg, Toast.LENGTH_LONG).show(); sheet.dismiss(null); } }
+  /** Resolve again (every route) and continue where the person was. */
+  void retry(){ err=null; plainErr=false; info=null; vids=null; resolve(); if (type!=null) chooseType(type); }
   List<String[]> rows(){ boolean au=type.equals("audio");
     if (playlist){ if (au) return Arrays.asList(new String[]{"a:rank:0","MP3 320 kbps (Best)","0"},new String[]{"a:rank:1","MP3 192 kbps (Standard)","0"},new String[]{"a:rank:2","MP3 128 kbps (Smaller)","0"});
       return Arrays.asList(new String[]{"v:1080:mp4","1080p (Full HD)","0"},new String[]{"v:720:mp4","720p (HD)","0"},new String[]{"v:480:mp4","480p","0"},new String[]{"v:360:mp4","360p","0"},new String[]{"v:144:mp4","144p","0"}); }

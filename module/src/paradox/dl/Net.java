@@ -9,6 +9,10 @@ public final class Net extends Downloader {
   private static final Map<String,String> UAS=Collections.synchronizedMap(new LinkedHashMap<String,String>(64, 0.75f, true){ @Override protected boolean removeEldestEntry(Map.Entry<String,String> e){ return size()>512; } });
   public static void uaFor(String url, String ua){ if (url!=null && ua!=null && !ua.isEmpty()) UAS.put(url, ua); }
   public static String ua(String url){ String u= url==null? null: UAS.get(url); return u!=null? u: UA; }
+  /** Which route (Resolve) gave each stream URL, so a refresh after a 403 can skip that route; in memory only. */
+  private static final Map<String,String> SRC=Collections.synchronizedMap(new LinkedHashMap<String,String>(64, 0.75f, true){ @Override protected boolean removeEldestEntry(Map.Entry<String,String> e){ return size()>512; } });
+  public static void track(String url, String ua, String route){ uaFor(url, ua); if (url!=null && route!=null) SRC.put(url, route); }
+  public static String sourceOf(String url){ return url==null? null: SRC.get(url); }
   public static synchronized void init(){
     if (inited) return; NewPipe.init(new Net(), Localization.DEFAULT, ContentCountry.DEFAULT); inited=true;
   }

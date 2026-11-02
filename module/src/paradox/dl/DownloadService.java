@@ -71,7 +71,7 @@ public class DownloadService extends Service {
     File[] files=new File[parts.size()]; long[] L=new long[parts.size()];
     for (int i=0;i<files.length;i++){ files[i]=new File(tmp, parts.get(i)+".part"); L[i]=lens.get(i); }
     Engine.UrlSource src=new Engine.UrlSource(){ public String url(int p){ return parts.get(p).equals("v")? pk[0].videoUrl: pk[0].audioUrl; }
-      public String refresh(int p) throws Exception { String old=url(p); info[0]=Resolve.info(it.url); String same=sameStream(info[0], old);
+      public String refresh(int p) throws Exception { String old=url(p); info[0]=Resolve.info(it.url, old); String same=sameStream(info[0], old);
         if (same!=null) { if (parts.get(p).equals("v")) pk[0].videoUrl=same; else pk[0].audioUrl=same; return same; }
         throw new IOException("stream no longer available"); } };
     it.status="downloading"; Store.notifyChanged();
