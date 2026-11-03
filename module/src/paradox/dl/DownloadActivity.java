@@ -60,7 +60,7 @@ public class DownloadActivity extends Activity {
   void retry(){ err=null; plainErr=false; info=null; vids=null; resolve(); if (type!=null) chooseType(type); }
   List<String[]> rows(){ boolean au=type.equals("audio");
     if (playlist){ if (au) return Arrays.asList(new String[]{"a:rank:0","MP3 320 kbps (Best)","0"},new String[]{"a:rank:1","MP3 192 kbps (Standard)","0"},new String[]{"a:rank:2","MP3 128 kbps (Smaller)","0"});
-      return Arrays.asList(new String[]{"v:1080:mp4","1080p (Full HD)","0"},new String[]{"v:720:mp4","720p (HD)","0"},new String[]{"v:480:mp4","480p","0"},new String[]{"v:360:mp4","360p","0"},new String[]{"v:144:mp4","144p","0"}); }
+      return Arrays.asList(new String[]{"v:2160:any","2160p (4K)","0"},new String[]{"v:1440:any","1440p (QHD)","0"},new String[]{"v:1080:mp4","1080p (Full HD)","0"},new String[]{"v:720:mp4","720p (HD)","0"},new String[]{"v:480:mp4","480p","0"},new String[]{"v:360:mp4","360p","0"},new String[]{"v:144:mp4","144p","0"}); }
     return au? Formats.audioChoices(info): Formats.videoChoices(info); }
   /** "1080p (Full HD) 60fps" -> main "1080p", rest "Full HD · 60fps". */
   static String[] split(String label){ String main=label, rest=""; int i=label.indexOf(" ("); if (i>0){ main=label.substring(0,i); rest=label.substring(i+2).replace(")", " ·").trim(); if (rest.endsWith("·")) rest=rest.substring(0,rest.length()-1).trim(); }

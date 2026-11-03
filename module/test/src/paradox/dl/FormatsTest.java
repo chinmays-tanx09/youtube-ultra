@@ -29,33 +29,41 @@ public class FormatsTest {
     List<VideoStream> mux=Collections.singletonList(v(18,"avc1.42001E, mp4a.40.2",360,30,9_000_000,false));
     StreamInfo si=info(mux, vo, au);
 
-    // 1. Phone without AV1-in-MP4 (Android <= 13, or no hardware AV1 decoder): H.264 only, never VP9.
-    Formats.av1MaxHeight=0;
+    // 1. v10.11: phone without a hardware AV1 decoder: every height the video has; above 1080p (no H.264 there) it's VP9 + AAC in MP4.
+    Formats.av1MaxHeight=0; Formats.vp9MaxHeight=2160;
     List<String[]> vc=Formats.videoChoices(si);
-    check(rows(vc).equals("v:1080:mp4=1080p (Full HD) 60fps v:720:mp4=720p (HD) v:480:mp4=480p"), "no-AV1 rows are H.264 only: "+rows(vc));
-    check(vc.get(0)[2].equals(String.valueOf(70_000_000+3_000_000)), "1080p60 size = video + AAC: "+vc.get(0)[2]);
+    check(rows(vc).equals("v:2160:vp9=2160p (4K · VP9) v:1440:vp9=1440p (QHD · VP9) v:1080:mp4=1080p (Full HD) 60fps v:720:mp4=720p (HD) v:480:mp4=480p"), "no-AV1 phone: 4K/1440p as VP9, H.264 up to 1080p: "+rows(vc));
+    check(vc.get(0)[2].equals(String.valueOf(200_000_000+3_000_000)) && vc.get(2)[2].equals(String.valueOf(70_000_000+3_000_000)), "sizes = video + AAC: "+vc.get(0)[2]+" / "+vc.get(2)[2]);
     Formats.Pick p=Formats.pick(si,"v:1080:mp4");
-    check(p!=null && has(p.videoUrl,299) && has(p.audioUrl,140) && p.ext.equals("mp4") && p.codec.equals("h264") && p.label.equals("1080p60"), "1080 -> 299 (60fps H.264) + 140 AAC, .mp4");
+    check(p!=null && has(p.videoUrl,299) && has(p.audioUrl,140) && p.ext.equals("mp4") && p.codec.equals("h264") && p.label.equals("1080p60") && !p.ownMux(), "1080 -> 299 (60fps H.264) + 140 AAC, .mp4, Android's muxer");
+    p=Formats.pick(si,"v:2160:vp9");
+    check(p!=null && has(p.videoUrl,313) && has(p.audioUrl,140) && p.ext.equals("mp4") && p.codec.equals("vp9") && p.ownMux() && p.height==2160 && p.label.equals("2160p VP9"), "4K row -> 313 VP9 + 140 AAC, .mp4 through our own muxer");
     p=Formats.pick(si,"v:2160:mp4");
-    check(p!=null && has(p.videoUrl,299) && p.height==1080 && p.wanted==2160 && p.ext.equals("mp4"), "remembered 2160 on a no-AV1 phone -> best H.264 (1080p), still .mp4");
-    for (String sp: new String[]{"v:1080:webm","v:1440:webm","v:2160:av1","v:720:webm"}) { p=Formats.pick(si,sp);
-      check(p!=null && p.ext.equals("mp4") && !has(p.videoUrl,248) && !has(p.videoUrl,271) && !has(p.videoUrl,313) && has(p.audioUrl,140), sp+" -> MP4 with H.264 + AAC, never VP9/Opus"); }
+    check(p!=null && has(p.videoUrl,313) && p.wanted==2160 && p.ext.equals("mp4"), "remembered 2160 -> the 4K row (VP9), still .mp4");
+    for (String sp: new String[]{"v:1080:webm","v:720:webm"}) { p=Formats.pick(si,sp);
+      check(p!=null && p.ext.equals("mp4") && p.codec.equals("h264") && has(p.audioUrl,140), sp+" (old spec) -> H.264 + AAC MP4"); }
+    p=Formats.pick(si,"v:1440:webm"); check(p!=null && has(p.videoUrl,271) && p.codec.equals("vp9") && has(p.audioUrl,140) && p.ext.equals("mp4"), "old v:1440:webm -> 1440p VP9 MP4 (never Opus)");
+    p=Formats.pick(si,"v:2160:av1"); check(p!=null && has(p.videoUrl,313) && p.codec.equals("vp9"), "old v:2160:av1 on a phone without AV1 decoding -> 4K VP9");
     p=Formats.pick(si,"v:720:mp4"); check(p!=null && has(p.videoUrl,136), "720 -> 136");
-    p=Formats.pick(si,"v:144:mp4"); check(p!=null && has(p.videoUrl,135), "below the smallest -> smallest H.264 (480p)");
+    p=Formats.pick(si,"v:144:mp4"); check(p!=null && has(p.videoUrl,135), "below the smallest -> smallest row (480p H.264)");
 
-    // 2. Phone that can write AV1 into MP4 up to 4K (Android 14+, hardware AV1).
+    // 2. Phone with hardware AV1 up to 4K: AV1 is preferred above 1080p (smaller files).
     Formats.av1MaxHeight=2160;
     vc=Formats.videoChoices(si);
-    check(rows(vc).equals("v:2160:av1=2160p (4K · AV1) v:1440:av1=1440p (QHD · AV1) v:1080:mp4=1080p (Full HD) 60fps v:720:mp4=720p (HD) v:480:mp4=480p"), "AV1 phone adds 1440p/4K as AV1 MP4: "+rows(vc));
-    p=Formats.pick(si,"v:2160:av1"); check(p!=null && has(p.videoUrl,401) && has(p.audioUrl,140) && p.ext.equals("mp4") && p.codec.equals("av1"), "4K -> 401 AV1 + 140 AAC in .mp4");
+    check(rows(vc).equals("v:2160:av1=2160p (4K · AV1) v:1440:av1=1440p (QHD · AV1) v:1080:mp4=1080p (Full HD) 60fps v:720:mp4=720p (HD) v:480:mp4=480p"), "AV1 phone: 1440p/4K as AV1 MP4: "+rows(vc));
+    p=Formats.pick(si,"v:2160:av1"); check(p!=null && has(p.videoUrl,401) && has(p.audioUrl,140) && p.ext.equals("mp4") && p.codec.equals("av1") && p.ownMux(), "4K -> 401 AV1 + 140 AAC in .mp4");
     p=Formats.pick(si,"v:1440:av1"); check(p!=null && has(p.videoUrl,400) && p.codec.equals("av1"), "1440 -> 400 AV1");
     p=Formats.pick(si,"v:1080:mp4"); check(p!=null && has(p.videoUrl,299) && p.codec.equals("h264"), "1080 stays H.264 even when AV1 1080p exists");
     p=Formats.pick(si,"v:2160:mp4"); check(p!=null && has(p.videoUrl,401), "remembered 2160 on an AV1 phone -> 4K AV1 MP4");
-    // 3. Hardware AV1 only up to 1440p.
+    p=Formats.pick(si,"v:2160:vp9"); check(p!=null && has(p.videoUrl,401), "a VP9 spec from another phone -> this phone's 4K row (AV1)");
+    // 3. Hardware AV1 only up to 1440p: 4K falls back to VP9, 1440p stays AV1.
     Formats.av1MaxHeight=1440;
-    check(rows(Formats.videoChoices(si)).startsWith("v:1440:av1=1440p (QHD · AV1) v:1080:mp4"), "AV1 capped at the decoder's max (1440p)");
-    p=Formats.pick(si,"v:2160:av1"); check(p!=null && has(p.videoUrl,400), "4K asked, decoder max 1440 -> 400");
+    check(rows(Formats.videoChoices(si)).startsWith("v:2160:vp9=2160p (4K · VP9) v:1440:av1=1440p (QHD · AV1) v:1080:mp4"), "AV1 up to the decoder's max, VP9 above: "+rows(Formats.videoChoices(si)));
+    p=Formats.pick(si,"v:2160:av1"); check(p!=null && has(p.videoUrl,313) && p.codec.equals("vp9"), "4K asked, AV1 decoder max 1440 -> 313 VP9");
+    // 3b. Only AV1 above 1080p (no VP9 at all) and no AV1 decoder: still offered as AV1 (VLC / software decoders play it).
+    StreamInfo onlyAv1=info(mux, Arrays.asList(v(137,"avc1.640028",1080,30,50_000_000,true), v(401,"av01.0.12M.08",2160,30,150_000_000,true)), au);
     Formats.av1MaxHeight=0;
+    check(rows(Formats.videoChoices(onlyAv1)).equals("v:2160:av1=2160p (4K · AV1) v:1080:mp4=1080p (Full HD)"), "AV1-only 4K still listed: "+rows(Formats.videoChoices(onlyAv1)));
 
     // 4. No AAC at all (Opus only): an MP4 can't hold Opus, so the single-file MP4 (itag 18) is used.
     StreamInfo noAac=info(mux, vo, Arrays.asList(a(251,160,3_500_000,null)));

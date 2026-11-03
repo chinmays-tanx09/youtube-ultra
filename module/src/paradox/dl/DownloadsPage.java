@@ -45,7 +45,7 @@ public class DownloadsPage extends FrameLayout implements Store.Listener {
       switch (it.status){ case "downloading": st="Downloading · "+it.progress+"%\n"+Ui.size(it.done)+" / "+Ui.size(it.total)+" · "+String.format(Locale.US,"%.1f MB/s", it.speed/1048576); break;
         case "done": st=(it.channel==null||it.channel.isEmpty()? "": it.channel+" · ")+Ui.size(it.total); break;
         case "failed": st= it.error!=null && (it.error.startsWith("MP3 ")||it.error.startsWith("MP4 "))? it.error+" · tap to retry": "Download failed · tap to retry"; break;
-        case "converting": st="Converting to MP3 · "+it.progress+"%"; break; case "merging": st= it.audio? "Saving MP3…": "Saving MP4…"; break; case "resolving": st="Preparing…"; break;
+        case "converting": st="Converting to MP3 · "+it.progress+"%"; break; case "merging": st= it.audio? "Saving MP3…": (it.progress>0 && it.progress<100? "Saving MP4 · "+it.progress+"%": "Saving MP4…"); break; case "resolving": st="Preparing…"; break;
         case "paused": case "cancelled": st="Paused · "+it.progress+"% · tap to resume"; break; default: st="Waiting…"; }
       TextView s=Ui.text(c,st,13,it.status.equals("failed")? 0xFFFF8A80: SUB,false); s.setPadding(0,Ui.dp(c,4),0,0); col.addView(s);
       row.addView(col,new LinearLayout.LayoutParams(0,-2,1f));

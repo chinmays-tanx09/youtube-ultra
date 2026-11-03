@@ -74,6 +74,7 @@ public class DownloadService extends Service {
       public String refresh(int p) throws Exception { String old=url(p); info[0]=Resolve.info(it.url, old); String same=sameStream(info[0], old);
         if (same!=null) { if (parts.get(p).equals("v")) pk[0].videoUrl=same; else pk[0].audioUrl=same; return same; }
         throw new IOException("stream no longer available"); } };
+    checkSpace(tmp, files, L, pk[0]);
     it.status="downloading"; Store.notifyChanged();
     final long t0=SystemClock.elapsedRealtime(); final long[] last={-1,t0};
     Timer tm=new Timer(); tm.scheduleAtFixedRate(new TimerTask(){ public void run(){ long now=SystemClock.elapsedRealtime(), d=eng.done.get(); if (last[0]<0){ last[0]=eng.resumed; }
@@ -111,7 +112,11 @@ public class DownloadService extends Service {
       try { ParcelFileDescriptor pfd=getContentResolver().openFileDescriptor(u,"rw");
         if (pfd==null) throw new IOException("MediaStore open failed");
         if (audio || pk[0].progressive) copy(audio? mp3: files[0], new ParcelFileDescriptor.AutoCloseOutputStream(pfd));   // closes pfd
-        else { try { Mux.mp4(vPath, aPath, pfd.getFileDescriptor(), null); } finally { pfd.close(); } }
+        else if (pk[0].ownMux()) { try { OutputStream o=new BufferedOutputStream(new FileOutputStream(pfd.getFileDescriptor()), 1<<20); ownMux(it, eng, vPath, aPath, o); o.close(); } finally { pfd.close(); } }
+        else { boolean okMux=false; Exception first=null; try { Mux.mp4(vPath, aPath, pfd.getFileDescriptor(), null); okMux=true; } catch (Exception e){ first=e; } finally { pfd.close(); }
+          if (!okMux) { Log.w(TAG, "MediaMuxer failed, using our own MP4 writer", first);   // v10.11: same H.264 + AAC through Mp4Mux
+            ParcelFileDescriptor p2=getContentResolver().openFileDescriptor(u,"rwt"); if (p2==null) throw first;
+            try { OutputStream o=new BufferedOutputStream(new FileOutputStream(p2.getFileDescriptor()), 1<<20); ownMux(it, eng, vPath, aPath, o); o.close(); } catch (Exception e2){ Log.w(TAG,"own mux fallback failed",e2); throw first; } finally { p2.close(); } } }
         ContentValues done=new ContentValues(); done.put(MediaStore.MediaColumns.IS_PENDING, 0); getContentResolver().update(u, done, null, null);
       } catch (Exception e) { getContentResolver().delete(u,null,null); throw e; }
       it.path=u.toString();
@@ -119,7 +124,10 @@ public class DownloadService extends Service {
       File dir=new File(Environment.getExternalStoragePublicDirectory(audio? Environment.DIRECTORY_MUSIC: Environment.DIRECTORY_MOVIES), DIR); dir.mkdirs();
       File out=new File(dir, name); int n=1; while (out.exists()) out=new File(dir, Names.numbered(name, n++));
       try {
-        if (audio) copy(mp3, new FileOutputStream(out)); else if (pk[0].progressive) copy(files[0], new FileOutputStream(out)); else Mux.mp4(vPath, aPath, null, out.getAbsolutePath());
+        if (audio) copy(mp3, new FileOutputStream(out)); else if (pk[0].progressive) copy(files[0], new FileOutputStream(out));
+        else if (pk[0].ownMux()) { OutputStream o=new BufferedOutputStream(new FileOutputStream(out), 1<<20); try { ownMux(it, eng, vPath, aPath, o); } finally { o.close(); } }
+        else { try { Mux.mp4(vPath, aPath, null, out.getAbsolutePath()); }
+          catch (Exception e){ Log.w(TAG, "MediaMuxer failed, using our own MP4 writer", e); OutputStream o=new BufferedOutputStream(new FileOutputStream(out), 1<<20); try { ownMux(it, eng, vPath, aPath, o); } catch (Exception e2){ throw e; } finally { o.close(); } } }
       } catch (Exception e){ out.delete(); throw e; }
       it.path=out.getAbsolutePath(); MediaScannerConnection.scanFile(this, new String[]{it.path}, new String[]{mime}, null);
     }
@@ -133,5 +141,26 @@ public class DownloadService extends Service {
        .setContentIntent(PendingIntent.getActivity(this, it.id.hashCode(), play, PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT));
       nm.notify(it.id.hashCode(), b.build()); } catch(Exception e){}
   }
+  /** v10.11: VP9 / AV1 (+ AAC) into <title>.mp4 with our own muxer, with a percentage while it copies. */
+  void ownMux(final Store.Item it, final Engine eng, String vPath, String aPath, OutputStream o) throws IOException {
+    it.status="merging"; it.progress=0; Store.notifyChanged(); final long[] lastPc={-1};
+    try {
+      Mp4Mux.Result r=Mp4Mux.mux(vPath, aPath, o, new Mp4Mux.Progress(){
+        public void at(long done, long total){ int pc= total>0? (int)(done*100/total): 0; if (pc==lastPc[0]) return; lastPc[0]=pc; it.progress=pc; Store.notifyChanged();
+          try { ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(NID, note(it.title+" · saving MP4 · "+pc+"%", pc)); } catch(Exception e){} }
+        public boolean cancelled(){ return eng.cancelled; } });
+      Log.i(TAG, "own mux: "+r.videoCodec+" "+r.width+"x"+r.height+" "+r.bitDepth+"-bit hdr="+r.hdr+" video "+r.videoSeconds+" s, "+r.audioCodec+" "+r.audioSeconds+" s, "+r.bytes+" bytes");
+    } catch (Mp4Mux.Failed f){ throw new ToMp3.Failed("MP4 save failed: "+f.getMessage(), f); }
+    it.progress=100; Store.notifyChanged(); }
+  /** Not enough room = a clear message before downloading gigabytes (the parts and the finished MP4 sit on the same storage). */
+  static void checkSpace(File tmp, File[] files, long[] L, Formats.Pick pk) throws IOException {
+    long total=0; for (long x: L){ if (x<=0) return; total+=x; }        // size unknown: the engine finds out, skip the check
+    boolean resuming=false; for (File f: files) if (Engine.mapFile(f).exists()) resuming=true;
+    long out= pk.audioOnly? Math.max(4L<<20, total/2): total;           // MP3 is smaller than its source; MP4 is about the size of both parts
+    long need= (resuming? 0: total) + out + (64L<<20);
+    long free=tmp.getUsableSpace(); if (free<=0) return;
+    if (free<need) throw new Plain("Not enough free space: this "+(pk.audioOnly? "audio": pk.label)+" download needs about "+Ui.size(need)+" free, and the phone has "+Ui.size(free)+". Free some space or pick a lower quality.");
+  }
+  static final class Plain extends IOException { Plain(String m){ super(m); } }
   static void copy(File f, OutputStream o) throws IOException { FileInputStream in=new FileInputStream(f); try { byte[] b=new byte[1<<20]; int n; while((n=in.read(b))>0) o.write(b,0,n); } finally { in.close(); o.close(); } }
 }

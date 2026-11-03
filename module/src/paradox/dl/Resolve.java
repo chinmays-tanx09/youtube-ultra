@@ -154,6 +154,12 @@ public final class Resolve {
     StreamInfo s=toInfo(p, id, url); if (s==null || !usable(s)) return null;
     register(s, r.userAgent, "app"); return s; }
 
+  /** A video-only adaptive stream the extractor's itag table lacks (e.g. 571/402 AV1 8K, 330-337 VP9 HDR, 694-702 AV1 HDR). */
+  static ItagItem extraItag(PlayerProto.Fmt f){
+    if (!f.adaptive || f.height<=0 || !f.mimeType.startsWith("video/")) return null;
+    org.schabi.newpipe.extractor.MediaFormat mf= f.mimeType.startsWith("video/webm")? org.schabi.newpipe.extractor.MediaFormat.WEBM: f.mimeType.startsWith("video/mp4")? org.schabi.newpipe.extractor.MediaFormat.MPEG_4: null;
+    if (mf==null) return null;
+    try { return new ItagItem(f.itag, ItagItem.ItagType.VIDEO_ONLY, mf, f.qualityLabel.isEmpty()? f.height+"p": f.qualityLabel, f.fps>0? f.fps: 30); } catch (Throwable t){ return null; } }
   /** Same shape as the public extractor's output: progressive / video-only / audio lists of direct HTTP streams. */
   public static StreamInfo toInfo(PlayerProto.Player p, String id, String url){
     try {
@@ -163,8 +169,9 @@ public final class Resolve {
       if (th.isEmpty()) th.add(new Image("https://i.ytimg.com/vi/"+s.getId()+"/hqdefault.jpg", 360, 480, Image.ResolutionLevel.MEDIUM));
       s.setThumbnails(th);
       List<VideoStream> muxed=new ArrayList<>(), vonly=new ArrayList<>(); List<AudioStream> audio=new ArrayList<>();
-      for (PlayerProto.Fmt f: p.formats) { if (!f.hasUrl() || !ItagItem.isSupported(f.itag)) continue;
-        ItagItem it; try { it=new ItagItem(ItagItem.getItag(f.itag)); } catch (Exception e){ continue; }
+      for (PlayerProto.Fmt f: p.formats) { if (!f.hasUrl()) continue;
+        ItagItem it; if (ItagItem.isSupported(f.itag)) { try { it=new ItagItem(ItagItem.getItag(f.itag)); } catch (Exception e){ continue; } }
+        else { it=extraItag(f); if (it==null) continue; }   // v10.11: 8K, HDR and newer AV1 itags the extractor's table doesn't know
         if (f.bitrate>0) it.setBitrate(f.bitrate); if (f.width>0) it.setWidth(f.width); if (f.height>0) it.setHeight(f.height);
         String codec=f.codec(); if (codec!=null) it.setCodec(codec); if (f.contentLength>0) it.setContentLength(f.contentLength); if (f.approxDurationMs>0) it.setApproxDurationMs(f.approxDurationMs);
         if (!f.qualityLabel.isEmpty()) it.setQuality(f.qualityLabel);
