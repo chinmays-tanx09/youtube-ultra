@@ -177,8 +177,14 @@ public final class Resolve {
         if (!f.qualityLabel.isEmpty()) it.setQuality(f.qualityLabel);
         if (it.itagType==ItagItem.ItagType.AUDIO) {
           if (f.sampleRate>0) it.setSampleRate((int)f.sampleRate); if (f.channels>0) it.setAudioChannels(f.channels);
-          audio.add(new AudioStream.Builder().setId(String.valueOf(f.itag)).setContent(f.url, true).setMediaFormat(it.getMediaFormat()).setDeliveryMethod(DeliveryMethod.PROGRESSIVE_HTTP)
-            .setAverageBitrate(f.averageBitrate>0? f.averageBitrate/1000: it.getAverageBitrate()).setItagItem(it).build());
+          AudioStream.Builder ab=new AudioStream.Builder().setId(String.valueOf(f.itag)).setContent(f.url, true).setMediaFormat(it.getMediaFormat()).setDeliveryMethod(DeliveryMethod.PROGRESSIVE_HTTP)
+            .setAverageBitrate(f.averageBitrate>0? f.averageBitrate/1000: it.getAverageBitrate()).setItagItem(it);
+          // v10.12: keep which language track this is, so the ORIGINAL one can be picked (the same itag exists once per dubbed language)
+          int rk=Formats.trackRank(null, f.audioTrackName, f.url); org.schabi.newpipe.extractor.stream.AudioTrackType tt=null;
+          if (rk==0 || (rk==1 && f.audioIsDefault==1)) tt=org.schabi.newpipe.extractor.stream.AudioTrackType.ORIGINAL;
+          else if (rk==2 || f.audioIsDefault==0) tt= (f.audioTrackName.toLowerCase(Locale.ROOT).contains("descriptive") || Formats.xtags(f.url).contains("descriptive"))? org.schabi.newpipe.extractor.stream.AudioTrackType.DESCRIPTIVE: org.schabi.newpipe.extractor.stream.AudioTrackType.DUBBED;
+          if (!f.audioTrackId.isEmpty()) ab.setAudioTrackId(f.audioTrackId); if (!f.audioTrackName.isEmpty()) ab.setAudioTrackName(f.audioTrackName); if (tt!=null) ab.setAudioTrackType(tt);
+          audio.add(ab.build());
         } else {
           if (f.fps>0) it.setFps(f.fps);
           String res=!f.qualityLabel.isEmpty()? f.qualityLabel: (f.height>0? f.height+"p": it.getResolutionString());

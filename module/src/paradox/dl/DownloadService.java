@@ -8,7 +8,7 @@ public class DownloadService extends Service {
   public static final String DIR="YouTube Ultra";
   private final ExecutorService pool=Executors.newFixedThreadPool(2);
   private final Map<String,Engine> running=new ConcurrentHashMap<>();
-  private final Handler h=new Handler(Looper.getMainLooper()); private int active;
+  private final Handler h=new Handler(Looper.getMainLooper()); private int active; private int lastStartId; private volatile boolean timedOut; private volatile String curText="Preparing…"; private volatile int curP=-1;
   private PowerManager.WakeLock wake; private android.net.wifi.WifiManager.WifiLock wifi;
   /** Keep the CPU and Wi-Fi at full speed while anything is downloading (screen off / app in background). */
   synchronized void lock(boolean on){ try {
@@ -19,27 +19,41 @@ public class DownloadService extends Service {
     } else { if (wake!=null && wake.isHeld()) wake.release(); if (wifi!=null && wifi.isHeld()) wifi.release(); }
   } catch (Throwable t){ Log.w(TAG,"lock",t); } }
   @Override public void onDestroy(){ lock(false); super.onDestroy(); }
-  public static void start(Context c, String id){ Intent i=new Intent(c, DownloadService.class).putExtra("id", id); if (Build.VERSION.SDK_INT>=26) c.startForegroundService(i); else c.startService(i); }
+  public static void start(Context c, String id){ Intent i=new Intent(c, DownloadService.class).putExtra("id", id);
+    try { if (Build.VERSION.SDK_INT>=26) c.startForegroundService(i); else c.startService(i); }
+    catch (Throwable t){ Log.e(TAG,"start service",t);   // v10.12: Android refusing a foreground start used to crash the app; now the item says so and can be retried
+      try { Store.Item it=Store.get(c,id); if (it!=null){ it.status="failed"; it.error="Android would not start the download service ("+t.getClass().getSimpleName()+"). Open YouTube Ultra and tap Retry."; Store.save(c); Store.notifyChanged(); } } catch (Throwable t2){} } }
   public static void cancel(Context c, String id){ c.startService(new Intent(c, DownloadService.class).putExtra("cancel", id)); }
   @Override public IBinder onBind(Intent i){ return null; }
-  Notification note(String text, int p){
+  Notification note(String text, int p){ curText=text; curP=p;
     NotificationManager nm=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
     if (Build.VERSION.SDK_INT>=26 && nm.getNotificationChannel(CH)==null) nm.createNotificationChannel(new NotificationChannel(CH,"Downloads",NotificationManager.IMPORTANCE_LOW));
     PendingIntent pi=PendingIntent.getActivity(this,0,new Intent(this, DownloadsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
     Notification.Builder b= Build.VERSION.SDK_INT>=26? new Notification.Builder(this,CH): new Notification.Builder(this);
     b.setSmallIcon(android.R.drawable.stat_sys_download).setContentTitle("Downloading").setContentText(text).setContentIntent(pi).setOngoing(true).setOnlyAlertOnce(true);
     if (p>=0) b.setProgress(100,p,false); return b.build(); }
-  void fg(String text, int p){ Notification n=note(text,p); if (Build.VERSION.SDK_INT>=29) startForeground(NID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC); else startForeground(NID,n); }
+  void fg(String text, int p){ try { Notification n=note(text,p); if (Build.VERSION.SDK_INT>=29) startForeground(NID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC); else startForeground(NID,n); }
+    catch (Throwable t){ Log.e(TAG,"startForeground",t); } }   // v10.12: a refused foreground promotion no longer kills the app
+  /** Android 15: a data-sync foreground service gets ~6 h in total, then onTimeout; stop cleanly and keep the files so Resume continues. */
+  public void onTimeout(int startId, int fgsType){ timedOut=true; for (Engine e: running.values()) e.cancelled=true; h.postDelayed(new Runnable(){ public void run(){ maybeStop(); }}, 3000); }
   @Override public int onStartCommand(Intent in, int f, int sid){
-    fg("Preparing…", -1);
-    if (in!=null && in.getStringExtra("cancel")!=null){ Engine e=running.get(in.getStringExtra("cancel")); if (e!=null) e.cancelled=true; else maybeStop(); return START_NOT_STICKY; }
+    lastStartId=sid;
+    if (in!=null && in.getStringExtra("cancel")!=null){ Engine e=running.get(in.getStringExtra("cancel")); if (e!=null) e.cancelled=true; else maybeStop(); return START_NOT_STICKY; }   // v10.12: a cancel is a plain startService, no foreground promotion / "Preparing…" flash
+    boolean busy; synchronized(this){ busy= active>0; } if (busy) fg(curText, curP); else fg("Preparing…", -1);   // v10.12: a second Download no longer resets a running progress notification to "Preparing…"
     final String id= in==null? null: in.getStringExtra("id"); if (id==null){ maybeStop(); return START_NOT_STICKY; }
     final Store.Item it=Store.get(this,id); if (it==null || running.containsKey(id)) { maybeStop(); return START_NOT_STICKY; }
     final Engine eng=new Engine(); running.put(id, eng); synchronized(this){ active++; } lock(true); it.status="queued"; it.error=""; Store.notifyChanged();
-    pool.submit(new Runnable(){ public void run(){ try { work(it, eng); } catch(Throwable t){ Log.e(TAG,"download failed",t); it.status= eng.cancelled && eng.error==null? "cancelled":"failed"; it.error= eng.error!=null? eng.error: String.valueOf(t.getMessage()); }
+    pool.submit(new Runnable(){ public void run(){ try { work(it, eng); } catch(Throwable t){ Log.e(TAG,"download failed",t); it.status= timedOut? "paused": eng.cancelled && eng.error==null? "cancelled":"failed"; it.error= timedOut? "Android pauses a download service after about 6 hours. Tap Resume to continue.": eng.error!=null? eng.error: String.valueOf(t.getMessage()); if (it.status.equals("failed")) failNote(it); }
       finally { running.remove(it.id); if (Store.get(DownloadService.this, it.id)==null) cleanup(it.id); Store.save(DownloadService.this); Store.notifyChanged(); synchronized(DownloadService.this){ active--; } h.post(new Runnable(){ public void run(){ maybeStop(); }}); } } });
     return START_NOT_STICKY; }
-  void maybeStop(){ synchronized(this){ if (active>0) return; } lock(false); stopForeground(true); stopSelf(); }
+  void maybeStop(){ synchronized(this){ if (active>0) return; } lock(false); stopForeground(true); try { ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel(NID); } catch (Throwable t){}
+    stopSelfResult(lastStartId); }   // v10.12: stopSelfResult(lastStartId) never stops over a start that arrived meanwhile; the progress notification is always removed
+  /** v10.12: a failed download leaves a visible, dismissible note instead of silence. */
+  void failNote(Store.Item it){ try { NotificationManager nm=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+      Notification.Builder b= Build.VERSION.SDK_INT>=26? new Notification.Builder(this,CH): new Notification.Builder(this); String why= it.error==null? "": it.error; if (why.length()>140) why=why.substring(0,140)+"…";
+      b.setSmallIcon(android.R.drawable.stat_notify_error).setContentTitle("Download failed").setContentText(it.title+(why.isEmpty()? "": ": "+why)).setAutoCancel(true)
+       .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, DownloadsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT));
+      nm.notify(it.id.hashCode(), b.build()); } catch (Throwable t){} }
   File tmpDir(String id){ return new File(getExternalCacheDir()!=null? getExternalCacheDir(): getCacheDir(), "dl_"+id); }
   /** Removed from the list: drop its partial files. */
   void cleanup(String id){ try { File d=tmpDir(id); File[] fs=d.listFiles(); if (fs!=null) for (File x: fs) x.delete(); d.delete(); } catch (Throwable t){} }
@@ -47,7 +61,12 @@ public class DownloadService extends Service {
   /** Same stream (itag) from a fresh extraction, so a refreshed URL never switches to a different file mid-download. */
   static String sameStream(StreamInfo i, String oldUrl){ int it=itagOf(oldUrl); if (it<0) return null;
     List<Stream> all=new ArrayList<>(); all.addAll(i.getVideoOnlyStreams()); all.addAll(i.getAudioStreams()); all.addAll(i.getVideoStreams());
-    for (Stream s: all) { try { if (s.isUrl() && s.getItagItem()!=null && s.getItagItem().id==it) return s.getContent(); } catch (Throwable t){} } return null; }
+    String oldTags=Formats.xtags(oldUrl); String sameItag=null; AudioStream bestSame=null, bestAny=null;
+    for (Stream s: all) { try { if (s.isUrl() && s.getItagItem()!=null && s.getItagItem().id==it) {
+        // v10.12: YouTube serves one URL per language for the same audio itag; stay on the track that was chosen (never swap to a dubbed one on refresh)
+        if (s instanceof AudioStream) { AudioStream au=(AudioStream)s; if (Formats.betterAudio(au, bestAny)) bestAny=au; if (Formats.xtags(au.getContent()).equals(oldTags) && Formats.betterAudio(au, bestSame)) bestSame=au; }
+        else if (sameItag==null) sameItag=s.getContent(); } } catch (Throwable t){} }
+    AudioStream pick= bestSame!=null? bestSame: bestAny; return pick!=null? pick.getContent(): sameItag; }
   static String clean(String s){ return Names.clean(s, "video"); }
   /** Thumbnail as JPEG bytes for the MP3 cover (YouTube may serve WebP: re-encoded; large images scaled to 720 px). */
   static byte[] cover(String path){ try { if (path==null || path.isEmpty()) return null; File f=new File(path); if (!f.isFile() || f.length()==0 || f.length()>8_000_000) return null;
@@ -77,11 +96,11 @@ public class DownloadService extends Service {
     checkSpace(tmp, files, L, pk[0]);
     it.status="downloading"; Store.notifyChanged();
     final long t0=SystemClock.elapsedRealtime(); final long[] last={-1,t0};
-    Timer tm=new Timer(); tm.scheduleAtFixedRate(new TimerTask(){ public void run(){ long now=SystemClock.elapsedRealtime(), d=eng.done.get(); if (last[0]<0){ last[0]=eng.resumed; }
+    final boolean[] stopped={false}; Timer tm=new Timer(true); tm.scheduleAtFixedRate(new TimerTask(){ public void run(){ if (stopped[0]) return; long now=SystemClock.elapsedRealtime(), d=eng.done.get(); if (last[0]<0){ last[0]=eng.resumed; }
       double inst=(d-last[0])*1000.0/Math.max(1,now-last[1]); it.speed= it.speed==0? inst: it.speed*0.6+inst*0.4; last[0]=d; last[1]=now;
       it.done=d; it.total=eng.total; it.progress= eng.total>0? (int)(d*100/eng.total):0; Store.notifyChanged();
-      try { ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(NID, note(it.title+" · "+it.progress+"% · "+String.format(Locale.US,"%.1f MB/s", it.speed/1048576), it.progress)); } catch(Exception e){} } }, 500, 700);
-    try { eng.run(src, L, files); } finally { tm.cancel(); }
+      if (stopped[0]) return; try { ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(NID, note(it.title+" · "+it.progress+"% · "+String.format(Locale.US,"%.1f MB/s", it.speed/1048576), it.progress)); } catch(Exception e){} } }, 500, 700);
+    try { eng.run(src, L, files); } finally { stopped[0]=true; tm.cancel(); }
     long secs=Math.max(1, SystemClock.elapsedRealtime()-t0);
     long got=eng.total-eng.resumed; it.done=eng.total; it.total=eng.total; it.progress=100; it.speed=got*1000.0/secs;
     Log.i(TAG, "downloaded "+got+" bytes (resumed from "+eng.resumed+") in "+secs+" ms = "+String.format(Locale.US,"%.2f MB/s", got*1000.0/secs/1048576)+" connections="+Engine.CONNECTIONS);

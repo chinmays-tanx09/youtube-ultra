@@ -15,7 +15,8 @@ public class DownloadsPage extends FrameLayout implements Store.Listener {
   @Override protected void onAttachedToWindow(){ super.onAttachedToWindow(); start(); }
   @Override protected void onDetachedFromWindow(){ stop(); super.onDetachedFromWindow(); }
   @Override protected void onWindowVisibilityChanged(int v){ super.onWindowVisibilityChanged(v); if (v==VISIBLE && isAttachedToWindow()) { start(); render(); } }
-  void start(){ if (live) return; live=true; Store.listen(this); render(); }
+  void start(){ if (live) return; live=true; Store.listen(this); render();
+    final Context ac=getContext().getApplicationContext(); new Thread(new Runnable(){ public void run(){ if (Store.adoptSaved(ac)) Store.notifyChanged(); } }, "paradox-adopt").start(); }   // v10.12: files saved in Movies/Music/YouTube Ultra always show up here
   void stop(){ if (!live) return; live=false; Store.unlisten(this); }
   @Override public void changed(){ if (pending) return; pending=true; h.postDelayed(() -> { pending=false; if (live) render(); }, 400); }
   Bitmap thumb(Store.Item it){ if (it.thumb==null || it.thumb.isEmpty()) return null; Bitmap b=thumbs.get(it.thumb); if (b==null && new File(it.thumb).exists()){ BitmapFactory.Options o=new BitmapFactory.Options(); o.inSampleSize=2; b=BitmapFactory.decodeFile(it.thumb,o); if (b!=null) thumbs.put(it.thumb,b);} return b; }

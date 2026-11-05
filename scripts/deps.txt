@@ -13,3 +13,4 @@ libs/jsr305.jar|https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3
 libs/protobuf-javalite.jar|https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/4.35.1/protobuf-javalite-4.35.1.jar|45d3769189888e491ab7d58125f2014c2a86fb8104c7aa3878c723943fce7a14
 libs/rhino.jar|https://repo1.maven.org/maven2/org/mozilla/rhino/1.8.1/rhino-1.8.1.jar|98a06d42bdd69da15bf9c2a7812b4cfe648ca9e64fe8baaeb502a32b0ed2c8ac
 libs/rhino-engine.jar|https://repo1.maven.org/maven2/org/mozilla/rhino-engine/1.8.1/rhino-engine-1.8.1.jar|ff38ad60aa32a23942f60242a433a2583a5407841745510754a43e0e61dd95cf
+libs/orgjson-test.jar|https://repo1.maven.org/maven2/org/json/json/20240303/json-20240303.jar|3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed

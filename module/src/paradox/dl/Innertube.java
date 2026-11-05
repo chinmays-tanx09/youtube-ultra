@@ -82,6 +82,7 @@ public final class Innertube {
       x.bitrate=(int)num(f,"bitrate"); x.width=(int)num(f,"width"); x.height=(int)num(f,"height"); x.contentLength=num(f,"contentLength"); x.fps=(int)num(f,"fps");
       x.qualityLabel=f.getString("qualityLabel",""); x.averageBitrate=(int)num(f,"averageBitrate"); x.approxDurationMs=num(f,"approxDurationMs");
       x.sampleRate=num(f,"audioSampleRate"); x.channels=(int)num(f,"audioChannels"); x.signatureCipher=f.getString("signatureCipher", f.getString("cipher",""));
+      JsonObject at=f.getObject("audioTrack"); if (at!=null && !at.isEmpty()) { x.audioTrackId=at.getString("id",""); x.audioTrackName=at.getString("displayName",""); if (at.has("audioIsDefault")) x.audioIsDefault= at.getBoolean("audioIsDefault")? 1: 0; }
       p.formats.add(x); }
     JsonObject vd=j.getObject("videoDetails");
     p.videoId=vd.getString("videoId",""); p.title=vd.getString("title",""); p.author=vd.getString("author",""); p.channelId=vd.getString("channelId",""); p.lengthSeconds=num(vd,"lengthSeconds");

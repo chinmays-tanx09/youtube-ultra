@@ -7,7 +7,7 @@ public final class PlayerProto {
   public static final int OK=0, ERROR=1, UNPLAYABLE=2, LOGIN_REQUIRED=3;
   public static final class Fmt {
     public int itag, bitrate, width, height, fps, averageBitrate, channels; public long contentLength, approxDurationMs, sampleRate;
-    public String url="", mimeType="", qualityLabel="", signatureCipher=""; public boolean adaptive;
+    public String url="", mimeType="", qualityLabel="", signatureCipher="", audioTrackId="", audioTrackName=""; public boolean adaptive; public int audioIsDefault=-1;   // v10.12: -1 unknown, 0 no, 1 yes (innertube JSON audioTrack)
     /** "video/mp4; codecs=\"avc1.640028\"" -> "avc1.640028" */
     public String codec(){ int i=mimeType.indexOf("codecs=\""); if (i<0) return null; int j=mimeType.indexOf('"', i+8); return j<0? null: mimeType.substring(i+8, j); }
     public boolean hasUrl(){ return url.startsWith("https://"); }

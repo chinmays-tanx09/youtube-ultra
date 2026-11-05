@@ -44,20 +44,33 @@ public final class Formats {
   /** Known length, else bitrate x duration (YouTube's own estimate), else -1. */
   static long est(Stream s, long secs){ long l=len(s); if (l>0) return l; try { int br=s.getItagItem()!=null? s.getItagItem().getBitrate(): 0; if (br>0 && secs>0) return br*secs/8; } catch (Exception e){} return -1; }
   static boolean ok(Stream s){ return s.isUrl() && s.getDeliveryMethod()==DeliveryMethod.PROGRESSIVE_HTTP; }
-  static boolean original(AudioStream a){ String tr=null; try { tr=a.getAudioTrackType()==null? null: a.getAudioTrackType().name(); } catch(Throwable t){} return tr==null || tr.equals("ORIGINAL"); }
+  /** v10.12: which language track an audio stream is. 0 = marked original/default, 1 = unmarked (ordinary single-track video), 2 = dubbed / auto-dubbed / descriptive / secondary.
+   *  YouTube serves the same itag once per dubbed language; the original one is tagged xtags=acont=original (or audioTrack.audioIsDefault / "... original" in the innertube JSON). */
+  public static int trackRank(AudioStream a){ String ty=null, nm=null, url=null;
+    try { if (a.getAudioTrackType()!=null) ty=a.getAudioTrackType().name(); } catch (Throwable t){} try { nm=a.getAudioTrackName(); } catch (Throwable t){} try { url=a.getContent(); } catch (Throwable t){}
+    return trackRank(ty, nm, url); }
+  public static int trackRank(String type, String name, String url){
+    if ("ORIGINAL".equals(type)) return 0; if (type!=null) return 2;
+    String x=xtags(url); if (x.contains("acont=original")) return 0; if (x.contains("acont=dubbed") || x.contains("acont=descriptive") || x.contains("acont=secondary")) return 2;
+    if (name!=null) { String n=name.toLowerCase(java.util.Locale.ROOT); if (n.contains("dubbed") || n.contains("descriptive") || n.contains("auto-dub")) return 2; if (n.contains("original")) return 0; }
+    return 1; }
+  /** The URL's xtags value, percent-decoded ("acont=original:lang=en-US"), or "". */
+  public static String xtags(String url){ if (url==null) return ""; int i=url.indexOf("xtags="); if (i<0) return ""; if (i>0 && url.charAt(i-1)!='?' && url.charAt(i-1)!='&') { int j=url.indexOf("&xtags="); if (j<0) j=url.indexOf("?xtags="); if (j<0) return ""; i=j+1; }
+    int e=url.indexOf('&', i); String v=url.substring(i+6, e<0? url.length(): e); try { return java.net.URLDecoder.decode(v, "UTF-8"); } catch (Exception ex){ return v; } }
+  /** Better audio: the lower track rank first (original before unmarked before dubbed), then the higher bitrate. */
+  static boolean betterAudio(AudioStream a, AudioStream cur){ if (cur==null) return true; int ra=trackRank(a), rc=trackRank(cur); if (ra!=rc) return ra<rc; return a.getAverageBitrate()>cur.getAverageBitrate(); }
   /** Best audio of one family: m4a=true -> AAC in M4A (the only audio that goes into an MP4), false -> Opus. */
   public static AudioStream audio(StreamInfo i, boolean m4a){
     AudioStream best=null;
     for (AudioStream a: i.getAudioStreams()) { if (!ok(a)) continue;
       boolean isM4a=a.getFormat()==MediaFormat.M4A; boolean isOpus=a.getFormat()==MediaFormat.WEBMA_OPUS || a.getFormat()==MediaFormat.WEBMA;
-      if (m4a? !isM4a : !isOpus) continue; if (!original(a)) continue;
-      if (best==null || a.getAverageBitrate()>best.getAverageBitrate()) best=a; }
-    if (best==null) for (AudioStream a: i.getAudioStreams()) if (ok(a) && (m4a? a.getFormat()==MediaFormat.M4A : a.getFormat()!=MediaFormat.M4A) && (best==null || a.getAverageBitrate()>best.getAverageBitrate())) best=a;
+      if (m4a? !isM4a : !isOpus) continue;
+      if (betterAudio(a, best)) best=a; }
+    if (best==null) for (AudioStream a: i.getAudioStreams()) if (ok(a) && (m4a? a.getFormat()==MediaFormat.M4A : a.getFormat()!=MediaFormat.M4A) && betterAudio(a, best)) best=a;
     return best; }
   /** Source for MP3: the highest-bitrate original track of any format (Opus 160k usually beats AAC 128k). */
   public static AudioStream bestAudio(StreamInfo i){ AudioStream best=null;
-    for (AudioStream a: i.getAudioStreams()) if (ok(a) && original(a) && (best==null || a.getAverageBitrate()>best.getAverageBitrate())) best=a;
-    if (best==null) for (AudioStream a: i.getAudioStreams()) if (ok(a) && (best==null || a.getAverageBitrate()>best.getAverageBitrate())) best=a;
+    for (AudioStream a: i.getAudioStreams()) if (ok(a) && betterAudio(a, best)) best=a;
     return best; }
   static boolean better(VideoStream v, VideoStream cur){ return cur==null || v.getFps()>cur.getFps() || (v.getFps()==cur.getFps() && len(v)>len(cur)); }
   /** height -> best stream of one family (highest fps, then biggest), SDR or HDR only. */
