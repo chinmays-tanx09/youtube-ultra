@@ -1872,3 +1872,27 @@
      array-length v0, p0
  
      move v6, v2
+--- a/classes12/app/morphe/extension/shared/settings/preference/AbstractPreferenceFragment.smali
++++ b/classes12/app/morphe/extension/shared/settings/preference/AbstractPreferenceFragment.smali
+@@ -1589,7 +1589,9 @@
+ .method public initialize()V
+     .registers 2
+ 
+-    const-string v0, "revanced_prefs"
++    invoke-static {p0}, Lparadox/dl/Ultra;->prefsXml(Landroid/preference/PreferenceFragment;)Ljava/lang/String;
++
++    move-result-object v0
+ 
+     invoke-static {v0}, Lapp/morphe/extension/shared/utils/ResourceUtils;->getXmlIdentifier(Ljava/lang/String;)I
+ 
+--- a/classes12/app/morphe/extension/shared/settings/BaseActivityHook.smali
++++ b/classes12/app/morphe/extension/shared/settings/BaseActivityHook.smali
+@@ -274,7 +274,7 @@
+ 
+     invoke-virtual {v1, v2}, Landroid/widget/Toolbar;->setNavigationOnClickListener(Landroid/view/View$OnClickListener;)V
+ 
+-    invoke-static {}, Lapp/morphe/extension/shared/patches/SettingsNamePatch;->getSettingsName()Ljava/lang/String;
++    invoke-static {p1}, Lparadox/dl/Ultra;->toolbarTitle(Landroid/app/Activity;)Ljava/lang/String;
+ 
+     move-result-object v2
+ 

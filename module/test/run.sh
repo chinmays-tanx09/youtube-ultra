@@ -5,6 +5,7 @@
 #   RoutesTest           v10.10: Shorts ids, route order + fallback, player data, link probe, innertube client, full errors
 #   HighResTest          v10.11: 4K/8K/HDR quality rows, extra itags, VP9 header/levels, frame-rate snapping, >4 GB co64, errors
 #   V1012Test            v10.12: original audio track (never dubbed) incl. refresh + innertube audioTrack, download list robustness
+#   V1013Test            v10.13: skip-seen-Shorts logic, queue / Watch later persistence + ordering, video-id forms
 #   muxer.sh             v10.11: our MP4 muxer on ffmpeg-made VP9/AV1/H.264/AAC fixtures, checked with ffprobe/ffmpeg   (skipped without ffmpeg)
 #   mp3.sh               real LAME encoder (host build) + ffprobe checks   (skipped when ffmpeg is missing)
 set -euo pipefail
@@ -18,4 +19,5 @@ java -Dfile.encoding=UTF-8 -cp "$OUT:$CP:$AJ" paradox.dl.FormatsTest
 java -Dfile.encoding=UTF-8 -cp "$OUT:$CP:$AJ" paradox.dl.RoutesTest
 java -Dfile.encoding=UTF-8 -cp "$OUT:$CP:$AJ" paradox.dl.HighResTest
 java -Dfile.encoding=UTF-8 -cp "$OUT:$CP:$AJ" paradox.dl.V1012Test
+java -Dfile.encoding=UTF-8 -cp "$OUT:$CP:$AJ" paradox.dl.V1013Test
 if command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null; then bash "$ROOT/module/test/mp3.sh"; bash "$ROOT/module/test/containers.sh"; bash "$ROOT/module/test/muxer.sh"; else echo "mp3.sh skipped (no ffmpeg)"; fi

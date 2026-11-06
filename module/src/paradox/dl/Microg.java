@@ -9,6 +9,7 @@ public final class Microg {
   /** At most once per app start (process). Never blocks, never exits. */
   public static void missing(final Activity a){
     if (!Guard.check(a)) return; // anti-tamper: modified/re-signed copies stop here
+    Ultra.init(a); // v10.13: YouTube Ultra settings + Shorts tracking (never throws)
     try { if (a==null || offeredThisStart) return; offeredThisStart=true;
       if (installed(a)){ Log.i(TAG,"present"); paradox.banner.ChannelBanner.show(a); return; } // WhatsApp channel card (once per start, only once MicroG is set up)
       Log.i(TAG,"missing: offering bundled MicroG");

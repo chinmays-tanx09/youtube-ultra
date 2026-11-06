@@ -95,8 +95,57 @@ def apktool_yml(s, vc):
     if "\n- mp4\n" not in s: s = once(s, "\n- ogg\n", "\n- mp4\n- ogg\n")
     return s
 
+
+# ---------------------------------------------------------------- v10.13: Settings -> "YouTube Ultra" + queue / watch-later components
+ULTRA_ENTRY = """    <Preference android:icon="@drawable/ytultra_settings_key_icon" android:title="YouTube Ultra" android:key="ytultra_settings_key" android:summary="Gestures, clean feed, Shorts, downloads, queue">
+        <intent android:targetPackage="app.paradox.youtube" android:data="revanced_settings_intent" android:targetClass="com.google.android.libraries.social.licenses.LicenseActivity">
+            <extra android:name="ytultra" android:value="1" />
+        </intent>
+    </Preference>
+"""
+ULTRA_COMPONENTS = """        <activity android:exported="false" android:label="Queue &amp; Watch later" android:name="paradox.dl.QueueActivity" android:theme="@android:style/Theme.Material.NoActionBar"/>
+        <activity android:configChanges="keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:exported="false" android:label="Offline player" android:name="paradox.dl.OfflinePlayerActivity" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
+        <activity android:excludeFromRecents="true" android:exported="true" android:label="Add to queue (YouTube Ultra)" android:name="paradox.dl.QueueAddActivity" android:noHistory="true" android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter android:label="Add to queue (YouTube Ultra)">
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
+        <activity android:excludeFromRecents="true" android:exported="true" android:label="Watch later (YouTube Ultra)" android:name="paradox.dl.WatchLaterAddActivity" android:noHistory="true" android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter android:label="Watch later (YouTube Ultra)">
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
+        <activity android:excludeFromRecents="true" android:exported="false" android:label="YouTube Ultra" android:name="paradox.dl.UltraActionActivity" android:noHistory="true" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+"""
+
+def ultra_settings_entry(s):
+    if "ytultra_settings_key" in s: raise SystemExit("already applied")
+    m = re.search(r'<Preference [^>]*android:key="revanced_settings_key"', s)   # the RVX entry (attribute order differs between the three files)
+    if not m: raise SystemExit("revanced settings entry not found")
+    i = m.start()
+    ls = s.rfind("\n", 0, i) + 1
+    return s[:ls] + ULTRA_ENTRY + s[ls:]
+
+def ultra(d, here):
+    d = pathlib.Path(d)
+    edit(d/"AndroidManifest.xml", lambda s: once(s, "    </application>", ULTRA_COMPONENTS + "    </application>"))
+    for f in ("settings_fragment.xml", "settings_fragment_cairo.xml", "settings_fragment_legacy.xml"):
+        edit(d/"res/xml"/f, ultra_settings_entry)
+    import shutil
+    shutil.copy(here/"res/xml/ytultra_prefs.xml", d/"res/xml/ytultra_prefs.xml")
+    shutil.copy(here/"res/drawable/ytultra_settings_key_icon.xml", d/"res/drawable/ytultra_settings_key_icon.xml")
+    print("v10.13 resources added")
+
 def main():
     d = pathlib.Path(sys.argv[1]); vc = "1552692680"
+    if "--only-ultra" in sys.argv:   # apply just the v10.13 additions to a tree that already has the v10.12 edits
+        ultra(d, pathlib.Path(__file__).parent)
+        if "--version-code" in sys.argv: edit(d/"apktool.yml", lambda s: apktool_yml(s, sys.argv[sys.argv.index("--version-code")+1]))
+        return
     if "--version-code" in sys.argv: vc = sys.argv[sys.argv.index("--version-code")+1]
     edit(d/"AndroidManifest.xml", manifest)
     edit(d/"res/values/strings.xml", strings)
@@ -105,6 +154,7 @@ def main():
     edit(d/"res/xml/offline_prefs.xml", offline)
     edit(d/"res/xml/offline_prefs_without_category_dividers.xml", lambda s: offline(s, first_child=True))
     edit(d/"apktool.yml", lambda s: apktool_yml(s, vc))
+    ultra(d, pathlib.Path(__file__).parent)
     print("resources patched, versionCode", vc)
 
 if __name__ == "__main__": main()

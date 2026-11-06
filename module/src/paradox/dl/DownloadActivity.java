@@ -37,7 +37,11 @@ public class DownloadActivity extends Activity {
   void typeSheet(){ subtitle=sheet.header("Download", what()==null? " ": what());
     View v=iconRow(Ui.I_VIDEO,"Video","MP4 with sound, saved to Gallery",0); v.setOnClickListener(x -> chooseType("video"));
     View a=iconRow(Ui.I_AUDIO,"Audio","MP3, saved to Music",1); a.setOnClickListener(x -> chooseType("audio"));
-    sheet.body.addView(v); sheet.body.addView(a); }
+    sheet.body.addView(v); sheet.body.addView(a);
+    if (!playlist) { View q=iconRow(Ui.I_VIDEO,"Add to queue","Play it later in the YouTube Ultra queue",2); q.setOnClickListener(x -> saveTo(QueueStore.QUEUE));
+      View w=iconRow(Ui.I_TIMER,"Watch later","Save it here; download it to watch offline",3); w.setOnClickListener(x -> saveTo(QueueStore.LATER)); sheet.body.addView(q); sheet.body.addView(w); } }
+  /** v10.13: queue / offline Watch later. */
+  void saveTo(String list){ String m; try { m=QueueRun.add(this, list, url, info!=null? info.getName(): null); } catch (Throwable e){ m="Couldn't save"; } Toast.makeText(this,m,Toast.LENGTH_SHORT).show(); sheet.dismiss(null); }
   void chooseType(String t){ type=t; String rem=Prefs.get(this, t); if (rem!=null){ startRemembered(rem); return; } qualitySheet(); }
   String qTitle(){ return type.equals("audio")?"Audio quality":"Download quality"; }
   /** While the video is still loading: skeleton rows with a moving shimmer where qualities and sizes will be. */

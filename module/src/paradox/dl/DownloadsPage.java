@@ -22,7 +22,13 @@ public class DownloadsPage extends FrameLayout implements Store.Listener {
   Bitmap thumb(Store.Item it){ if (it.thumb==null || it.thumb.isEmpty()) return null; Bitmap b=thumbs.get(it.thumb); if (b==null && new File(it.thumb).exists()){ BitmapFactory.Options o=new BitmapFactory.Options(); o.inSampleSize=2; b=BitmapFactory.decodeFile(it.thumb,o); if (b!=null) thumbs.put(it.thumb,b);} return b; }
   static boolean active(Store.Item it){ return !it.status.equals("done"); }
   TextView header(String s){ Context c=getContext(); TextView t=Ui.medium(c,s,16,TXT); t.setPadding(Ui.dp(c,16),Ui.dp(c,12),Ui.dp(c,16),Ui.dp(c,6)); return t; }
-  public void render(){ final Context c=getContext(); Ui.Pal np=Ui.pal(c); if (np.dark!=P.dark){ P=np; TXT=P.text; SUB=P.sub; setBackgroundColor(P.bg); thumbs.clear(); } list.removeAllViews(); List<Store.Item> all=Store.all(c);
+  /** v10.13: the two lists (queue, offline Watch later) one tap from Downloads. */
+  View shortcuts(final Context c){ LinearLayout r=new LinearLayout(c); r.setOrientation(LinearLayout.HORIZONTAL); r.setPadding(Ui.dp(c,16),Ui.dp(c,8),Ui.dp(c,16),Ui.dp(c,4)); QueueStore qs=QueueRun.store(c);
+    for (int k=0;k<2;k++) { final boolean later=k==1; int n=qs.size(later? QueueStore.LATER: QueueStore.QUEUE); TextView t=Ui.medium(c,(later? "Watch later": "Queue")+(n>0? "  "+n: ""),14,TXT); t.setGravity(Gravity.CENTER); t.setBackground(Ui.round(P.chip, Ui.dp(c,18), 0)); t.setPadding(Ui.dp(c,16),0,Ui.dp(c,16),0);
+      LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-2,Ui.dp(c,36)); if (k==1) lp.leftMargin=Ui.dp(c,8); r.addView(t,lp);
+      t.setOnClickListener(v -> { Intent i=new Intent(c, QueueActivity.class).putExtra("list", later? QueueStore.LATER: QueueStore.QUEUE); if (!(c instanceof Activity)) i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); c.startActivity(i); }); }
+    return r; }
+  public void render(){ final Context c=getContext(); Ui.Pal np=Ui.pal(c); if (np.dark!=P.dark){ P=np; TXT=P.text; SUB=P.sub; setBackgroundColor(P.bg); thumbs.clear(); } list.removeAllViews(); list.addView(shortcuts(c)); List<Store.Item> all=Store.all(c);
     if (all.isEmpty()){ LinearLayout e=new LinearLayout(c); e.setOrientation(LinearLayout.VERTICAL); e.setGravity(Gravity.CENTER_HORIZONTAL); e.setPadding(Ui.dp(c,24),Ui.dp(c,96),Ui.dp(c,24),0);
       FrameLayout ib=new FrameLayout(c); ib.setBackground(Ui.round(P.chip, Ui.dp(c,28), 0)); ImageView i=new ImageView(c); i.setImageDrawable(new Ui.Icon(Ui.I_DOWNLOAD,SUB)); ib.addView(i,new FrameLayout.LayoutParams(Ui.dp(c,40),Ui.dp(c,40),Gravity.CENTER)); e.addView(ib,new LinearLayout.LayoutParams(Ui.dp(c,88),Ui.dp(c,88)));
       TextView m=Ui.medium(c,"No downloads yet",20,TXT); m.setGravity(Gravity.CENTER); m.setPadding(0,Ui.dp(c,20),0,Ui.dp(c,6)); e.addView(m);
