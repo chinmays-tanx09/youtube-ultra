@@ -15,7 +15,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; DEPS="$ROOT/.deps"; W="$ROOT/build/work"; OUT="$ROOT/build/out"
 STOCK="${1:?usage: scripts/build.sh <stock YouTube 20.05.46 universal APK>}"
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}"; BT="$SDK/build-tools/35.0.0"
-VERSION_CODE="${ULTRA_VERSION_CODE:-1552692689}"
+VERSION_CODE="${ULTRA_VERSION_CODE:-1552692695}"
 JAVA="${JAVA:-java}"   # Morphe CLI needs Java 21+
 
 "$ROOT/scripts/fetch-deps.sh"

@@ -829,19 +829,82 @@
  .end method
 --- a/classes12/app/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction.smali
 +++ b/classes12/app/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction.smali
-@@ -120,18 +120,14 @@
+@@ -60,14 +60,12 @@
+ .method public static synthetic $r8$lambda$-9g7rf2IlcxA5hAvQeohbg2VKfc()V
+     .registers 2
+ 
+-    .line 422
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/components/ShortsCustomActionsFilter;->getShortsVideoId()Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+     const/4 v1, 0x1
+ 
+-    .line 421
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->openVideo(Ljava/lang/String;Z)V
+ 
+     return-void
+@@ -76,19 +74,16 @@
+ .method public static synthetic $r8$lambda$4WwWrq99VqCtNXhc5hEwvyVSAyw()V
+     .registers 2
+ 
+-    .line 396
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/components/ShortsCustomActionsFilter;->getShortsVideoId()Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+     const/4 v1, 0x1
+ 
+-    .line 395
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->getVideoUrl(Ljava/lang/String;Z)Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+-    .line 394
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->copyUrl(Ljava/lang/String;Z)V
+ 
+     return-void
+@@ -97,7 +92,6 @@
+ .method public static synthetic $r8$lambda$4_KaEZcQyweVgAHRWMRhPz-liGU(Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;Landroid/view/View;)V
+     .registers 2
+ 
+-    .line 0
+     invoke-direct {p0, p1}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->lambda$getOnClickListener$13(Landroid/view/View;)V
+ 
+     return-void
+@@ -106,7 +100,6 @@
+ .method public static synthetic $r8$lambda$9F4ften45tUjBqvLnDl_dYJQCQo()V
+     .registers 3
+ 
+-    .line 437
+     sget-object v0, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_AUTOPLAY:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+     invoke-virtual {v0}, Lapp/morphe/extension/shared/settings/BooleanSetting;->get()Ljava/lang/Boolean;
+@@ -119,7 +112,6 @@
+ 
+     xor-int/lit8 v2, v1, 0x1
+ 
+-    .line 438
+     invoke-static {v2}, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
+ 
+     move-result-object v2
+@@ -128,21 +120,14 @@
  
      if-nez v1, :cond_18
  
+-    .line 440
 -    const-string v0, "revanced_shorts_autoplay_enabled_toast"
 +    const-string v0, "Auto scroll: On"
  
      goto :goto_1a
  
+-    .line 441
      :cond_18
 -    const-string v0, "revanced_shorts_autoplay_disabled_toast"
+-
+-    .line 439
 +    const-string v0, "Auto scroll: Off"
- 
++
      :goto_1a
 -    invoke-static {v0}, Lapp/morphe/extension/shared/utils/StringRef;->str(Ljava/lang/String;)Ljava/lang/String;
 -
@@ -850,57 +913,444 @@
      invoke-static {v0}, Lapp/morphe/extension/shared/utils/Utils;->showToastShort(Ljava/lang/String;)V
  
      return-void
-@@ -243,12 +239,44 @@
- .end method
+@@ -151,19 +136,16 @@
+ .method public static synthetic $r8$lambda$IUR6G-LuSW4Af-4jDfjF_PYpWvY()V
+     .registers 2
  
- .method public static synthetic $r8$lambda$cDvDJb1GhKVlGzCXuE7-KTl5Ytc()V
--    .registers 1
-+    .registers 4
- 
+-    .line 377
      invoke-static {}, Lapp/morphe/extension/youtube/patches/components/ShortsCustomActionsFilter;->getShortsVideoId()Ljava/lang/String;
  
      move-result-object v0
  
-+    if-eqz v0, :cond_c
-+
-+    invoke-virtual {v0}, Ljava/lang/String;->isEmpty()Z
-+
-+    move-result v1
-+
-+    if-eqz v1, :cond_10
-+
-+    :cond_c
-+    invoke-static {}, Lapp/morphe/extension/youtube/shared/VideoInformation;->getVideoId()Ljava/lang/String;
-+
-+    move-result-object v0
-+
-+    :cond_10
-+    const-string v1, "ParadoxDL"
-+
-+    new-instance v2, Ljava/lang/StringBuilder;
-+
-+    invoke-direct {v2}, Ljava/lang/StringBuilder;-><init>()V
-+
-+    const-string v3, "shorts menu download id="
-+
-+    invoke-virtual {v2, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-+
-+    invoke-virtual {v2, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-+
-+    invoke-virtual {v2}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
-+
-+    move-result-object v2
-+
-+    invoke-static {v1, v2}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
-+
-     invoke-static {v0}, Lapp/morphe/extension/youtube/utils/VideoUtils;->launchVideoExternalDownloader(Ljava/lang/String;)V
+     const/4 v1, 0x0
+ 
+-    .line 376
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->getVideoUrl(Ljava/lang/String;Z)Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+-    .line 375
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->copyUrl(Ljava/lang/String;Z)V
  
      return-void
-@@ -867,8 +895,34 @@
+@@ -172,7 +154,6 @@
+ .method public static synthetic $r8$lambda$QY7lZLU3vERlBwAwfwzKs_DrAzU()V
+     .registers 3
+ 
+-    .line 473
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/utils/PatchStatus;->VoiceOverTranslation()Z
+ 
+     move-result v0
+@@ -181,7 +162,6 @@
+ 
+     return-void
+ 
+-    .line 476
+     :cond_7
+     new-instance v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda0;
+ 
+@@ -197,7 +177,6 @@
+ .method public static synthetic $r8$lambda$ROXDy0TMCbQLnMI9eXgRd1IHN9Q()Ljava/lang/String;
+     .registers 1
+ 
+-    .line 457
+     const-string v0, "GEMINI CustomAction: Could not get Shorts specific Video ID, using general VideoUtils."
+ 
+     return-object v0
+@@ -206,7 +185,6 @@
+ .method public static synthetic $r8$lambda$SUXFRa70MO1-Dmt8nI_5QojMTg4()V
+     .registers 2
+ 
+-    .line 430
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->-$$Nest$sfgetcontextRef()Ljava/lang/ref/WeakReference;
+ 
+     move-result-object v0
+@@ -227,19 +205,16 @@
+ .method public static synthetic $r8$lambda$YKjq_BnzpZUzMTUFYjsViPlOiC8()V
+     .registers 2
+ 
+-    .line 403
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/components/ShortsCustomActionsFilter;->getShortsVideoId()Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+     const/4 v1, 0x0
+ 
+-    .line 402
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->getVideoUrl(Ljava/lang/String;Z)Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+-    .line 401
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->copyUrl(Ljava/lang/String;Z)V
+ 
+     return-void
+@@ -248,19 +223,16 @@
+ .method public static synthetic $r8$lambda$aZYGWzdonTyhdvl5E9UBmQDo9WQ()V
+     .registers 2
+ 
+-    .line 384
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/components/ShortsCustomActionsFilter;->getShortsVideoId()Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+     const/4 v1, 0x1
+ 
+-    .line 383
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->getVideoUrl(Ljava/lang/String;Z)Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+-    .line 382
+     invoke-static {v0, v1}, Lapp/morphe/extension/youtube/utils/VideoUtils;->copyUrl(Ljava/lang/String;Z)V
+ 
+     return-void
+@@ -313,7 +285,6 @@
+ .method public static synthetic $r8$lambda$iWK7yM5bszedvvHTM43fZYDl__o(Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;Landroid/view/View;)Z
+     .registers 2
+ 
+-    .line 0
+     invoke-direct {p0, p1}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->lambda$getOnLongClickListener$14(Landroid/view/View;)Z
+ 
+     move-result p0
+@@ -324,7 +295,6 @@
+ .method public static synthetic $r8$lambda$ky6x6VS3qgu3_1qZEap2XFyUCmI()V
+     .registers 1
+ 
+-    .line 479
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/utils/PatchStatus;->VoiceOverTranslation()Z
+ 
+     move-result v0
+@@ -333,7 +303,6 @@
+ 
+     goto :goto_16
+ 
+-    .line 482
+     :cond_7
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->-$$Nest$sfgetcontextRef()Ljava/lang/ref/WeakReference;
+ 
+@@ -347,7 +316,6 @@
+ 
+     if-eqz v0, :cond_16
+ 
+-    .line 484
+     invoke-static {v0}, Lapp/morphe/extension/youtube/utils/VideoUtils;->showVotBottomSheetDialog(Landroid/content/Context;)V
+ 
+     :cond_16
+@@ -358,7 +326,6 @@
+ .method public static synthetic $r8$lambda$ofuDM8TLy4Z95eV4tvgNDZewSl4(Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;)V
+     .registers 1
+ 
+-    .line 0
+     invoke-direct {p0}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->lambda$getOnClickActionWithFlyoutMenuDismiss$12()V
+ 
+     return-void
+@@ -367,7 +334,6 @@
+ .method public static synthetic $r8$lambda$pLjZzYDzGckpV6Nniefup2nzniw()V
+     .registers 4
+ 
+-    .line 448
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->-$$Nest$sfgetcontextRef()Ljava/lang/ref/WeakReference;
+ 
+     move-result-object v0
+@@ -378,12 +344,10 @@
+ 
+     check-cast v0, Landroid/content/Context;
+ 
+-    .line 450
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/components/ShortsCustomActionsFilter;->getShortsVideoId()Ljava/lang/String;
+ 
+     move-result-object v1
+ 
+-    .line 452
+     invoke-static {v1}, Landroid/text/TextUtils;->isEmpty(Ljava/lang/CharSequence;)Z
+ 
+     move-result v2
+@@ -392,27 +356,23 @@
+ 
+     if-nez v2, :cond_1a
+ 
+-    .line 453
+     invoke-static {v1, v3}, Lapp/morphe/extension/youtube/utils/VideoUtils;->getVideoUrl(Ljava/lang/String;Z)Ljava/lang/String;
+ 
+     move-result-object v1
+ 
+     goto :goto_26
+ 
+-    .line 456
+     :cond_1a
+     invoke-static {v3}, Lapp/morphe/extension/youtube/utils/VideoUtils;->getVideoUrl(Z)Ljava/lang/String;
+ 
+     move-result-object v1
+ 
+-    .line 457
+     new-instance v2, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda13;
+ 
+     invoke-direct {v2}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda13;-><init>()V
+ 
+     invoke-static {v2}, Lapp/morphe/extension/shared/utils/Logger;->printInfo(Lapp/morphe/extension/shared/utils/Logger$LogMessage;)V
+ 
+-    .line 460
+     :goto_26
+     invoke-static {v1}, Landroid/text/TextUtils;->isEmpty(Ljava/lang/CharSequence;)Z
+ 
+@@ -430,7 +390,6 @@
+ 
+     goto :goto_3d
+ 
+-    .line 465
+     :cond_35
+     invoke-static {}, Lapp/morphe/extension/youtube/utils/GeminiManager;->getInstance()Lapp/morphe/extension/youtube/utils/GeminiManager;
+ 
+@@ -440,7 +399,6 @@
+ 
+     return-void
+ 
+-    .line 461
+     :cond_3d
+     :goto_3d
+     const-string v0, "revanced_gemini_error_no_video"
+@@ -457,7 +415,6 @@
+ .method private static synthetic $values()[Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+     .registers 8
+ 
+-    .line 370
+     sget-object v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->COPY_URL:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v1, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->COPY_URL_WITH_TIMESTAMP:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+@@ -484,7 +441,6 @@
+ .method static constructor <clinit>()V
+     .registers 15
+ 
+-    .line 371
+     new-instance v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v3, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_COPY_VIDEO_URL:Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -509,7 +465,6 @@
+ 
+     sput-object v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->COPY_URL:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+-    .line 390
+     new-instance v1, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v4, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_COPY_VIDEO_URL_TIMESTAMP:Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -534,7 +489,6 @@
+ 
+     sput-object v1, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->COPY_URL_WITH_TIMESTAMP:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+-    .line 409
+     new-instance v2, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v5, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_EXTERNAL_DOWNLOADER:Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -555,7 +509,6 @@
+ 
+     sput-object v2, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->EXTERNAL_DOWNLOADER:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+-    .line 417
+     new-instance v3, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v6, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_OPEN_VIDEO:Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -576,7 +529,6 @@
+ 
+     sput-object v3, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->OPEN_VIDEO:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+-    .line 426
+     new-instance v4, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v7, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_SPEED_DIALOG:Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -597,7 +549,6 @@
+ 
+     sput-object v4, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->SPEED_DIALOG:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+-    .line 432
+     new-instance v5, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v8, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_REPEAT_STATE:Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -618,7 +569,6 @@
+ 
+     sput-object v5, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->REPEAT_STATE:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+-    .line 444
+     new-instance v6, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v9, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_GEMINI:Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -637,7 +587,6 @@
+ 
+     sput-object v6, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->GEMINI:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+-    .line 468
+     new-instance v7, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     sget-object v10, Lapp/morphe/extension/youtube/settings/Settings;->SHORTS_CUSTOM_ACTIONS_VOICE_OVER_TRANSLATION:Lapp/morphe/extension/shared/settings/BooleanSetting;
+@@ -662,7 +611,6 @@
+ 
+     sput-object v7, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->VOICE_OVER_TRANSLATION:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+-    .line 370
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->$values()[Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     move-result-object v0
+@@ -700,7 +648,6 @@
+ 
+     move-object v6, p5
+ 
+-    .line 510
+     invoke-direct/range {v0 .. v7}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;-><init>(Ljava/lang/String;ILapp/morphe/extension/shared/settings/BooleanSetting;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Runnable;Ljava/lang/Runnable;)V
+ 
+     return-void
+@@ -735,7 +682,6 @@
+ 
+     move-object v7, p6
+ 
+-    .line 518
+     invoke-direct/range {v0 .. v7}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;-><init>(Ljava/lang/String;ILapp/morphe/extension/shared/settings/BooleanSetting;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Runnable;Ljava/lang/Runnable;)V
+ 
+     return-void
+@@ -770,7 +716,6 @@
+ 
+     move-object v6, p6
+ 
+-    .line 526
+     invoke-direct/range {v0 .. v7}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;-><init>(Ljava/lang/String;ILapp/morphe/extension/shared/settings/BooleanSetting;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Runnable;Ljava/lang/Runnable;)V
+ 
+     return-void
+@@ -790,10 +735,8 @@
+         }
+     .end annotation
+ 
+-    .line 537
+     invoke-direct {p0, p1, p2}, Ljava/lang/Enum;-><init>(Ljava/lang/String;I)V
+ 
+-    .line 538
+     sget-boolean p1, Lapp/morphe/extension/youtube/settings/YouTubeActivityHook;->USE_BOLD_ICONS:Z
+ 
+     if-eqz p1, :cond_8
+@@ -803,7 +746,6 @@
+     :cond_8
+     move-object p5, p4
+ 
+-    .line 539
+     :goto_9
+     invoke-static {p5}, Lapp/morphe/extension/shared/utils/ResourceUtils;->getDrawable(Ljava/lang/String;)Landroid/graphics/drawable/Drawable;
+ 
+@@ -811,14 +753,12 @@
+ 
+     if-nez p1, :cond_1a
+ 
+-    .line 540
+     invoke-virtual {p5, p4}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+ 
+     move-result p2
+ 
+     if-nez p2, :cond_1a
+ 
+-    .line 544
+     invoke-static {p4}, Lapp/morphe/extension/shared/utils/ResourceUtils;->getDrawable(Ljava/lang/String;)Landroid/graphics/drawable/Drawable;
+ 
+     move-result-object p1
+@@ -828,20 +768,17 @@
+     :cond_1a
+     move-object p4, p5
+ 
+-    .line 546
+     :goto_1b
+     invoke-static {p1}, Ljava/util/Objects;->requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;
+ 
+     iput-object p1, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->drawable:Landroid/graphics/drawable/Drawable;
+ 
+-    .line 547
+     invoke-static {p4}, Lapp/morphe/extension/shared/utils/ResourceUtils;->getDrawableIdentifier(Ljava/lang/String;)I
+ 
+     move-result p1
+ 
+     iput p1, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->drawableId:I
+ 
+-    .line 548
+     new-instance p1, Ljava/lang/StringBuilder;
+ 
+     invoke-direct {p1}, Ljava/lang/StringBuilder;-><init>()V
+@@ -864,13 +801,10 @@
+ 
+     iput-object p1, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->label:Ljava/lang/String;
+ 
+-    .line 549
+     iput-object p3, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->settings:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
+-    .line 550
+     iput-object p6, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->onClickAction:Ljava/lang/Runnable;
+ 
+-    .line 551
+     iput-object p7, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->onLongClickAction:Ljava/lang/Runnable;
+ 
+     return-void
+@@ -879,10 +813,8 @@
+ .method private synthetic lambda$getOnClickActionWithFlyoutMenuDismiss$12()V
+     .registers 1
+ 
+-    .line 586
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->-$$Nest$smhideFlyoutMenu()V
+ 
+-    .line 587
+     iget-object p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->onClickAction:Ljava/lang/Runnable;
+ 
+     invoke-interface {p0}, Ljava/lang/Runnable;->run()V
+@@ -893,7 +825,6 @@
+ .method private synthetic lambda$getOnClickListener$13(Landroid/view/View;)V
+     .registers 2
+ 
+-    .line 593
+     invoke-virtual {p0}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->getOnClickActionWithFlyoutMenuDismiss()Ljava/lang/Runnable;
+ 
+     move-result-object p0
+@@ -906,10 +837,8 @@
+ .method private synthetic lambda$getOnLongClickListener$14(Landroid/view/View;)Z
+     .registers 2
+ 
+-    .line 602
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch;->-$$Nest$smhideFlyoutMenu()V
+ 
+-    .line 603
+     iget-object p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->onLongClickAction:Ljava/lang/Runnable;
+ 
+     invoke-interface {p0}, Ljava/lang/Runnable;->run()V
+@@ -922,7 +851,6 @@
+ .method public static valueOf(Ljava/lang/String;)Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+     .registers 2
+ 
+-    .line 370
+     const-class v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     invoke-static {v0, p0}, Ljava/lang/Enum;->valueOf(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;
+@@ -937,7 +865,6 @@
+ .method public static values()[Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+     .registers 1
+ 
+-    .line 370
+     sget-object v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->$VALUES:[Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     invoke-virtual {v0}, [Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->clone()Ljava/lang/Object;
+@@ -954,7 +881,6 @@
+ .method public getDrawable()Landroid/graphics/drawable/Drawable;
+     .registers 1
+ 
+-    .line 566
+     iget-object p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->drawable:Landroid/graphics/drawable/Drawable;
+ 
+     return-object p0
+@@ -963,16 +889,51 @@
+ .method public getDrawableId()I
+     .registers 1
+ 
+-    .line 570
+     iget p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->drawableId:I
+ 
+     return p0
  .end method
  
  .method public getLabel()Ljava/lang/String;
 -    .registers 1
+-
+-    .line 575
 +    .registers 2
 +
 +    sget-object v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->REPEAT_STATE:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
@@ -914,7 +1364,7 @@
 +    move-result-object v0
 +
 +    invoke-virtual {v0}, Ljava/lang/Boolean;->booleanValue()Z
- 
++
 +    move-result v0
 +
 +    if-eqz v0, :cond_13
@@ -929,9 +1379,114 @@
 +    return-object v0
 +
 +    :cond_16
++    sget-object v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->GEMINI:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
++
++    if-ne p0, v0, :cond_lbl
++
++    invoke-static {}, Lparadox/dl/UltraG;->hideLabel()Ljava/lang/String;
++
++    move-result-object v0
++
++    return-object v0
++
++    :cond_lbl
      iget-object p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->label:Ljava/lang/String;
  
      return-object p0
+@@ -981,7 +942,6 @@
+ .method public getOnClickAction()Ljava/lang/Runnable;
+     .registers 1
+ 
+-    .line 580
+     iget-object p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->onClickAction:Ljava/lang/Runnable;
+ 
+     return-object p0
+@@ -990,7 +950,6 @@
+ .method public getOnClickActionWithFlyoutMenuDismiss()Ljava/lang/Runnable;
+     .registers 2
+ 
+-    .line 585
+     new-instance v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda14;
+ 
+     invoke-direct {v0, p0}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda14;-><init>(Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;)V
+@@ -1001,7 +960,6 @@
+ .method public getOnClickListener()Landroid/view/View$OnClickListener;
+     .registers 2
+ 
+-    .line 593
+     new-instance v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda15;
+ 
+     invoke-direct {v0, p0}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda15;-><init>(Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;)V
+@@ -1012,7 +970,6 @@
+ .method public getOnLongClickListener()Landroid/view/View$OnLongClickListener;
+     .registers 2
+ 
+-    .line 598
+     iget-object v0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->onLongClickAction:Ljava/lang/Runnable;
+ 
+     if-nez v0, :cond_6
+@@ -1021,7 +978,6 @@
+ 
+     return-object p0
+ 
+-    .line 601
+     :cond_6
+     new-instance v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda1;
+ 
+@@ -1033,7 +989,6 @@
+ .method public isAvailable()Z
+     .registers 4
+ 
+-    .line 555
+     sget-object v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->GEMINI:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     const/4 v1, 0x0
+@@ -1042,37 +997,13 @@
+ 
+     if-ne p0, v0, :cond_1a
+ 
+-    .line 556
+-    invoke-static {}, Lapp/morphe/extension/youtube/patches/utils/PatchStatus;->Gemini()Z
+-
+-    move-result v0
+-
+-    if-eqz v0, :cond_19
+-
+-    iget-object p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->settings:Lapp/morphe/extension/shared/settings/BooleanSetting;
+-
+-    invoke-virtual {p0}, Lapp/morphe/extension/shared/settings/BooleanSetting;->get()Ljava/lang/Boolean;
+-
+-    move-result-object p0
+-
+-    invoke-virtual {p0}, Ljava/lang/Boolean;->booleanValue()Z
+-
+-    move-result p0
+-
+-    if-eqz p0, :cond_19
+-
+     return v2
+ 
+-    :cond_19
+-    return v1
+-
+-    .line 558
+     :cond_1a
+     sget-object v0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->VOICE_OVER_TRANSLATION:Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;
+ 
+     if-ne p0, v0, :cond_32
+ 
+-    .line 559
+     invoke-static {}, Lapp/morphe/extension/youtube/patches/utils/PatchStatus;->VoiceOverTranslation()Z
+ 
+     move-result v0
+@@ -1096,7 +1027,6 @@
+     :cond_31
+     return v1
+ 
+-    .line 561
+     :cond_32
+     iget-object p0, p0, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->settings:Lapp/morphe/extension/shared/settings/BooleanSetting;
+ 
 --- a/classes12/app/morphe/extension/youtube/settings/Settings.smali
 +++ b/classes12/app/morphe/extension/youtube/settings/Settings.smali
 @@ -3468,8 +3468,12 @@
@@ -1896,3 +2451,14 @@
  
      move-result-object v2
  
+--- a/classes12/app/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda11.smali
++++ b/classes12/app/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction$$ExternalSyntheticLambda11.smali
+@@ -20,7 +20,7 @@
+ .method public final run()V
+     .registers 1
+ 
+-    invoke-static {}, Lapp/morphe/extension/youtube/patches/shorts/CustomActionsPatch$CustomAction;->$r8$lambda$pLjZzYDzGckpV6Nniefup2nzniw()V
++    invoke-static {}, Lparadox/dl/UltraG;->toggleAll()V
+ 
+     return-void
+ .end method

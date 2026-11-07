@@ -95,6 +95,13 @@
             <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide the Subscribe button" android:key="revanced_hide_shorts_subscribe_button"/>
             <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide channel name and logo" android:key="revanced_hide_shorts_channel_bar"/>
             <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide Short title" android:key="revanced_hide_shorts_video_title"/>
+            <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide the link label under the Short" android:key="revanced_hide_shorts_video_link_label"/>
+            <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide the info panel" android:key="revanced_hide_shorts_info_panel"/>
+            <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide the shopping button" android:key="revanced_hide_shorts_shopping_button"/>
+            <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide tagged products" android:key="revanced_hide_shorts_tagged_products"/>
+            <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide the suggestion pill under the Short" android:key="revanced_hide_shorts_search_suggestions_button"/>
+            <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide the sound label" android:key="revanced_hide_shorts_sound_metadata_label"/>
+            <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hide the bottom menu bar in Shorts" android:key="revanced_hide_shorts_navigation_bar"/>
             <SwitchPreference android:icon="@drawable/empty_icon" android:title="Shorts gestures (master switch)" android:key="ytultra_shorts_gestures" android:defaultValue="true"/>
             <SwitchPreference android:icon="@drawable/empty_icon" android:title="Hold on a Short to share it" android:key="ytultra_shorts_longpress_share" android:defaultValue="true"/>
             <SwitchPreference android:icon="@drawable/revanced_shorts_autoplay_icon" android:title="Auto scroll to the next Short" android:key="revanced_shorts_autoplay"/>
