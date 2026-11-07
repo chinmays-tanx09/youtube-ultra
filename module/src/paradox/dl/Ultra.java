@@ -15,7 +15,7 @@ public final class Ultra {
   public static boolean flag(Context c, String key, boolean def){ try { return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(key, def); } catch (Throwable t){ return def; } }
   static File dir(Context c){ return c.getFilesDir(); }
   /** Called once per start from MainActivity.onCreate (through Microg.missing, after the anti-tamper check). Never throws. */
-  public static synchronized void init(Activity a){ try { if (a==null) return; app=a.getApplicationContext(); if (started) return; started=true;
+  public static synchronized void init(Activity a){ UltraG.install(a); try { if (a==null) return; app=a.getApplicationContext(); if (started) return; started=true;
       File d=dir(app); seen.load(new File(d,"ytultra_seen_shorts.txt"), new File(d,"ytultra_seen_shorts.bak"));
       h.postDelayed(tick, 2000); observeVideoEnd(); Log.i(TAG,"init, seen="+seen.size()); } catch (Throwable t){ Log.e(TAG,"init",t); } }
   static void saveSeen(){ Context c=app; if (c==null) return; File d=dir(c); seen.save(new File(d,"ytultra_seen_shorts.txt"), new File(d,"ytultra_seen_shorts.bak"), new File(d,"ytultra_seen_shorts.tmp")); }

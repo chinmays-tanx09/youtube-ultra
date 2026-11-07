@@ -97,7 +97,7 @@ def apktool_yml(s, vc):
 
 
 # ---------------------------------------------------------------- v10.13: Settings -> "YouTube Ultra" + queue / watch-later components
-ULTRA_ENTRY = """    <Preference android:icon="@drawable/ytultra_settings_key_icon" android:title="YouTube Ultra" android:key="ytultra_settings_key" android:summary="Gestures, clean feed, Shorts, downloads, queue">
+ULTRA_ENTRY = """    <Preference android:icon="@drawable/ytultra_settings_key_icon" android:title="YouTube Ultra" android:key="ytultra_settings_key">
         <intent android:targetPackage="app.paradox.youtube" android:data="revanced_settings_intent" android:targetClass="com.google.android.libraries.social.licenses.LicenseActivity">
             <extra android:name="ytultra" android:value="1" />
         </intent>
